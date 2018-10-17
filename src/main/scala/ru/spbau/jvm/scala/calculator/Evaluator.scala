@@ -4,11 +4,11 @@ import org.antlr.v4.runtime.Token
 
 import scala.collection.JavaConverters
 
-class Evaluator extends AnotherShittyCalcBaseVisitor[Either[Int, Boolean]] {
+class Evaluator extends CalcBaseVisitor[Either[Int, Boolean]] {
   private val logicEvaluator = new LogicEvaluator
   private val integerEvaluator = new IntegerEvaluator
 
-  override def visitExpression(ctx: AnotherShittyCalcParser.ExpressionContext): Either[Int, Boolean] = {
+  override def visitExpression(ctx: CalcParser.ExpressionContext): Either[Int, Boolean] = {
     if (ctx.intExpr() != null) {
       Left(ctx.intExpr().accept(integerEvaluator))
     } else {
@@ -16,10 +16,10 @@ class Evaluator extends AnotherShittyCalcBaseVisitor[Either[Int, Boolean]] {
     }
   }
 
-  class LogicEvaluator extends AnotherShittyCalcBaseVisitor[Boolean] {
+  class LogicEvaluator extends CalcBaseVisitor[Boolean] {
     private val TRUE = "true"
 
-    override def visitLogicExpr(ctx: AnotherShittyCalcParser.LogicExprContext): Boolean = {
+    override def visitLogicExpr(ctx: CalcParser.LogicExprContext): Boolean = {
       if (ctx.logicOrExpr() != null) {
         ctx.logicOrExpr().accept(this)
       } else {
@@ -27,19 +27,19 @@ class Evaluator extends AnotherShittyCalcBaseVisitor[Either[Int, Boolean]] {
       }
     }
 
-    override def visitLogicOrExpr(ctx: AnotherShittyCalcParser.LogicOrExprContext): Boolean = {
+    override def visitLogicOrExpr(ctx: CalcParser.LogicOrExprContext): Boolean = {
       val init = ctx.`var`.accept(this)
       val vars = JavaConverters.asScalaBuffer(ctx.vars).map({variable => variable.accept(this)})
       vars.fold(init)(_ || _)
     }
 
-    override def visitLogicAndExpr(ctx: AnotherShittyCalcParser.LogicAndExprContext): Boolean = {
+    override def visitLogicAndExpr(ctx: CalcParser.LogicAndExprContext): Boolean = {
       val init = ctx.`var`.accept(this)
       val vars = JavaConverters.asScalaBuffer(ctx.vars).map({variable => variable.accept(this)})
       vars.fold(init)(_ && _)
     }
 
-    override def visitAtomLogicExpr(ctx: AnotherShittyCalcParser.AtomLogicExprContext): Boolean = {
+    override def visitAtomLogicExpr(ctx: CalcParser.AtomLogicExprContext): Boolean = {
       if (ctx.value != null) {
         ctx.value.accept(this)
       } else if (ctx.constValue != null) {
@@ -49,7 +49,7 @@ class Evaluator extends AnotherShittyCalcBaseVisitor[Either[Int, Boolean]] {
       }
     }
 
-    override def visitEqualityExpr(ctx: AnotherShittyCalcParser.EqualityExprContext): Boolean = {
+    override def visitEqualityExpr(ctx: CalcParser.EqualityExprContext): Boolean = {
       val left = ctx.var1.accept(integerEvaluator)
       val right = ctx.var2.accept(integerEvaluator)
       parseOperation(ctx.op)(left, right)
@@ -68,8 +68,8 @@ class Evaluator extends AnotherShittyCalcBaseVisitor[Either[Int, Boolean]] {
     }
   }
 
-  class IntegerEvaluator extends AnotherShittyCalcBaseVisitor[Int] {
-    override def visitIntExpr(ctx: AnotherShittyCalcParser.IntExprContext): Int = {
+  class IntegerEvaluator extends CalcBaseVisitor[Int] {
+    override def visitIntExpr(ctx: CalcParser.IntExprContext): Int = {
       if (ctx.additionExp() != null) {
         ctx.additionExp().accept(this)
       } else {
@@ -77,7 +77,7 @@ class Evaluator extends AnotherShittyCalcBaseVisitor[Either[Int, Boolean]] {
       }
     }
 
-    override def visitAdditionExp(ctx: AnotherShittyCalcParser.AdditionExpContext): Int = {
+    override def visitAdditionExp(ctx: CalcParser.AdditionExpContext): Int = {
       val init = ctx.`var`.accept(this)
       val ops = JavaConverters.asScalaBuffer(ctx.ops).map(op => parseOperation(op))
       val vars = JavaConverters.asScalaBuffer(ctx.vars)
@@ -85,7 +85,7 @@ class Evaluator extends AnotherShittyCalcBaseVisitor[Either[Int, Boolean]] {
       vars.zip(ops).foldLeft(init){ (a, tup) => tup._2(a, tup._1)}
     }
 
-    override def visitMultiplyExp(ctx: AnotherShittyCalcParser.MultiplyExpContext): Int = {
+    override def visitMultiplyExp(ctx: CalcParser.MultiplyExpContext): Int = {
       val init = ctx.`var`.accept(this)
       val ops = JavaConverters.asScalaBuffer(ctx.ops).map(op => parseOperation(op))
       val vars = JavaConverters.asScalaBuffer(ctx.vars)
@@ -93,7 +93,7 @@ class Evaluator extends AnotherShittyCalcBaseVisitor[Either[Int, Boolean]] {
       vars.zip(ops).foldLeft(init){ (a, tup) => tup._2(a, tup._1)}
     }
 
-    override def visitAtomExp(ctx: AnotherShittyCalcParser.AtomExpContext): Int = {
+    override def visitAtomExp(ctx: CalcParser.AtomExpContext): Int = {
       if (ctx.n != null) {
         parseLiteral(ctx.n)
       } else {

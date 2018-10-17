@@ -1,4 +1,4 @@
-// Generated from /home/jetbrains/au_docs_ijJ9eOA8/Kotlin_Scala/scala-2018/src/main/antlr/AnotherShittyCalc.g4 by ANTLR 4.7
+// Generated from /home/jetbrains/au_docs_ijJ9eOA8/Kotlin_Scala/scala-2018/src/main/antlr/Calc.g4 by ANTLR 4.7
 package ru.spbau.jvm.scala.calculator;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class AnotherShittyCalcParser extends Parser {
+public class CalcParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -72,7 +72,7 @@ public class AnotherShittyCalcParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "AnotherShittyCalc.g4"; }
+	public String getGrammarFileName() { return "Calc.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -83,7 +83,7 @@ public class AnotherShittyCalcParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public AnotherShittyCalcParser(TokenStream input) {
+	public CalcParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -100,7 +100,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_expression; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitExpression(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -146,9 +146,9 @@ public class AnotherShittyCalcParser extends Parser {
 		public LogicExprContext logicExpr() {
 			return getRuleContext(LogicExprContext.class,0);
 		}
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public LogicExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -156,7 +156,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_logicExpr; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitLogicExpr(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitLogicExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -235,9 +235,9 @@ public class AnotherShittyCalcParser extends Parser {
 		public IntExprContext intExpr() {
 			return getRuleContext(IntExprContext.class,0);
 		}
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public IntExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -245,7 +245,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_intExpr; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitIntExpr(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitIntExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -327,9 +327,9 @@ public class AnotherShittyCalcParser extends Parser {
 		public LogicAndExprContext logicAndExpr(int i) {
 			return getRuleContext(LogicAndExprContext.class,i);
 		}
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public LogicOrExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -337,7 +337,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_logicOrExpr; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitLogicOrExpr(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitLogicOrExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -422,9 +422,9 @@ public class AnotherShittyCalcParser extends Parser {
 		public AtomLogicExprContext atomLogicExpr(int i) {
 			return getRuleContext(AtomLogicExprContext.class,i);
 		}
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public LogicAndExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -432,7 +432,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_logicAndExpr; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitLogicAndExpr(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitLogicAndExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -514,13 +514,13 @@ public class AnotherShittyCalcParser extends Parser {
 		public EqualityExprContext equalityExpr() {
 			return getRuleContext(EqualityExprContext.class,0);
 		}
-		public TerminalNode BoolLiteral() { return getToken(AnotherShittyCalcParser.BoolLiteral, 0); }
+		public TerminalNode BoolLiteral() { return getToken(CalcParser.BoolLiteral, 0); }
 		public LogicOrExprContext logicOrExpr() {
 			return getRuleContext(LogicOrExprContext.class,0);
 		}
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public AtomLogicExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -528,7 +528,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_atomLogicExpr; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitAtomLogicExpr(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitAtomLogicExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -617,15 +617,15 @@ public class AnotherShittyCalcParser extends Parser {
 		public IntExprContext intExpr(int i) {
 			return getRuleContext(IntExprContext.class,i);
 		}
-		public TerminalNode EQUAL() { return getToken(AnotherShittyCalcParser.EQUAL, 0); }
-		public TerminalNode NOT_EQUAL() { return getToken(AnotherShittyCalcParser.NOT_EQUAL, 0); }
-		public TerminalNode LT() { return getToken(AnotherShittyCalcParser.LT, 0); }
-		public TerminalNode LE() { return getToken(AnotherShittyCalcParser.LE, 0); }
-		public TerminalNode GT() { return getToken(AnotherShittyCalcParser.GT, 0); }
-		public TerminalNode GE() { return getToken(AnotherShittyCalcParser.GE, 0); }
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public TerminalNode EQUAL() { return getToken(CalcParser.EQUAL, 0); }
+		public TerminalNode NOT_EQUAL() { return getToken(CalcParser.NOT_EQUAL, 0); }
+		public TerminalNode LT() { return getToken(CalcParser.LT, 0); }
+		public TerminalNode LE() { return getToken(CalcParser.LE, 0); }
+		public TerminalNode GT() { return getToken(CalcParser.GT, 0); }
+		public TerminalNode GE() { return getToken(CalcParser.GE, 0); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public EqualityExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -633,7 +633,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_equalityExpr; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitEqualityExpr(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitEqualityExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -715,17 +715,17 @@ public class AnotherShittyCalcParser extends Parser {
 		public MultiplyExpContext multiplyExp(int i) {
 			return getRuleContext(MultiplyExpContext.class,i);
 		}
-		public List<TerminalNode> PLUS() { return getTokens(AnotherShittyCalcParser.PLUS); }
+		public List<TerminalNode> PLUS() { return getTokens(CalcParser.PLUS); }
 		public TerminalNode PLUS(int i) {
-			return getToken(AnotherShittyCalcParser.PLUS, i);
+			return getToken(CalcParser.PLUS, i);
 		}
-		public List<TerminalNode> MINUS() { return getTokens(AnotherShittyCalcParser.MINUS); }
+		public List<TerminalNode> MINUS() { return getTokens(CalcParser.MINUS); }
 		public TerminalNode MINUS(int i) {
-			return getToken(AnotherShittyCalcParser.MINUS, i);
+			return getToken(CalcParser.MINUS, i);
 		}
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public AdditionExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -733,7 +733,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_additionExp; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitAdditionExp(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitAdditionExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -833,21 +833,21 @@ public class AnotherShittyCalcParser extends Parser {
 		public AtomExpContext atomExp(int i) {
 			return getRuleContext(AtomExpContext.class,i);
 		}
-		public List<TerminalNode> MULT() { return getTokens(AnotherShittyCalcParser.MULT); }
+		public List<TerminalNode> MULT() { return getTokens(CalcParser.MULT); }
 		public TerminalNode MULT(int i) {
-			return getToken(AnotherShittyCalcParser.MULT, i);
+			return getToken(CalcParser.MULT, i);
 		}
-		public List<TerminalNode> DIV() { return getTokens(AnotherShittyCalcParser.DIV); }
+		public List<TerminalNode> DIV() { return getTokens(CalcParser.DIV); }
 		public TerminalNode DIV(int i) {
-			return getToken(AnotherShittyCalcParser.DIV, i);
+			return getToken(CalcParser.DIV, i);
 		}
-		public List<TerminalNode> MOD() { return getTokens(AnotherShittyCalcParser.MOD); }
+		public List<TerminalNode> MOD() { return getTokens(CalcParser.MOD); }
 		public TerminalNode MOD(int i) {
-			return getToken(AnotherShittyCalcParser.MOD, i);
+			return getToken(CalcParser.MOD, i);
 		}
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public MultiplyExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -855,7 +855,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_multiplyExp; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitMultiplyExp(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitMultiplyExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -943,13 +943,13 @@ public class AnotherShittyCalcParser extends Parser {
 	public static class AtomExpContext extends ParserRuleContext {
 		public Token n;
 		public IntExprContext exp;
-		public TerminalNode Literal() { return getToken(AnotherShittyCalcParser.Literal, 0); }
+		public TerminalNode Literal() { return getToken(CalcParser.Literal, 0); }
 		public IntExprContext intExpr() {
 			return getRuleContext(IntExprContext.class,0);
 		}
-		public List<TerminalNode> SPACES() { return getTokens(AnotherShittyCalcParser.SPACES); }
+		public List<TerminalNode> SPACES() { return getTokens(CalcParser.SPACES); }
 		public TerminalNode SPACES(int i) {
-			return getToken(AnotherShittyCalcParser.SPACES, i);
+			return getToken(CalcParser.SPACES, i);
 		}
 		public AtomExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -957,7 +957,7 @@ public class AnotherShittyCalcParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_atomExp; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AnotherShittyCalcVisitor ) return ((AnotherShittyCalcVisitor<? extends T>)visitor).visitAtomExp(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitAtomExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}

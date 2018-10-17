@@ -26,10 +26,10 @@ object Calculator {
     if (input == EXIT) {
       return None
     }
-    val lexer = new AnotherShittyCalcLexer(CharStreams.fromString(input))
+    val lexer = new CalcLexer(CharStreams.fromString(input))
     val tokens = new CommonTokenStream(lexer)
 
-    val parser = new AnotherShittyCalcParser(tokens)
+    val parser = new CalcParser(tokens)
     Some(parser.expression().accept(evaluator))
   }
 }

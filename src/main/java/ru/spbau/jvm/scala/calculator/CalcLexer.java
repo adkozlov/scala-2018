@@ -1,4 +1,4 @@
-// Generated from /home/jetbrains/au_docs_ijJ9eOA8/Kotlin_Scala/scala-2018/src/main/antlr/AnotherShittyCalc.g4 by ANTLR 4.7
+// Generated from /home/jetbrains/au_docs_ijJ9eOA8/Kotlin_Scala/scala-2018/src/main/antlr/Calc.g4 by ANTLR 4.7
 package ru.spbau.jvm.scala.calculator;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class AnotherShittyCalcLexer extends Lexer {
+public class CalcLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -77,13 +77,13 @@ public class AnotherShittyCalcLexer extends Lexer {
 	}
 
 
-	public AnotherShittyCalcLexer(CharStream input) {
+	public CalcLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "AnotherShittyCalc.g4"; }
+	public String getGrammarFileName() { return "Calc.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

@@ -1,4 +1,4 @@
-grammar AnotherShittyCalc;
+grammar Calc;
 
 expression
     : logicExpr
