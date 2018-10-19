@@ -34,8 +34,6 @@ LEQUAL  : '<=';
 AND     : '&&';
 OR      : '||';
 
-ASSIGN  : '=';
-
 /* DELIMITERS */
 LPAREN  : '(' ;
 RPAREN  : ')' ;

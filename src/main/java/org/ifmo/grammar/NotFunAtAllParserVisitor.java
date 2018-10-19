@@ -17,12 +17,6 @@ public interface NotFunAtAllParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBool_literal(NotFunAtAllParser.Bool_literalContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link NotFunAtAllParser#literal}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLiteral(NotFunAtAllParser.LiteralContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code LogicalCompareExpr}
 	 * labeled alternative in {@link NotFunAtAllParser#logical_expr}.
 	 * @param ctx the parse tree

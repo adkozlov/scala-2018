@@ -28,18 +28,6 @@ public class NotFunAtAllParserBaseListener implements NotFunAtAllParserListener 
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLiteral(NotFunAtAllParser.LiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLiteral(NotFunAtAllParser.LiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterLogicalCompareExpr(NotFunAtAllParser.LogicalCompareExprContext ctx) { }
 	/**
 	 * {@inheritDoc}

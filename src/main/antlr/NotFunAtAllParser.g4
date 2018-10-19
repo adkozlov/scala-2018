@@ -2,21 +2,15 @@ parser grammar NotFunAtAllParser;
 
 options { tokenVocab=NotFunAtAllLexer; }
 
-// LITERAL = <define-yourself>
-
 bool_literal
     : TRUE
     | FALSE;
-literal
-    : INT_NUM
-    | bool_literal;
 
-// BINARY_EXPR
 logical_expr
-    : left=arithm_expr op=compare_op right=arithm_expr #LogicalCompareExpr
-    | left=logical_expr op=logical_op right=logical_expr #LogicalBinaryExpr
+    : left=logical_expr op=logical_op right=logical_expr #LogicalBinaryExpr
+    | left=arithm_expr op=compare_op right=arithm_expr #LogicalCompareExpr
     | LPAREN logical_expr RPAREN #LogicalParensExpr
-    | atom #LogicalAtomExpr;
+    | bool_literal #LogicalAtomExpr;
 
 atom
     : INT_NUM;

@@ -18,16 +18,6 @@ public interface NotFunAtAllParserListener extends ParseTreeListener {
 	 */
 	void exitBool_literal(NotFunAtAllParser.Bool_literalContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link NotFunAtAllParser#literal}.
-	 * @param ctx the parse tree
-	 */
-	void enterLiteral(NotFunAtAllParser.LiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link NotFunAtAllParser#literal}.
-	 * @param ctx the parse tree
-	 */
-	void exitLiteral(NotFunAtAllParser.LiteralContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code LogicalCompareExpr}
 	 * labeled alternative in {@link NotFunAtAllParser#logical_expr}.
 	 * @param ctx the parse tree
