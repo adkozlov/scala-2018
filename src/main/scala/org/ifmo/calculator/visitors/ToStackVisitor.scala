@@ -3,68 +3,62 @@ package org.ifmo.calculator.visitors
 import org.ifmo.calculator.stack.elements._
 import org.ifmo.grammar.{NotFunAtAllParser, NotFunAtAllParserBaseVisitor}
 
-import scala.collection.mutable
+class ToStackVisitor extends NotFunAtAllParserBaseVisitor[List[StackElement]] {
+  val operationStack: List[StackElement] = List()
 
-class ToStackVisitor extends NotFunAtAllParserBaseVisitor[Unit] {
-  val operationStack: mutable.Stack[StackElement] = mutable.Stack[StackElement]()
 
-  override def visitLogicalCompareExpr(ctx: NotFunAtAllParser.LogicalCompareExprContext): Unit = {
-    ctx.left.accept(this)
-    ctx.right.accept(this)
-
-    operationStack.push(Operation.parseComparison(ctx.op.getText))
+  override def visitLogicalCompareExpr(ctx: NotFunAtAllParser.LogicalCompareExprContext): List[StackElement] = {
+    Operation.parseComparison(ctx.op.getText).asInstanceOf[StackElement] ::
+      (ctx.left.accept(this) ++ ctx.right.accept(this))
   }
 
-  override def visitLogicalBinaryExpr(ctx: NotFunAtAllParser.LogicalBinaryExprContext): Unit = {
-    ctx.left.accept(this)
-    ctx.right.accept(this)
 
-    operationStack.push(Operation.parseBoolean(ctx.op.getText))
+  override def visitLogicalBinaryExpr(ctx: NotFunAtAllParser.LogicalBinaryExprContext): List[StackElement] = {
+    Operation.parseBoolean(ctx.op.getText) ::
+      ctx.left.accept(this) ++ ctx.right.accept(this)
   }
 
-  override def visitLogicalParensExpr(ctx: NotFunAtAllParser.LogicalParensExprContext): Unit = {
+  override def visitLogicalParensExpr(ctx: NotFunAtAllParser.LogicalParensExprContext): List[StackElement] = {
     ctx.logical_expr().accept(this)
   }
 
 
-  override def visitLogicalAtomExpr(ctx: NotFunAtAllParser.LogicalAtomExprContext): Unit = {
-    operationStack.push(BoolValue(ctx.bool_literal().getText.toBoolean))
+  override def visitLogicalAtomExpr(ctx: NotFunAtAllParser.LogicalAtomExprContext): List[StackElement] = {
+    List(BoolValue(ctx.bool_literal().getText.toBoolean))
   }
 
-  override def visitAtom(ctx: NotFunAtAllParser.AtomContext): Unit = {
-    operationStack.push(LongValue(ctx.INT_NUM().getSymbol.getText.toLong))
+  override def visitAtom(ctx: NotFunAtAllParser.AtomContext): List[StackElement] = {
+    List(LongValue(ctx.INT_NUM().getSymbol.getText.toLong))
   }
 
-  override def visitArithmeticParensExpr(ctx: NotFunAtAllParser.ArithmeticParensExprContext): Unit = {
+  override def visitArithmeticParensExpr(ctx: NotFunAtAllParser.ArithmeticParensExprContext): List[StackElement] = {
     ctx.arithm_expr().accept(this)
   }
 
-  override def visitArithmeticDABinaryExpr(ctx: NotFunAtAllParser.ArithmeticDABinaryExprContext): Unit = {
-    ctx.left.accept(this)
-    ctx.right.accept(this)
-
-    operationStack.push(Operation.parseArithmetic(ctx.op.getText))
+  override def visitArithmeticDABinaryExpr(ctx: NotFunAtAllParser.ArithmeticDABinaryExprContext): List[StackElement] = {
+    Operation.parseArithmetic(ctx.op.getText) ::
+      ctx.left.accept(this) ++ ctx.right.accept(this)
   }
 
-  override def visitArithmeticPMBinaryExpr(ctx: NotFunAtAllParser.ArithmeticPMBinaryExprContext): Unit = {
-    ctx.left.accept(this)
-    ctx.right.accept(this)
-
-    operationStack.push(Operation.parseArithmetic(ctx.op.getText))
+  override def visitArithmeticPMBinaryExpr(ctx: NotFunAtAllParser.ArithmeticPMBinaryExprContext): List[StackElement] = {
+    Operation.parseArithmetic(ctx.op.getText) ::
+      ctx.left.accept(this) ++ ctx.right.accept(this)
   }
 
-  override def visitArithmeticAtomExpr(ctx: NotFunAtAllParser.ArithmeticAtomExprContext): Unit = {
-    operationStack.push(LongValue(ctx.atom().getText.toLong))
+  override def visitArithmeticAtomExpr(ctx: NotFunAtAllParser.ArithmeticAtomExprContext): List[StackElement] = {
+    List(LongValue(ctx.atom().getText.toLong))
   }
 
-  override def visitBinary_expr(ctx: NotFunAtAllParser.Binary_exprContext): Unit = {
+  override def visitBinary_expr(ctx: NotFunAtAllParser.Binary_exprContext): List[StackElement] = {
     if (ctx.arithm_expr() != null) {
-      ctx.arithm_expr().accept(this)
+      return ctx.arithm_expr().accept(this)
     }
 
     if (ctx.logical_expr() != null) {
-      ctx.logical_expr().accept(this)
+      return ctx.logical_expr().accept(this)
     }
+
+    return List()
   }
 }
 

@@ -2,59 +2,57 @@ package org.ifmo.calculator.eval
 
 import org.ifmo.calculator.stack.elements._
 
-import scala.collection.mutable
+class StackEvaluator() {
+  def run(stack: List[StackElement]): Either[Boolean, Long] = {
+    val top :: rest = stack
 
-class StackEvaluator(val stack: mutable.Stack[StackElement]) {
-  def run(): Either[Boolean, Long] = {
-    val element = stack.pop()
-
-    element match {
-      case op: ComparisonOperation => Left(evalComparisonOperation(op))
-      case op: BoolOperation => Left(evalBooleanOperation(op))
-      case op: ArithmeticOperation => Right(evalArithmeticOperation(op))
+    top match {
+      case op: ComparisonOperation => Left(evalComparisonOperation(op, rest)._1)
+      case op: BoolOperation => Left(evalBooleanOperation(op, rest)._1)
+      case op: ArithmeticOperation => Right(evalArithmeticOperation(op, rest)._1)
       case value: BoolValue => Left(value.value)
       case value: LongValue => Right(value.value)
     }
   }
 
-  def evaluateTopAsInt(): Long = {
-    val element = stack.pop()
-    element match {
-      case op: ArithmeticOperation => evalArithmeticOperation(op)
-      case value: LongValue => value.value
+  private def evaluateTopAsInt(stack: List[StackElement]): (Long, List[StackElement]) = {
+    val top :: rest = stack
+    top match {
+      case op: ArithmeticOperation => evalArithmeticOperation(op, rest)
+      case value: LongValue => (value.value, rest)
       case _ => throw new IllegalStateException("stack corrupted")
     }
   }
 
-  def evaluateTopAsBoolean(): Boolean = {
-    val element = stack.pop()
-    element match {
-      case op: ComparisonOperation => evalComparisonOperation(op)
-      case op: BoolOperation => evalBooleanOperation(op)
-      case value: BoolValue => value.value
+  private def evaluateTopAsBoolean(stack: List[StackElement]): (Boolean, List[StackElement]) = {
+    val top :: rest = stack
+    top match {
+      case op: ComparisonOperation => evalComparisonOperation(op, rest)
+      case op: BoolOperation => evalBooleanOperation(op, rest)
+      case value: BoolValue => (value.value, rest)
       case _ => throw new IllegalStateException("stack corrupted")
     }
   }
 
-  def evalBooleanOperation(op: BoolOperation): Boolean = {
-    val right = evaluateTopAsBoolean()
-    val left = evaluateTopAsBoolean()
+  def evalBooleanOperation(op: BoolOperation, stack: List[StackElement]): (Boolean, List[StackElement]) = {
+    val (left, rest) = evaluateTopAsBoolean(stack)
+    val (right, newStack) = evaluateTopAsBoolean(rest)
 
-    op.toFun.apply(left, right)
+    (op.toFun.apply(left, right), newStack)
   }
 
-  def evalArithmeticOperation(op: ArithmeticOperation): Long = {
-    val right = evaluateTopAsInt()
-    val left = evaluateTopAsInt()
+  def evalArithmeticOperation(op: ArithmeticOperation, stack: List[StackElement]): (Long, List[StackElement]) = {
+    val (left, rest) = evaluateTopAsInt(stack)
+    val (right, newStack) = evaluateTopAsInt(rest)
 
-    op.toFun.apply(left, right)
+    (op.toFun.apply(left, right), newStack)
   }
 
-  def evalComparisonOperation(op: ComparisonOperation): Boolean = {
-    val right = evaluateTopAsInt()
-    val left = evaluateTopAsInt()
+  def evalComparisonOperation(op: ComparisonOperation, stack: List[StackElement]): (Boolean, List[StackElement]) = {
+    val (left, rest) = evaluateTopAsInt(stack)
+    val (right, newStack) = evaluateTopAsInt(rest)
 
-    op.toFun.apply(left, right)
+    (op.toFun.apply(left, right), newStack)
   }
 
 }
