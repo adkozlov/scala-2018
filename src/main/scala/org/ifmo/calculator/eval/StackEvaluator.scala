@@ -34,21 +34,21 @@ class StackEvaluator() {
     }
   }
 
-  def evalBooleanOperation(op: BoolOperation, stack: List[StackElement]): (Boolean, List[StackElement]) = {
+  private def evalBooleanOperation(op: BoolOperation, stack: List[StackElement]): (Boolean, List[StackElement]) = {
     val (left, rest) = evaluateTopAsBoolean(stack)
     val (right, newStack) = evaluateTopAsBoolean(rest)
 
     (op.toFun.apply(left, right), newStack)
   }
 
-  def evalArithmeticOperation(op: ArithmeticOperation, stack: List[StackElement]): (Long, List[StackElement]) = {
+  private def evalArithmeticOperation(op: ArithmeticOperation, stack: List[StackElement]): (Long, List[StackElement]) = {
     val (left, rest) = evaluateTopAsInt(stack)
     val (right, newStack) = evaluateTopAsInt(rest)
 
     (op.toFun.apply(left, right), newStack)
   }
 
-  def evalComparisonOperation(op: ComparisonOperation, stack: List[StackElement]): (Boolean, List[StackElement]) = {
+  private def evalComparisonOperation(op: ComparisonOperation, stack: List[StackElement]): (Boolean, List[StackElement]) = {
     val (left, rest) = evaluateTopAsInt(stack)
     val (right, newStack) = evaluateTopAsInt(rest)
 
