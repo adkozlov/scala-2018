@@ -11,3 +11,4 @@ antlr4GenVisitor in Antlr4 := true
 antlr4GenListener in Antlr4 := false
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"

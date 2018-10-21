@@ -47,7 +47,7 @@ object LogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Boolean] {
     if (ctx.NOT() == null) {
       ctx.boolAtom.accept(this)
     } else {
-      !ctx.boolAtom.accept(this)
+      !ctx.negatedBoolAtom.accept(this)
     }
 
   override def visitBoolLiteralAtom(ctx: BoolLiteralAtomContext): Boolean =
@@ -91,7 +91,7 @@ object ArithmeticEvalVisitor extends ArithmeticAndLogicBaseVisitor[Double] {
     if (ctx.MINUS == null) {
       ctx.mathAtom.accept(this)
     } else {
-      -ctx.mathAtom.accept(this)
+      -ctx.signedAtom.accept(this)
     }
 
   override def visitNumberAtom(ctx: NumberAtomContext): Double =
@@ -119,8 +119,12 @@ object Main {
   }
 
   def main(args: Array[String]): Unit = {
+    println("Math and logic interpreter")
+    println("To exit, type in ctrl+D")
+    println()
+
     while (true) {
-      val line = StdIn.readLine()
+      val line = StdIn.readLine("> ")
       if (line == null) return
 
       try {
