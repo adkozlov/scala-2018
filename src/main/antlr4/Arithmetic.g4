@@ -1,34 +1,23 @@
 grammar Arithmetic;
 
-expression
-   : head=term (ops+=(PLUS | MINUS) rest+=term)*
+arithmeticExpression
+   : head=mathTerm (ops+=(PLUS | MINUS) rest+=mathTerm)*
    ;
 
-term
+mathTerm
    : head=signedAtom (ops+=(TIMES | DIV) rest+=signedAtom)*
    ;
 
 signedAtom
    : PLUS signedAtom
    | MINUS signedAtom
-   | atom
+   | mathAtom
    ;
 
-atom
-   : NUMBER                     #numberAtom
-   | LPAREN expression RPAREN   #atomInParens
+mathAtom
+   : NUMBER                                 #numberAtom
+   | LPAREN arithmeticExpression RPAREN     #atomInParens
    ;
-
-number
-    : NUMBER
-    ;
-
-//relop
-//   : EQ
-//   | GT
-//   | LT
-//   ;
-
 
 //The integer part gets its potential sign from the signedAtom rule
 
@@ -69,21 +58,6 @@ TIMES
 
 DIV
    : '/'
-   ;
-
-
-GT
-   : '>'
-   ;
-
-
-LT
-   : '<'
-   ;
-
-
-EQ
-   : '='
    ;
 
 

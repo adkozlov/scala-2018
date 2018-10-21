@@ -1,72 +1,121 @@
-import arithmetic.{ArithmeticBaseVisitor, ArithmeticLexer, ArithmeticParser}
+import Utils.foldWithActions
+import arithmetic.ArithmeticAndLogicParser._
+import arithmetic.{ArithmeticAndLogicBaseVisitor, ArithmeticAndLogicLexer, ArithmeticAndLogicParser}
 import org.antlr.v4.runtime._
 
 import scala.collection.JavaConverters._
 import scala.io.StdIn
 
-sealed trait EvalResult
+object Utils {
+  private type Action[T] = ((T, T) => T, T)
 
-case class NumberResult(result: Double) extends EvalResult
-
-object ArithmeticEvalVisitor extends ArithmeticBaseVisitor[NumberResult] {
-  private type DoubleOperator = (Double, Double) => Double
-
-  override def visitExpression(ctx: ArithmeticParser.ExpressionContext): NumberResult = {
-    val operations = ctx.ops.asScala.map(parseOperand)
-    val terms = ctx.rest.asScala.map {
-      _.accept(this)
-    }
-
-    foldEquations(ctx.head.accept(this), operations, terms)
-  }
-
-  override def visitTerm(ctx: ArithmeticParser.TermContext): NumberResult = {
-    val operations = ctx.ops.asScala.map(parseOperand)
-    val terms = ctx.rest.asScala.map {
-      _.accept(this)
-    }
-
-    foldEquations(ctx.head.accept(this), operations, terms)
-  }
-
-  override def visitSignedAtom(ctx: ArithmeticParser.SignedAtomContext): NumberResult =
-    if (ctx.MINUS == null) {
-      ctx.atom().accept(this)
-    } else {
-      NumberResult(ctx.atom().accept(this).result)
-    }
-
-  override def visitNumberAtom(ctx: ArithmeticParser.NumberAtomContext): NumberResult =
-    NumberResult(ctx.NUMBER().getText.toDouble)
-
-  override def visitAtomInParens(ctx: ArithmeticParser.AtomInParensContext): NumberResult =
-    ctx.expression().accept(this)
-
-  private def parseOperand(token: Token): DoubleOperator =
-    token.getType match {
-      case ArithmeticParser.PLUS => _ + _
-      case ArithmeticParser.MINUS => _ - _
-      case ArithmeticParser.TIMES => _ * _
-      case ArithmeticParser.DIV => _ / _
-      case _ => throw new IllegalArgumentException(s"Illegal operator $token")
-    }
-
-  private def foldEquations(head: NumberResult,
-                            operations: Iterable[DoubleOperator],
-                            rest: Iterable[NumberResult]): NumberResult = {
-    operations.zip(rest).foldLeft(head) { (acc, data) =>
+  def foldWithActions[T](head: T, operations: Iterable[Action[T]]): T = {
+    operations.foldLeft(head) { (acc, data) =>
       val (op, cur) = data
-      NumberResult(op(acc.result, cur.result))
+      op(acc, cur)
     }
   }
 }
 
-object Main {
-  def eval(s: String): EvalResult = {
-    val lexer = new ArithmeticLexer(CharStreams.fromString(s))
-    val parser = new ArithmeticParser(new CommonTokenStream(lexer))
+object ArithmeticAndLogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Any] {
+  override def visitLogic(ctx: LogicContext): Boolean =
+    ctx.logicExpression().accept(LogicEvalVisitor)
 
-    parser.expression().accept(ArithmeticEvalVisitor)
+  override def visitArithmetic(ctx: ArithmeticContext): Double =
+    ctx.arithmeticExpression().accept(ArithmeticEvalVisitor)
+}
+
+object LogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Boolean] {
+
+  override def visitLogicExpression(ctx: LogicExpressionContext): Boolean = {
+    val head = ctx.head.accept(this)
+    val rest = ctx.rest.asScala.map(_.accept(this))
+    val operations = ctx.ops.asScala.map(parseOperand)
+
+    foldWithActions(head, operations zip rest)
+  }
+
+  override def visitBoolTerm(ctx: BoolTermContext): Boolean = {
+    val head = ctx.head.accept(this)
+    val rest = ctx.rest.asScala.map(_.accept(this))
+    val operations = ctx.ops.asScala.map(parseOperand)
+
+    foldWithActions(head, operations zip rest)
+  }
+
+  override def visitNegatedBoolAtom(ctx: NegatedBoolAtomContext): Boolean =
+    if (ctx.NOT() == null) {
+      ctx.boolAtom.accept(this)
+    } else {
+      !ctx.boolAtom.accept(this)
+    }
+
+  override def visitBoolLiteralAtom(ctx: BoolLiteralAtomContext): Boolean =
+    ctx.literal.getType match {
+      case TRUE => true
+      case FALSE => false
+      case _ => throw new IllegalArgumentException(s"Unknown boolean literal ${ctx.literal}")
+    }
+
+
+  private def parseOperand(token: Token): (Boolean, Boolean) => Boolean = {
+    token.getType match {
+      case AND => _ && _
+      case OR => _ || _
+      case _ => throw new IllegalArgumentException(s"Illegal operator $token")
+    }
+  }
+
+  override def visitBoolAtomInParens(ctx: BoolAtomInParensContext): Boolean =
+    ctx.logicExpression().accept(this)
+}
+
+object ArithmeticEvalVisitor extends ArithmeticAndLogicBaseVisitor[Double] {
+  override def visitArithmeticExpression(ctx: ArithmeticExpressionContext): Double = {
+    val head = ctx.head.accept(this)
+    val operations = ctx.ops.asScala.map(parseOperand)
+    val terms = ctx.rest.asScala.map(_.accept(this))
+
+    foldWithActions(head, operations zip terms)
+  }
+
+  override def visitMathTerm(ctx: MathTermContext): Double = {
+    val head = ctx.head.accept(this)
+    val operations = ctx.ops.asScala.map(parseOperand)
+    val rest = ctx.rest.asScala.map(_.accept(this))
+
+    foldWithActions(head, operations zip rest)
+  }
+
+  override def visitSignedAtom(ctx: SignedAtomContext): Double =
+    if (ctx.MINUS == null) {
+      ctx.mathAtom.accept(this)
+    } else {
+      -ctx.mathAtom.accept(this)
+    }
+
+  override def visitNumberAtom(ctx: NumberAtomContext): Double =
+    ctx.NUMBER().getText.toDouble
+
+  override def visitAtomInParens(ctx: AtomInParensContext): Double =
+    ctx.arithmeticExpression().accept(this)
+
+  private def parseOperand(token: Token): (Double, Double) => Double =
+    token.getType match {
+      case PLUS => _ + _
+      case MINUS => _ - _
+      case TIMES => _ * _
+      case DIV => _ / _
+      case _ => throw new IllegalArgumentException(s"Illegal operator $token")
+    }
+}
+
+object Main {
+  def eval(s: String): Any = {
+    val lexer = new ArithmeticAndLogicLexer(CharStreams.fromString(s))
+    val parser = new ArithmeticAndLogicParser(new CommonTokenStream(lexer))
+
+    parser.equation().accept(ArithmeticAndLogicEvalVisitor)
   }
 
   def main(args: Array[String]): Unit = {
