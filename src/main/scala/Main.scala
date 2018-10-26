@@ -5,12 +5,12 @@ import org.antlr.v4.runtime.tree._
 
 object Main {
     def main(args: Array[String]) = {
-        val inputText = args.headOption.getOrElse("{1,2,3,4}")
+        val inputText = args.headOption.getOrElse("0")
         val input = new ANTLRInputStream(inputText)
-        val lexer = new ArrayInitLexer(input)
+        val lexer = new CalcLexer(input)
         val tokens = new CommonTokenStream(lexer)
-        val parser = new ArrayInitParser(tokens)
-        val tree = parser.init()
+        val parser = new CalcParser(tokens)
+        val tree = parser.expression()
         println(tree toStringTree parser)
     }
 }
