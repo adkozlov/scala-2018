@@ -11,6 +11,7 @@ object Main {
         val tokens = new CommonTokenStream(lexer)
         val parser = new CalcParser(tokens)
         val tree = parser.expression()
-        println(tree toStringTree parser)
+        val expression = tree.value
+        println(Evaluator.eval(expression))
     }
 }
