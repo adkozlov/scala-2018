@@ -15,4 +15,6 @@ object ParsingExceptions {
   class IncorrectTypeException(expectedType: String, actualType: String, value: String) extends InputMismatchException(
     s"Expected value of type $expectedType but $actualType value $value found"
   )
+
+  class IncorrectOperationSignatureException extends InputMismatchException
 }
