@@ -36,6 +36,13 @@ class LexerTest extends AssertionsForJUnit {
     assertResult(List("false", "||", "false")) { toTokensList("false  ||false") }
     assertResult(List("true", "^", "true")) { toTokensList("true^ true") }
     assertResult(List("false", "==", "true")) { toTokensList("false  ==  true") }
+    assertResult(List("false", "!=", "true")) { toTokensList("false  !=  true") }
+    assertResult(List("1", "<", "2")) { toTokensList("1 < 2") }
+    assertResult(List("1", "<=", "2")) { toTokensList("1 <= 2") }
+    assertResult(List("2", ">", "1")) { toTokensList("2 > 1") }
+    assertResult(List("2", ">=", "1")) { toTokensList("2 >= 1") }
+    assertResult(List("1", "==", "2")) { toTokensList("1 == 2") }
+    assertResult(List("1", "!=", "2")) { toTokensList("1 != 2") }
   }
 
   @Test

@@ -3,19 +3,21 @@ grammar Expressions;
 expression             : logicalExpression EOF
                        | arithmeticExpression EOF;
 
-logicalExpression      : LPAREN nested=logicalExpression RPAREN                                 #NestedLogical
-                       | left=logicalExpression op=AND right=logicalExpression                  #And
-                       | left=logicalExpression op=XOR right=logicalExpression                  #Xor
-                       | left=logicalExpression op=OR right=logicalExpression                   #Or
-                       | left=logicalExpression op=EQUIV right=logicalExpression                #Equiv
-                       | op=NOT operand=logicalExpression                                       #Not
-                       | BOOL                                                                   #Bool;
+logicalExpression      : LPAREN nested=logicalExpression RPAREN                                        #NestedLogical
+                       | left=logicalExpression op=AND right=logicalExpression                         #And
+                       | left=logicalExpression op=XOR right=logicalExpression                         #Xor
+                       | left=logicalExpression op=OR right=logicalExpression                          #Or
+                       | left=logicalExpression op=(EQ | NEQ) right=logicalExpression                  #EqLogical
+                       | left=arithmeticExpression op=(LT | LEQ | GT | GEQ) right=arithmeticExpression #Comp
+                       | left=arithmeticExpression op=(EQ | NEQ) right=arithmeticExpression            #EqArithmetic
+                       | op=NOT operand=logicalExpression                                              #Not
+                       | BOOL                                                                          #Bool;
 
-arithmeticExpression   : LPAREN nested=arithmeticExpression RPAREN                              #NestedArithmetic
-                       | op=(PLUS | MINUS) operand=arithmeticExpression                         #Unary
-                       | left=arithmeticExpression op=(MULT | DIV) right=arithmeticExpression   #Mult
-                       | left=arithmeticExpression op=(PLUS | MINUS) right=arithmeticExpression #Add
-                       | NUMBER                                                                 #Number;
+arithmeticExpression   : LPAREN nested=arithmeticExpression RPAREN                                     #NestedArithmetic
+                       | op=(PLUS | MINUS) operand=arithmeticExpression                                #Unary
+                       | left=arithmeticExpression op=(MULT | DIV) right=arithmeticExpression          #Mult
+                       | left=arithmeticExpression op=(PLUS | MINUS) right=arithmeticExpression        #Add
+                       | NUMBER                                                                        #Number;
 
 WS     : [ \t\n\r] -> skip;
 
@@ -28,10 +30,16 @@ MINUS  : '-';
 MULT   : '*';
 DIV    : '/';
 
+LT     : '<';
+LEQ    : '<=';
+GT     : '>';
+GEQ    : '>=';
+EQ     : '==';
+NEQ    : '!=';
+
 AND    : '&&';
 OR     : '||';
 XOR    : '^';
-EQUIV  : '==';
 NOT    : '!';
 
 NUMBER  : Positive FloatingPart? ScientificPart? | FloatingPart ScientificPart?;

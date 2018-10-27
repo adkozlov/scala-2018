@@ -16,4 +16,8 @@ class OperationHolder(f: OperationProvider.Function) {
   def apply(x: Boolean, y: Boolean): Boolean = f match {
     case OperationProvider.BinaryLogicalFunction(g) => g(x, y)
   }
+
+  def applyComparison(x: Double, y: Double): Boolean = f match {
+    case OperationProvider.ArithmeticComparisonFunction(g) => g(x, y)
+  }
 }

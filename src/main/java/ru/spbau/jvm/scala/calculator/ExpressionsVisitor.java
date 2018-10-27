@@ -45,13 +45,6 @@ public interface ExpressionsVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAnd(ExpressionsParser.AndContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Equiv}
-	 * labeled alternative in {@link ExpressionsParser#logicalExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEquiv(ExpressionsParser.EquivContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code NestedLogical}
 	 * labeled alternative in {@link ExpressionsParser#logicalExpression}.
 	 * @param ctx the parse tree
@@ -65,6 +58,27 @@ public interface ExpressionsVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitXor(ExpressionsParser.XorContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code EqLogical}
+	 * labeled alternative in {@link ExpressionsParser#logicalExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqLogical(ExpressionsParser.EqLogicalContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Comp}
+	 * labeled alternative in {@link ExpressionsParser#logicalExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComp(ExpressionsParser.CompContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code EqArithmetic}
+	 * labeled alternative in {@link ExpressionsParser#logicalExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqArithmetic(ExpressionsParser.EqArithmeticContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Add}
 	 * labeled alternative in {@link ExpressionsParser#arithmeticExpression}.

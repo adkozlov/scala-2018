@@ -33,6 +33,13 @@ class EvaluatorTest extends AssertionsForJUnit {
     assertResult("false") { Main.eval("false  ||false") }
     assertResult("true") { Main.eval("true^ false") }
     assertResult("false") { Main.eval("false  ==  true") }
+    assertResult("true") { Main.eval("false  !=  true") }
+    assertResult("true") { Main.eval("1 < 2") }
+    assertResult("true") { Main.eval("1 <= 2") }
+    assertResult("true") { Main.eval("2 > 1") }
+    assertResult("true") { Main.eval("2 >= 1") }
+    assertResult("false") { Main.eval("1 == 2") }
+    assertResult("true") { Main.eval("1 != 2") }
   }
 
   @Test
@@ -41,6 +48,7 @@ class EvaluatorTest extends AssertionsForJUnit {
     assertResult("8.0") { Main.eval("(2 + 2) * 2") }
     assertResult("-4.0") { Main.eval("(2 + 2) / -(3 - 2)") }
     assertResult("-10.799000000000001") { Main.eval("(9 - 18.1) + (((-2/3+1)-.19)*2.1)-2") }
+    assertResult("true") { Main.eval("(1 <= 2) && (2 <= 3) && (3 <= 4) && ((0 == 0) || (0 < 0))") }
   }
   
 }

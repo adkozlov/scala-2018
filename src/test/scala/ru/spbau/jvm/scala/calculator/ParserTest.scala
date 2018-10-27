@@ -22,6 +22,13 @@ class ParserTest extends AssertionsForJUnit {
     assertResult("|| false false".split(" ")) { bfsAstAndGetTokens("false  ||false") }
     assertResult("^ true true".split(" ")) { bfsAstAndGetTokens("true^ true") }
     assertResult("== false true".split(" ")) { bfsAstAndGetTokens("false  ==  true") }
+    assertResult("!= false true".split(" ")) { bfsAstAndGetTokens("false  !=  true") }
+    assertResult("< 1 2".split(" ")) { bfsAstAndGetTokens("1 < 2") }
+    assertResult("<= 1 2".split(" ")) { bfsAstAndGetTokens("1 <= 2") }
+    assertResult("> 2 1".split(" ")) { bfsAstAndGetTokens("2 > 1") }
+    assertResult(">= 2 1".split(" ")) { bfsAstAndGetTokens("2 >= 1") }
+    assertResult("== 1 2".split(" ")) { bfsAstAndGetTokens("1 == 2") }
+    assertResult("!= 1 2".split(" ")) { bfsAstAndGetTokens("1 != 2") }
   }
 
   @Test
@@ -29,6 +36,7 @@ class ParserTest extends AssertionsForJUnit {
     assertResult("+ 2 * 2 2".split(" ")) { bfsAstAndGetTokens("2 + 2 * 2") }
     assertResult("* + 2 2 2".split(" ")) { bfsAstAndGetTokens("(2 + 2) * 2") }
     assertResult("/ + 2 2 - 2 2".split(" ")) { bfsAstAndGetTokens("(2 + 2) / (2 - 2)") }
+    assertResult("<= 1 + - 2 3".split(" ")) { bfsAstAndGetTokens("1 <= -2 + 3") }
   }
 
   @Test
