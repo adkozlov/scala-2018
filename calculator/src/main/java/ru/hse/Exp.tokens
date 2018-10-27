@@ -1,0 +1,14 @@
+T__0=1
+T__1=2
+MultiplicativeOp=3
+AdditiveOp=4
+RelationalOp=5
+AndOp=6
+OrOp=7
+BoolLiteral=8
+IntLiteral=9
+WS=10
+'('=1
+')'=2
+'&&'=6
+'||'=7
