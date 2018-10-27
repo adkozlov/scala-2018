@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.atn.ATNDeserializer;
 import org.antlr.v4.runtime.atn.ParserATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -479,20 +478,6 @@ public class CalcParser extends Parser {
         }
 
         @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterData(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitData(this);
-            }
-        }
-
-        @Override
         public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
             if (visitor instanceof CalcVisitor) {
                 return ((CalcVisitor<? extends T>) visitor).visitData(this);
@@ -533,20 +518,6 @@ public class CalcParser extends Parser {
         }
 
         @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterExpression(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitExpression(this);
-            }
-        }
-
-        @Override
         public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
             if (visitor instanceof CalcVisitor) {
                 return ((CalcVisitor<? extends T>) visitor).visitExpression(this);
@@ -568,20 +539,6 @@ public class CalcParser extends Parser {
         @Override
         public int getRuleIndex() {
             return RULE_binaryExpression;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterBinaryExpression(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitBinaryExpression(this);
-            }
         }
 
         @Override
@@ -626,20 +583,6 @@ public class CalcParser extends Parser {
         @Override
         public int getRuleIndex() {
             return RULE_logicalExp;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterLogicalExp(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitLogicalExp(this);
-            }
         }
 
         @Override
@@ -695,20 +638,6 @@ public class CalcParser extends Parser {
         }
 
         @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterComparisonExp(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitComparisonExp(this);
-            }
-        }
-
-        @Override
         public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
             if (visitor instanceof CalcVisitor) {
                 return ((CalcVisitor<? extends T>) visitor).visitComparisonExp(this);
@@ -750,20 +679,6 @@ public class CalcParser extends Parser {
         @Override
         public int getRuleIndex() {
             return RULE_additionExp;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterAdditionExp(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitAdditionExp(this);
-            }
         }
 
         @Override
@@ -819,20 +734,6 @@ public class CalcParser extends Parser {
         }
 
         @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterMultiplyExp(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitMultiplyExp(this);
-            }
-        }
-
-        @Override
         public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
             if (visitor instanceof CalcVisitor) {
                 return ((CalcVisitor<? extends T>) visitor).visitMultiplyExp(this);
@@ -873,20 +774,6 @@ public class CalcParser extends Parser {
         }
 
         @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterAtomExp(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitAtomExp(this);
-            }
-        }
-
-        @Override
         public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
             if (visitor instanceof CalcVisitor) {
                 return ((CalcVisitor<? extends T>) visitor).visitAtomExp(this);
@@ -912,20 +799,6 @@ public class CalcParser extends Parser {
         @Override
         public int getRuleIndex() {
             return RULE_bool;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).enterBool(this);
-            }
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CalcListener) {
-                ((CalcListener) listener).exitBool(this);
-            }
         }
 
         @Override
