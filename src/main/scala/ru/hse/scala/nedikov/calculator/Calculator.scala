@@ -9,13 +9,11 @@ object Calculator {
     while (true) {
       val in = readLine()
       if (in == ":q") return
-      println(Evaluator.eval(in))
+      println(evaluate(in))
     }
   }
-}
 
-object Evaluator {
-  def eval(in: String): String = {
+  def evaluate(in: String): String = {
     val calculatorLexer = new CalculatorLexer(CharStreams.fromString(in))
     new CalculatorParser(new BufferedTokenStream(calculatorLexer)).eval().value
   }

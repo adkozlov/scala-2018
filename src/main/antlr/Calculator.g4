@@ -9,9 +9,8 @@ doubleExpression returns [double value]
     : atom=atomDouble {$value = $atom.value;}
     | <assoc=left> left=doubleExpression {$value = $left.value;}
         (
-          '*' right=doubleExpression {$value *= $right.value;}
-        | '/' right=doubleExpression {$value /= $right.value;}
-        | '%' right=doubleExpression {$value %= $right.value;}
+          '*' righta=atomDouble {$value *= $righta.value;}
+        | '/' righta=atomDouble {$value /= $righta.value;}
         | '+' right=doubleExpression {$value += $right.value;}
         | '-' right=doubleExpression {$value -= $right.value;}
         )
@@ -40,16 +39,16 @@ booleanExpression returns [boolean value]
 
 
 atomDouble returns [double value]
-    : n=Literal              {$value = Double.parseDouble($n.text);}
+    : n=NUMBER              {$value = Double.parseDouble($n.text);}
     | '(' exp=doubleExpression ')' {$value = $exp.value;}
     ;
 
 atomBoolean returns [boolean value]
-    : b=Booleans {$value = Boolean.parseBoolean($b.text);}
+    : b=BOOLEAN {$value = Boolean.parseBoolean($b.text);}
     | '(' exp=booleanExpression ')' {$value = $exp.value;}
     ;
 
-Literal:    [0-9]+('.'[0-9]*)?;
-Booleans: 'true' | 'false' | 'TRUE' | 'FALSE' ;
+NUMBER:    [0-9]+('.'[0-9]*)?;
+BOOLEAN: 'true' | 'false' | 'TRUE' | 'FALSE' ;
 
 WS : (' ' | '\t') -> skip;
