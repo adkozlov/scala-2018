@@ -1,39 +1,41 @@
 package ru.hse.scala
 
 trait CalculatorNumber {
-  def add(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def add(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def sub(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def sub(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def div(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def div(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def mult(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def mult(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def mod(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def mod(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def or(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def or(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def and(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def and(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def eq(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def eq(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def neq(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def neq(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def greater(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def greater(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def less(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def less(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def ge(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def ge(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def le(right: CalculatorNumber): CalculatorNumber = throw UnsupportedOperationException
+  def le(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
 
-  def toInt: Int = throw UnsupportedOperationException
+  def toInt: Int = throw new UnsupportedOperationException
 
-  def toDouble: Double = throw UnsupportedOperationException
+  def toDouble: Double = throw new UnsupportedOperationException
 
-  def toBoolean: Boolean = throw UnsupportedOperationException
+  def toBoolean: Boolean = throw new UnsupportedOperationException
 
-  def calculate(op : String, right : CalculatorNumber) : CalculatorNumber = op match {
+  def getValue: AnyVal = throw new UnsupportedOperationException
+
+  def evaluate(op : String, right : CalculatorNumber) : CalculatorNumber = op match {
     case "+" => add(right)
     case "-" => sub(right)
     case "*" => mult(right)
@@ -47,7 +49,7 @@ trait CalculatorNumber {
     case ">" => greater(right)
     case "<=" => le(right)
     case ">=" => ge(right)
-    case _ => throw UnsupportedOperationException
+    case _ => throw new UnsupportedOperationException
   }
 }
 
@@ -73,6 +75,8 @@ case class DoubleNumber(private val value: Double) extends CalculatorNumber {
   override def le(right: CalculatorNumber): CalculatorNumber = BoolNumber(value <= right.toDouble)
 
   override def toDouble: Double = value
+
+  override def getValue: AnyVal = value
 }
 
 
@@ -132,6 +136,8 @@ case class IntNumber(private val value: Int) extends CalculatorNumber {
   override def toInt: Int = value
 
   override def toDouble: Double = value.toDouble
+
+  override def getValue: AnyVal = value
 }
 
 case class BoolNumber(private val value: Boolean) extends CalculatorNumber {
@@ -144,5 +150,7 @@ case class BoolNumber(private val value: Boolean) extends CalculatorNumber {
   override def and(right: CalculatorNumber): CalculatorNumber = BoolNumber(value && right.toBoolean)
 
   override def toBoolean: Boolean = value
+
+  override def getValue: AnyVal = value
 }
 
