@@ -12,6 +12,8 @@ class Calculator extends CalcBaseVisitor[Int] {
 
   override def visitEquality(ctx: CalcParser.EqualityContext): Int = evaluateExpression(ctx)
 
+  override def visitComparison(ctx: CalcParser.ComparisonContext): Int = evaluateExpression(ctx)
+
   override def visitMultiplication(ctx: CalcParser.MultiplicationContext): Int = evaluateExpression(ctx)
 
   override def visitAddition(ctx: CalcParser.AdditionContext): Int = evaluateExpression(ctx)
