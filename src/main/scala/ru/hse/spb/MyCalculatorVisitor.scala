@@ -15,7 +15,7 @@ class MyCalculatorVisitor extends CalculatorBaseVisitor[Any] {
       case _ =>
     }
     if (ctx.NOT != null) {
-      return visit(ctx.lexpression(0)).asInstanceOf[Boolean]
+      return !visit(ctx.lexpression(0)).asInstanceOf[Boolean]
     }
     if (ctx.relop != null) {
       val leftOperand = visit(ctx.expression(0)).asInstanceOf[Double]
