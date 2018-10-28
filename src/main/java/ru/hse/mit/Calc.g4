@@ -1,9 +1,5 @@
 grammar Calc;
 
-@header{
-    package ru.hse.mit;
-}
-
 file : expression EOF;
 
 expression : logical;
@@ -18,16 +14,17 @@ addition : multiplication ((ADD | SUB) multiplication)*;
 
 multiplication : atomic ((MUL | DIV | MOD) atomic)*;
 
-atomic : NUMBER | bool | LPAREN expression RPAREN;
+atomic : number | bool | LPAREN expression RPAREN;
+
+number : NUM;
 
 bool : TRUE | FALSE;
 
 //////////////////////////////////////////////////////////////////
 
-
 TRUE : 'true' ;
 FALSE : 'false' ;
-NUMBER : '-'?('1'..'9')('0'..'9')* | '0';
+NUM : '-'?('1'..'9')('0'..'9')* | '0';
 
 OR : '||' ;
 AND : '&&' ;
