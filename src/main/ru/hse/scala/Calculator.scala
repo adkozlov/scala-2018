@@ -40,7 +40,7 @@ class Calculator extends CalculatorBaseVisitor[CalculatorNumber] {
   def calculate(line : String): AnyVal = {
     val calculatorLexer = new CalculatorLexer(CharStreams.fromString(line))
     val calculatorParser = new CalculatorParser(new BufferedTokenStream(calculatorLexer))
-    visitExpression(calculatorParser.expression()).getValue
+    visitStatement(calculatorParser.statement()).getValue
   }
 }
 

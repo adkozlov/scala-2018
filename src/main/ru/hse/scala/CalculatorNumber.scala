@@ -49,7 +49,7 @@ trait CalculatorNumber {
     case ">" => greater(right)
     case "<=" => le(right)
     case ">=" => ge(right)
-    case _ => throw new UnsupportedOperationException
+    case _ => throw new UnsupportedOperationException("Unknown operation")
   }
 }
 
