@@ -1,7 +1,5 @@
 package ru.hse.spb.jvm.scala
 
-import org.antlr.v4.runtime.{BufferedTokenStream, CharStreams}
-
 import scala.io.StdIn
 
 object CalculatorConsoleApplication {
@@ -16,7 +14,7 @@ object CalculatorConsoleApplication {
     }
   }
 
-  def runApplication(): Unit = {
+  private def runApplication(): Unit = {
     var isRunning = true
     while (isRunning) {
       print(">")
@@ -25,7 +23,7 @@ object CalculatorConsoleApplication {
         case "exit" => isRunning = false
         case _ =>
           try {
-            println(evaluate(input))
+            println(Calculator.evaluate(input))
           } catch {
             case e: Exception =>
               handleExceptionDuringEvaluation(e)
@@ -34,27 +32,21 @@ object CalculatorConsoleApplication {
     }
   }
 
-  def evaluate(expression: String): Double = {
-    val expLexer = new CalculatorLexer(CharStreams.fromString(expression))
-    val expParser = new CalculatorParser(new BufferedTokenStream(expLexer))
-    expParser.expr().value
-  }
-
-  def handleExceptionDuringEvaluation(e: Exception): Unit = {
+  private def handleExceptionDuringEvaluation(e: Exception): Unit = {
     Console.err.println("Error during evaluation of passed expression")
     Console.err.println("Exception: " + e)
     Console.err.println("Message: " + e.getMessage)
   }
 
-  def printGreetings(): Unit = {
+  private def printGreetings(): Unit = {
     println("Welcome to BALC: Best Arithmetical and Logical Calculator!")
   }
 
-  def printUsage(): Unit = {
+  private def printUsage(): Unit = {
     println("Type \"exit\" to finish or type expression to evaluate.")
   }
 
-  def handleUnexpectedException(e: Throwable): Unit = {
+  private def handleUnexpectedException(e: Throwable): Unit = {
     Console.err.println("Unexpected error occurred")
     Console.err.println("Exception: " + e)
     Console.err.println("Message: " + e.getMessage)
