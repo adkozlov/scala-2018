@@ -16,9 +16,14 @@ multiplication : atomic ((MUL | DIV | MOD) atomic)*;
 
 atomic : number | bool | LPAREN expression RPAREN;
 
-number : NUM;
+number returns [int value]
+    : x=NUM {$value = Integer.parseInt($x.text);}
+    ;
 
-bool : TRUE | FALSE;
+bool returns [int value]
+    : x=TRUE {$value = 1;}
+    | FALSE {$value = 0;}
+    ;
 
 //////////////////////////////////////////////////////////////////
 

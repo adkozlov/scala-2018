@@ -20,13 +20,12 @@ class Calculator extends CalcBaseVisitor[Int] {
     if (ctx.children.size() == 1) visit(ctx.getChild(0)) else visit(ctx.getChild(1))
   }
 
-  override def visitNumber(ctx: CalcParser.NumberContext): Int = Integer.parseInt(ctx.NUM().getSymbol.getText)
+  override def visitNumber(ctx: CalcParser.NumberContext): Int = ctx.value
 
-  override def visitBool(ctx: CalcParser.BoolContext): Int = ???
+  override def visitBool(ctx: CalcParser.BoolContext): Int = ctx.value
 
   private def evaluateExpression(ctx: ParserRuleContext): Int = {
     var result = visit(ctx.getChild(0))
-    var op : String = null
     val length = ctx.children.size()
       for (i <- 1 until length - 1 if i % 2 == 1) {
         val op = ctx.getChild(i).getText
@@ -42,14 +41,14 @@ class Calculator extends CalcBaseVisitor[Int] {
       case "*"  => first * second
       case "/"  => first / second
       case "%"  => first % second
-//      case "==" => first == second
-//      case "!=" => first != second
-//      case "<"  => first < second
-//      case ">"  => first > second
-//      case "<=" => first <= second
-//      case ">=" => first >= second
-//      case "||" => first || second
-//      case "&&" => first && second
+      case "==" => if (first == second) 1 else 0
+      case "!=" => if (first != second) 1 else 0
+      case "<"  => if (first < second) 1 else 0
+      case ">"  => if (first > second) 1 else 0
+      case "<=" => if (first <= second) 1 else 0
+      case ">=" => if (first >= second) 1 else 0
+      case "||" => if (first != 0 || second != 0) 1 else 0
+      case "&&" => if (first != 0 && second != 0) 1 else 0
     }
   }
 }
