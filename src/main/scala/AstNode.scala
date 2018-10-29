@@ -1,50 +1,26 @@
 import java.io.OutputStream
 
-trait AstNode {
-  val elementName: String
-  def print(out: OutputStream): Unit = {
-    out.write(elementName.toCharArray.map(_.toByte))
-    out.write('{'.toByte)
-    printContents(out)
-    out.write('}'.toByte)
-  }
-
-  def printContents(out: OutputStream): Unit
-}
-
-trait ExpressionNode extends AstNode {
+trait ExpressionNode {
   def eval: Int
   def getResult: String
 }
 
 
 class BooleanExpression extends ExpressionNode {
-  override val elementName: String = "booleanExpression"
   private var evaluator: () => Int = _
-  private var contentsPrinter: OutputStream => Unit = _
 
   def this(boolean: Boolean) {
     this()
     evaluator = () => { if (boolean) 1 else 0 }
-    contentsPrinter = (out:OutputStream) => {
-      val content: String = BooleanExpression.booleanString(evaluator())
-      out.write(content.toCharArray.map(_.toByte))
-    }
   }
 
   def this(left: ExpressionNode, op: BooleanOperator, right: ExpressionNode) {
     this()
     evaluator = () => { op.evaluator(left.eval, right.eval)}
-    contentsPrinter = (out:OutputStream) => {
-      left.print(out)
-      out.write(op.operator.toCharArray.map(_.toByte))
-      right.print(out)
-    }
   }
 
   override def eval: Int = evaluator()
   override def getResult: String = BooleanExpression.booleanString(eval)
-  override def printContents(out: OutputStream): Unit = contentsPrinter(out)
 }
 
 object BooleanExpression {
@@ -52,29 +28,20 @@ object BooleanExpression {
 }
 
 class ArithmeticExpression extends ExpressionNode {
-  override val elementName: String = "arithmeticExpression"
   private var evaluator: () => Int = _
-  private var contentsPrinter: OutputStream => Unit = _
 
   def this(num: Int) {
     this()
     evaluator = () => { num }
-    contentsPrinter = (out:OutputStream) => { out.write(num) }
   }
 
   def this(left: ExpressionNode, op: ArithmeticOperator, right: ExpressionNode) {
     this()
     evaluator = () => { op.evaluator(left.eval, right.eval)}
-    contentsPrinter = (out:OutputStream) => {
-      left.print(out)
-      out.write(op.operator.toCharArray.map(_.toByte))
-      right.print(out)
-    }
   }
 
   override def eval: Int = evaluator()
   override def getResult: String = eval.toString
-  override def printContents(out: OutputStream): Unit = contentsPrinter(out)
 }
 
 sealed abstract class Operator(val operator: String, val evaluator: (Int, Int) => Int)
