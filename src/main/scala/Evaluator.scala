@@ -2,7 +2,7 @@ import org.antlr.v4.runtime._
 import ru.hse.expression.{ExpressionLexer, ExpressionParser}
 
 object Evaluator {
-  def evaluate(expression: String): String = {
+  def getExpressionTree(expression: String): ExpressionNode = {
     val lexer = new ExpressionLexer(CharStreams.fromString(expression))
     val parser = new ExpressionParser(new CommonTokenStream(lexer))
     lexer.removeErrorListeners()
@@ -11,8 +11,15 @@ object Evaluator {
     parser.addErrorListener(AntlrErrorListener)
 
     val expressionVisitor = new ExpressionVisitor
-    val result = expressionVisitor.visitExpression(parser.expression())
-    result.getResult
+    expressionVisitor.visitExpression(parser.expression())
+  }
+
+  def getStringResult(expression: String): String = {
+    getExpressionTree(expression).getResult
+  }
+
+  def getIntResult(expression: String): Int = {
+    getExpressionTree(expression).eval
   }
 }
 
