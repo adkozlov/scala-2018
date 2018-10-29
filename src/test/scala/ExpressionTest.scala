@@ -22,9 +22,19 @@ class ExpressionTest extends FlatSpec with Matchers {
   it should "ignore the remainder if divisor is not the factor of dividend" in  {
     Evaluator.evaluate("8 / 3") should be ("2")
   }
+  it should "throw ArithmeticException when trying to divide by zero" in {
+    a [ArithmeticException] should be thrownBy {
+      Evaluator.evaluate("8 / 0")
+    }
+  }
 
   "A simple mod expression" should "get the remainder correctly" in  {
     Evaluator.evaluate("6 % 4") should be ("2")
+  }
+  it should "throw ArithmeticException when trying to divide by zero" in {
+    a [ArithmeticException] should be thrownBy {
+      Evaluator.evaluate("8 / 0")
+    }
   }
 
   "A simple plus expression" should "sum up the numbers correctly" in  {
@@ -99,5 +109,11 @@ class ExpressionTest extends FlatSpec with Matchers {
 
   "A parenthesized plus expression" should "make sum more prioritized than mul" in  {
     Evaluator.evaluate("2 * (2 + 2)") should be ("8")
+  }
+
+  "An invalid expression" should "throw a ParsingException" in {
+    a [ParsingException] should be thrownBy {
+      Evaluator.evaluate("783248nmfd")
+    }
   }
 }
