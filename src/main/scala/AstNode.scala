@@ -13,7 +13,7 @@ trait AstNode {
 }
 
 trait ExpressionNode extends AstNode {
-  protected def eval: Int
+  def eval: Int
   def getResult: String
 }
 
@@ -42,7 +42,7 @@ class BooleanExpression extends ExpressionNode {
     }
   }
 
-  override protected def eval: Int = evaluator()
+  override def eval: Int = evaluator()
   override def getResult: String = BooleanExpression.booleanString(eval)
   override def printContents(out: OutputStream): Unit = contentsPrinter(out)
 }
@@ -72,7 +72,7 @@ class ArithmeticExpression extends ExpressionNode {
     }
   }
 
-  override protected def eval: Int = evaluator()
+  override def eval: Int = evaluator()
   override def getResult: String = eval.toString
   override def printContents(out: OutputStream): Unit = contentsPrinter(out)
 }
