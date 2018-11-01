@@ -116,4 +116,32 @@ class ExpressionTest extends FlatSpec with Matchers {
       Evaluator.getStringResult("783248nmfd")
     }
   }
+
+  "A simple arithmetical mixed-type expression" should "treat true as 1" in {
+    Evaluator.getStringResult("1 + true") should be ("2")
+  }
+
+  "A simple arithmetical mixed-type expression" should "treat false as 0" in {
+    Evaluator.getStringResult("7 * false") should be ("0")
+  }
+
+  "A simple boolean mixed-type expression" should "treat 5 as true" in {
+    Evaluator.getStringResult("5 && true") should be ("true")
+  }
+
+  "A simple boolean mixed-type expression" should "treat 0 as false" in {
+    Evaluator.getStringResult("0 && true") should be ("false")
+  }
+
+  "A complex arithmetical expression" should "evaluate correctly" in {
+    Evaluator.getStringResult("1 + 5 * 10 / (10 % 7)") should be ("17")
+  }
+
+  "A complex boolean expression" should "evaluate correctly" in {
+    Evaluator.getStringResult("(5 >= 10 || 5 <= 10) && 1 < 2 == 2 > 1 && 3 != 4") should be ("true")
+  }
+
+  "A complex mixed expression" should "evaluate correctly" in {
+    Evaluator.getStringResult("1 + 5 * (10 <= 14) / (2 + (3 == 5))") should be ("3")
+  }
 }
