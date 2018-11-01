@@ -35,5 +35,3 @@ private object AntlrErrorListener extends BaseErrorListener {
   }
 
 }
-
-class ParsingException(var message: String) extends Exception(message)

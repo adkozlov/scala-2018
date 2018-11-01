@@ -38,4 +38,3 @@ class ExpressionVisitor extends ExpressionBaseVisitor[ExpressionNode] {
     throw new IllegalStateException("Unknown expression type.")
   }
 }
-

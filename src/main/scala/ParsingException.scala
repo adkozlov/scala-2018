@@ -1,0 +1,1 @@
+class ParsingException(var message: String) extends Exception(message)
