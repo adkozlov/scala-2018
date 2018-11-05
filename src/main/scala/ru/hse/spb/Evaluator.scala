@@ -5,10 +5,10 @@ import ru.hse.spb.ast._
 object Evaluator {
   def eval(expression: Expr): Int = expression match {
     case Const(value) => value
-    case BinOp(operator, leftOperand, rightOperand) => {
-      val x = eval(left_operand)
-      val y = eval(right_operand)
-      val toInt = (b: Boolean) => if (b) { 1 } else { 0 }
+    case BinOp(operator, leftOperand, rightOperand) =>
+      val x = eval(leftOperand)
+      val y = eval(rightOperand)
+      val toInt = (b: Boolean) => if (b) 1 else 0
       val toBool = (i: Int) => i != 0
 
       /* this match *could* be made total if we parsed the operators to some
@@ -30,6 +30,5 @@ object Evaluator {
         case "&&" => toInt(toBool(x) && toBool(y))
         case "||" => toInt(toBool(x) || toBool(y))
       }
-    }
   }
 }

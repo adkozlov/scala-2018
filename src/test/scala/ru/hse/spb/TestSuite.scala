@@ -12,14 +12,14 @@ import scala.collection.JavaConverters._
 
 class TestSuite extends FunSuite {
 
-  def getTokenStrings(input: String): List[String] = {
+  private def getTokenStrings(input: String): List[String] = {
     val stream = new ANTLRInputStream(input)
     val lexer = new CalcLexer(stream)
     val tokens = lexer.getAllTokens().asScala.toList
     tokens.map(_.getText())
   }
 
-  def getParsedTree(input: String): Expr = {
+  private def getParsedTree(input: String): Expr = {
     val stream = new ANTLRInputStream(input)
     val lexer = new CalcLexer(stream)
     val tokens = new CommonTokenStream(lexer)
