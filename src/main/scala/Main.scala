@@ -21,12 +21,8 @@ trait BinaryOperationFoldingVisitor[T] {
 }
 
 object BinaryOperationFoldingVisitor {
-  def foldWithActions[T](head: T, operations: Iterable[((T, T) => T, T)]): T = {
-    operations.foldLeft(head) { (acc, data) =>
-      val (op, cur) = data
-      op(acc, cur)
-    }
-  }
+  def foldWithActions[T](head: T, operations: Iterable[((T, T) => T, T)]): T =
+    operations.foldLeft(head) { case (acc, (op, cur)) => op(acc, cur) }
 }
 
 object ArithmeticAndLogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[AnyVal] {
