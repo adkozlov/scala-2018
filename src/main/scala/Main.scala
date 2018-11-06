@@ -1,15 +1,27 @@
-import Utils.foldWithActions
 import arithmetic.ArithmeticAndLogicParser._
 import arithmetic.{ArithmeticAndLogicBaseVisitor, ArithmeticAndLogicLexer, ArithmeticAndLogicParser}
 import org.antlr.v4.runtime._
+import org.antlr.v4.runtime.tree.ParseTreeVisitor
 
 import scala.collection.JavaConverters._
 import scala.io.StdIn
 
-object Utils {
-  private type Action[T] = ((T, T) => T, T)
+trait BinaryOperationFoldingVisitor[T] {
+  this: ParseTreeVisitor[T] =>
 
-  def foldWithActions[T](head: T, operations: Iterable[Action[T]]): T = {
+  protected def parseOperation(token: Token): (T, T) => T
+
+  protected def foldOperations(head: ParserRuleContext, ops: Iterable[Token], rest: Iterable[ParserRuleContext]): T = {
+    val headValue: T = head.accept(this) // idea goes crazy without explicit type
+    val restValues = rest.map(_.accept(this))
+    val operations = ops.map(parseOperation)
+
+    BinaryOperationFoldingVisitor.foldWithActions(headValue, operations.zip(restValues))
+  }
+}
+
+object BinaryOperationFoldingVisitor {
+  def foldWithActions[T](head: T, operations: Iterable[((T, T) => T, T)]): T = {
     operations.foldLeft(head) { (acc, data) =>
       val (op, cur) = data
       op(acc, cur)
@@ -17,7 +29,7 @@ object Utils {
   }
 }
 
-object ArithmeticAndLogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Any] {
+object ArithmeticAndLogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[AnyVal] {
   override def visitLogic(ctx: LogicContext): Boolean =
     ctx.logicExpression().accept(LogicEvalVisitor)
 
@@ -25,23 +37,13 @@ object ArithmeticAndLogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Any] 
     ctx.arithmeticExpression().accept(ArithmeticEvalVisitor)
 }
 
-object LogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Boolean] {
+object LogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Boolean] with BinaryOperationFoldingVisitor[Boolean] {
 
-  override def visitLogicExpression(ctx: LogicExpressionContext): Boolean = {
-    val head = ctx.head.accept(this)
-    val rest = ctx.rest.asScala.map(_.accept(this))
-    val operations = ctx.ops.asScala.map(parseOperand)
+  override def visitLogicExpression(ctx: LogicExpressionContext): Boolean =
+    foldOperations(ctx.head, ctx.ops.asScala, ctx.rest.asScala)
 
-    foldWithActions(head, operations zip rest)
-  }
-
-  override def visitBoolTerm(ctx: BoolTermContext): Boolean = {
-    val head = ctx.head.accept(this)
-    val rest = ctx.rest.asScala.map(_.accept(this))
-    val operations = ctx.ops.asScala.map(parseOperand)
-
-    foldWithActions(head, operations zip rest)
-  }
+  override def visitBoolTerm(ctx: BoolTermContext): Boolean =
+    foldOperations(ctx.head, ctx.ops.asScala, ctx.rest.asScala)
 
   override def visitNegatedBoolAtom(ctx: NegatedBoolAtomContext): Boolean =
     if (ctx.NOT() == null) {
@@ -57,8 +59,7 @@ object LogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Boolean] {
       case _ => throw new IllegalArgumentException(s"Unknown boolean literal ${ctx.literal}")
     }
 
-
-  private def parseOperand(token: Token): (Boolean, Boolean) => Boolean = {
+  protected override def parseOperation(token: Token): (Boolean, Boolean) => Boolean = {
     token.getType match {
       case AND => _ && _
       case OR => _ || _
@@ -70,22 +71,12 @@ object LogicEvalVisitor extends ArithmeticAndLogicBaseVisitor[Boolean] {
     ctx.logicExpression().accept(this)
 }
 
-object ArithmeticEvalVisitor extends ArithmeticAndLogicBaseVisitor[Double] {
-  override def visitArithmeticExpression(ctx: ArithmeticExpressionContext): Double = {
-    val head = ctx.head.accept(this)
-    val operations = ctx.ops.asScala.map(parseOperand)
-    val terms = ctx.rest.asScala.map(_.accept(this))
+object ArithmeticEvalVisitor extends ArithmeticAndLogicBaseVisitor[Double] with BinaryOperationFoldingVisitor[Double] {
+  override def visitArithmeticExpression(ctx: ArithmeticExpressionContext): Double =
+    foldOperations(ctx.head, ctx.ops.asScala, ctx.rest.asScala)
 
-    foldWithActions(head, operations zip terms)
-  }
-
-  override def visitMathTerm(ctx: MathTermContext): Double = {
-    val head = ctx.head.accept(this)
-    val operations = ctx.ops.asScala.map(parseOperand)
-    val rest = ctx.rest.asScala.map(_.accept(this))
-
-    foldWithActions(head, operations zip rest)
-  }
+  override def visitMathTerm(ctx: MathTermContext): Double =
+    foldOperations(ctx.head, ctx.ops.asScala, ctx.rest.asScala)
 
   override def visitSignedAtom(ctx: SignedAtomContext): Double =
     if (ctx.MINUS == null) {
@@ -100,7 +91,7 @@ object ArithmeticEvalVisitor extends ArithmeticAndLogicBaseVisitor[Double] {
   override def visitAtomInParens(ctx: AtomInParensContext): Double =
     ctx.arithmeticExpression().accept(this)
 
-  private def parseOperand(token: Token): (Double, Double) => Double =
+  protected override def parseOperation(token: Token): (Double, Double) => Double =
     token.getType match {
       case PLUS => _ + _
       case MINUS => _ - _
@@ -111,11 +102,13 @@ object ArithmeticEvalVisitor extends ArithmeticAndLogicBaseVisitor[Double] {
 }
 
 object Main {
-  def eval(s: String): Any = {
-    val lexer = new ArithmeticAndLogicLexer(CharStreams.fromString(s))
+  def eval(equation: String): AnyVal = parse(equation).accept(ArithmeticAndLogicEvalVisitor)
+
+  private def parse(equation: String) = {
+    val lexer = new ArithmeticAndLogicLexer(CharStreams.fromString(equation))
     val parser = new ArithmeticAndLogicParser(new CommonTokenStream(lexer))
 
-    parser.equation().accept(ArithmeticAndLogicEvalVisitor)
+    parser.equation
   }
 
   def main(args: Array[String]): Unit = {
