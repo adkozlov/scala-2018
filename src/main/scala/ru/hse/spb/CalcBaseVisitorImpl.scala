@@ -1,61 +1,65 @@
 package ru.hse.spb
 
-import scala.collection.mutable
+import ru.hse.spb.CalcParser._
 
 class CalcBaseVisitorImpl extends CalcParserBaseVisitor[Long] {
-  override def visitBoolExpr(ctx: CalcParser.BoolExprContext): Long = {
-    val op1: Long = ctx.expression(0).accept(this)
-    val op2: Long = ctx.expression(1).accept(this)
+  override def visitBoolExpr(ctx: BoolExprContext): Long = {
+    val (leftOperand, rightOperand) = extractOperands(ctx)
 
     ctx.op.getType match {
-      case 16 => if (op1 != 0 && op2 != 0) 1 else 0
-      case 17 => if (op1 != 0 || op2 != 0) 1 else 0
+      case AND => boolConverter(leftOperand != 0 && rightOperand != 0)
+      case OR => boolConverter(leftOperand != 0 || rightOperand != 0)
     }
   }
 
-  override def visitComparisonExpr(ctx: CalcParser.ComparisonExprContext): Long = {
-    val op1: Long = ctx.expression(0).accept(this)
-    val op2: Long = ctx.expression(1).accept(this)
+  override def visitComparisonExpr(ctx: ComparisonExprContext): Long = {
+    val (leftOperand, rightOperand) = extractOperands(ctx)
 
     ctx.op.getType match {
-      case 10 => if (op1 > op2) 1 else 0
-      case 11 => if (op1 < op2) 1 else 0
-      case 12 => if (op1 <= op2) 1 else 0
-      case 13 => if (op1 >= op2) 1 else 0
-      case 14 => if (op1 == op2) 1 else 0
-      case 15 => if (op1 != op2) 1 else 0
+      case GT => boolConverter(leftOperand > rightOperand)
+      case LT => boolConverter(leftOperand < rightOperand)
+      case LE => boolConverter(leftOperand <= rightOperand)
+      case GE => boolConverter(leftOperand >= rightOperand)
+      case EQUAL => boolConverter(leftOperand == rightOperand)
+      case NOTEQUAL => boolConverter(leftOperand != rightOperand)
     }
 
   }
 
-  override def visitAdditiveExpr(ctx: CalcParser.AdditiveExprContext): Long = {
-    val op1: Long = ctx.expression(0).accept(this)
-    val op2: Long = ctx.expression(1).accept(this)
+  override def visitAdditiveExpr(ctx: AdditiveExprContext): Long = {
+    val (leftOperand, rightOperand) = extractOperands(ctx)
 
     ctx.op.getType match {
-      case 5 => op1 + op2
-      case 6 => op1 - op2
+      case ADD => leftOperand + rightOperand
+      case SUB => leftOperand - rightOperand
     }
   }
 
-  override def visitMultExpr(ctx: CalcParser.MultExprContext): Long = {
-    val op1: Long = ctx.expression(0).accept(this)
-    val op2: Long = ctx.expression(1).accept(this)
+  override def visitMultExpr(ctx: MultExprContext): Long = {
+    val (leftOperand, rightOperand) = extractOperands(ctx)
 
     ctx.op.getType match {
-      case 7 => op1 * op2
-      case 8 => op1 / op2
-      case 9 => op1 % op2
+      case MULT => leftOperand * rightOperand
+      case DIV => leftOperand / rightOperand
+      case MOD => leftOperand % rightOperand
     }
   }
 
-  override def visitParanthesisExpr(ctx: CalcParser.ParanthesisExprContext): Long = {
+  override def visitParanthesisExpr(ctx: ParanthesisExprContext): Long = {
     ctx.expression().accept(this)
   }
 
-  override def visitUnitLiteral(ctx: CalcParser.UnitLiteralContext): Long = {
+  override def visitUnitLiteral(ctx: UnitLiteralContext): Long = {
     val strLiteral = ctx.LITERAL().getText
     strLiteral.toLong
+  }
+
+  private def boolConverter(expr: Boolean): Long = if (expr) 1 else 0
+
+  private def extractOperands(ctx: ExpressionContext) = {
+    val leftOperand = ctx.getRuleContext(classOf[CalcParser.ExpressionContext], 0).accept(this)
+    val rightOperand = ctx.getRuleContext(classOf[CalcParser.ExpressionContext], 1).accept(this)
+    (leftOperand, rightOperand)
   }
 
 }

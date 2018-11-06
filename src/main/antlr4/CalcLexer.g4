@@ -1,6 +1,6 @@
 lexer grammar CalcLexer;
 
-LITERAL:            ('0' | ('-'?) [1-9] (Digits?));
+LITERAL:            (('-'?) [0-9] (Digits?));
 
 // Separators
 LPAREN:             '(';
