@@ -11,7 +11,7 @@ atomExpression
     | expressionWithBraces
     ;
 
-expressionWithBraces : '(' expression ')';
+expressionWithBraces : '(' orExpression ')';
 
 intLiteral : IntLiteral;
 

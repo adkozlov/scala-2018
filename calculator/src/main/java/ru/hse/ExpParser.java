@@ -189,8 +189,8 @@ public class ExpParser extends Parser {
 	}
 
 	public static class ExpressionWithBracesContext extends ParserRuleContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
+		public OrExpressionContext orExpression() {
+			return getRuleContext(OrExpressionContext.class,0);
 		}
 		public ExpressionWithBracesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -212,7 +212,7 @@ public class ExpParser extends Parser {
 			setState(28);
 			match(T__0);
 			setState(29);
-			expression();
+			orExpression(0);
 			setState(30);
 			match(T__1);
 			}
@@ -739,7 +739,7 @@ public class ExpParser extends Parser {
 		"\3\2\2\2\n$\3\2\2\2\f&\3\2\2\2\16\61\3\2\2\2\20<\3\2\2\2\22G\3\2\2\2\24"+
 		"R\3\2\2\2\26\27\5\f\7\2\27\30\7\2\2\3\30\3\3\2\2\2\31\35\5\n\6\2\32\35"+
 		"\5\b\5\2\33\35\5\6\4\2\34\31\3\2\2\2\34\32\3\2\2\2\34\33\3\2\2\2\35\5"+
-		"\3\2\2\2\36\37\7\3\2\2\37 \5\2\2\2 !\7\4\2\2!\7\3\2\2\2\"#\7\13\2\2#\t"+
+		"\3\2\2\2\36\37\7\3\2\2\37 \5\f\7\2 !\7\4\2\2!\7\3\2\2\2\"#\7\13\2\2#\t"+
 		"\3\2\2\2$%\7\n\2\2%\13\3\2\2\2&\'\b\7\1\2\'(\5\16\b\2(.\3\2\2\2)*\f\4"+
 		"\2\2*+\7\t\2\2+-\5\16\b\2,)\3\2\2\2-\60\3\2\2\2.,\3\2\2\2./\3\2\2\2/\r"+
 		"\3\2\2\2\60.\3\2\2\2\61\62\b\b\1\2\62\63\5\20\t\2\639\3\2\2\2\64\65\f"+
