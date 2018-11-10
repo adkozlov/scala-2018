@@ -24,7 +24,8 @@ class TestSuite extends FunSuite {
     val lexer = new CalcLexer(stream)
     val tokens = new CommonTokenStream(lexer)
     val parser = new CalcParser(tokens)
-    parser.expression().value
+    val visitor = new AntlrAstVisitor()
+    visitor.visit(parser.expression())
   }
 
   test("Lexer") {

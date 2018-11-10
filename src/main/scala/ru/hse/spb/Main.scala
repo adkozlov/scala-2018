@@ -1,5 +1,6 @@
 package ru.hse.spb
 
+import ast.AntlrAstVisitor
 import org.antlr.v4.runtime._
 import org.antlr.v4.runtime.tree._
 
@@ -10,7 +11,8 @@ object Main {
       val lexer = new CalcLexer(input)
       val tokens = new CommonTokenStream(lexer)
       val parser = new CalcParser(tokens)
-      val expression = parser.expression().value
+      val visitor = new AntlrAstVisitor()
+      val expression = visitor.visit(parser.expression())
       println(Evaluator.eval(expression))
     }
   }
