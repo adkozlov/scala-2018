@@ -5,17 +5,16 @@ import ru.spbau.jvm.scala.calculator.CalcParser._
 
 import scala.collection.JavaConverters._
 
-class Evaluator extends CalcBaseVisitor[Either[Int, Boolean]] {
+class Evaluator extends CalcBaseVisitor[Result[_]] {
   private val logicEvaluator = new LogicEvaluator
   private val integerEvaluator = new IntegerEvaluator
 
-  def evaluate(ctx: ExpressionContext): Either[Int, Boolean] = ctx.accept(this)
+  def evaluate(ctx: ExpressionContext): Result[_] = ctx.accept(this)
 
-  override def visitExpression(ctx: ExpressionContext): Either[Int, Boolean] = {
-    if (ctx.intExpr() != null) {
-      Left(ctx.intExpr().accept(integerEvaluator))
-    } else {
-      Right(ctx.logicExpr().accept(logicEvaluator))
+  override def visitExpression(ctx: ExpressionContext): Result[_] = {
+    ctx.intExpr() match {
+      case null => BoolResult(ctx.logicExpr().accept(logicEvaluator))
+      case intExpr => IntResult(intExpr.accept(integerEvaluator))
     }
   }
 

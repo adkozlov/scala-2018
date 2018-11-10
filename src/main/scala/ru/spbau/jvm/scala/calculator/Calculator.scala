@@ -13,8 +13,7 @@ object Calculator {
       try {
         val input = scala.io.StdIn.readLine()
         evaluate(input, evaluator) match {
-          case Some(Left(x)) => println(x)
-          case Some(Right(x)) => println(x)
+          case Some(Result(value)) => println(value)
           case _ => return
         }
       } catch {
@@ -23,7 +22,7 @@ object Calculator {
     }
   }
 
-  def evaluate(input: String, evaluator: Evaluator): Option[Either[Int, Boolean]] = {
+  def evaluate(input: String, evaluator: Evaluator): Option[Result[_]] = {
     input match {
       case EXIT => None
       case _ =>

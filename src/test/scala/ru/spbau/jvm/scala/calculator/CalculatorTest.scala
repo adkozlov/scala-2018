@@ -10,14 +10,14 @@ class CalculatorTest {
 
   private def test(input: String, expected: Int): Unit = {
     Calculator.evaluate(input, evaluator) match {
-      case Some(Left(actual)) => assertEquals(expected, actual)
+      case Some(IntResult(actual)) => assertEquals(expected, actual)
       case _ => fail()
     }
   }
 
   private def test(input: String, expected: Boolean): Unit = {
     Calculator.evaluate(input, evaluator) match {
-      case Some(Right(actual)) => assertEquals(expected, actual)
+      case Some(BoolResult(actual)) => assertEquals(expected, actual)
       case _ => fail()
     }
   }
