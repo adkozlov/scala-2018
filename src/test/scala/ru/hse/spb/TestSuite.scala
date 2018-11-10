@@ -12,10 +12,10 @@ import scala.collection.JavaConverters._
 
 class TestSuite extends FunSuite {
 
-  private def getTokenStrings(input: String): List[String] = {
+  private def getTokenStrings(input: String) = {
     val stream = new ANTLRInputStream(input)
     val lexer = new CalcLexer(stream)
-    val tokens = lexer.getAllTokens().asScala.toList
+    val tokens = lexer.getAllTokens().asScala
     tokens.map(_.getText())
   }
 
