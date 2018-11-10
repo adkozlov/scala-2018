@@ -1,27 +1,25 @@
 package ru.spbau.jvm.scala.calculator
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 
 
 class CalculatorTest {
+  private val evaluator = new Evaluator()
+
   private def test(input: String, expected: Int): Unit = {
-    val value = Calculator.evaluate(input)
-    assertTrue(value.isDefined)
-    val result = value.get
-    assertTrue(result.isLeft)
-    val actual = result.left.get
-    assertEquals(expected, actual)
+    Calculator.evaluate(input, evaluator) match {
+      case Some(Left(actual)) => assertEquals(expected, actual)
+      case _ => fail()
+    }
   }
 
   private def test(input: String, expected: Boolean): Unit = {
-    val value = Calculator.evaluate(input)
-    assertTrue(value.isDefined)
-    val result = value.get
-    assertTrue(result.isRight)
-    val actual = result.right.get
-    assertEquals(expected, actual)
+    Calculator.evaluate(input, evaluator) match {
+      case Some(Right(actual)) => assertEquals(expected, actual)
+      case _ => fail()
+    }
   }
 
   private def testTrue(input: String): Unit = test(input, expected = true)

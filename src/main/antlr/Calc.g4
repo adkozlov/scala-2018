@@ -26,12 +26,12 @@ logicAndExpr
     ;
 
 atomLogicExpr
-    : value=equalityExpr
+    : value=comparingExpr
     | constValue=BoolLiteral
     | '(' SPACES* exp=logicOrExpr SPACES* ')'
     ;
 
-equalityExpr
+comparingExpr
     : var1=intExpr SPACES* op=(EQUAL | NOT_EQUAL | LT | LE | GT | GE) SPACES* var2=intExpr
     ;
 

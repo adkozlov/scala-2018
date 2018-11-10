@@ -1,14 +1,17 @@
 package ru.spbau.jvm.scala.calculator
 
-import org.antlr.v4.runtime.Token
+import org.antlr.v4.runtime.{ParserRuleContext, Token}
+import ru.spbau.jvm.scala.calculator.CalcParser._
 
-import scala.collection.JavaConverters
+import scala.collection.JavaConverters._
 
 class Evaluator extends CalcBaseVisitor[Either[Int, Boolean]] {
   private val logicEvaluator = new LogicEvaluator
   private val integerEvaluator = new IntegerEvaluator
 
-  override def visitExpression(ctx: CalcParser.ExpressionContext): Either[Int, Boolean] = {
+  def evaluate(ctx: ExpressionContext): Either[Int, Boolean] = ctx.accept(this)
+
+  override def visitExpression(ctx: ExpressionContext): Either[Int, Boolean] = {
     if (ctx.intExpr() != null) {
       Left(ctx.intExpr().accept(integerEvaluator))
     } else {
@@ -16,46 +19,46 @@ class Evaluator extends CalcBaseVisitor[Either[Int, Boolean]] {
     }
   }
 
-  class LogicEvaluator extends CalcBaseVisitor[Boolean] {
-    private val TRUE = "true"
+  private class LogicEvaluator extends CalcBaseVisitor[Boolean] {
+    override def visitLogicExpr(ctx: LogicExprContext): Boolean = {
+      val context = ctx.logicOrExpr() match {
+        case null => ctx.logicExpr()
+        case orExpr => orExpr
+      }
+      context.accept(this)
+    }
 
-    override def visitLogicExpr(ctx: CalcParser.LogicExprContext): Boolean = {
-      if (ctx.logicOrExpr() != null) {
-        ctx.logicOrExpr().accept(this)
-      } else {
-        ctx.logicExpr().accept(this)
+    override def visitLogicOrExpr(ctx: LogicOrExprContext): Boolean = {
+      processBinaryExpr(ctx.`var`, ctx.vars.asScala, _ || _)
+    }
+
+    override def visitLogicAndExpr(ctx: LogicAndExprContext): Boolean = {
+      processBinaryExpr(ctx.`var`, ctx.vars.asScala, _ && _)
+    }
+
+    private def processBinaryExpr(init: ParserRuleContext, vars: Seq[ParserRuleContext], op: (Boolean, Boolean) => Boolean): Boolean = {
+      val initValue = init.accept(this)
+      val varValues= vars.map(_.accept(this))
+      varValues.fold(initValue)(op)
+    }
+
+    override def visitAtomLogicExpr(ctx: AtomLogicExprContext): Boolean = {
+      ctx.constValue match {
+        case null =>
+          val context = ctx.value match {
+            case null => ctx.logicOrExpr()
+            case value => value
+          }
+          context.accept(this)
+        case literal => literal.getText.equals("true")
       }
     }
 
-    override def visitLogicOrExpr(ctx: CalcParser.LogicOrExprContext): Boolean = {
-      val init = ctx.`var`.accept(this)
-      val vars = JavaConverters.asScalaBuffer(ctx.vars).map({variable => variable.accept(this)})
-      vars.fold(init)(_ || _)
-    }
-
-    override def visitLogicAndExpr(ctx: CalcParser.LogicAndExprContext): Boolean = {
-      val init = ctx.`var`.accept(this)
-      val vars = JavaConverters.asScalaBuffer(ctx.vars).map({variable => variable.accept(this)})
-      vars.fold(init)(_ && _)
-    }
-
-    override def visitAtomLogicExpr(ctx: CalcParser.AtomLogicExprContext): Boolean = {
-      if (ctx.value != null) {
-        ctx.value.accept(this)
-      } else if (ctx.constValue != null) {
-        parseLiteral(ctx.constValue)
-      } else {
-        ctx.logicOrExpr().accept(this)
-      }
-    }
-
-    override def visitEqualityExpr(ctx: CalcParser.EqualityExprContext): Boolean = {
+    override def visitComparingExpr(ctx: ComparingExprContext): Boolean = {
       val left = ctx.var1.accept(integerEvaluator)
       val right = ctx.var2.accept(integerEvaluator)
       parseOperation(ctx.op)(left, right)
     }
-
-    private def parseLiteral(literal: Token): Boolean = literal.getText.equals(TRUE)
 
     private def parseOperation(operation: Token): (Int, Int) => Boolean = operation.getText match {
       case "==" => _ == _
@@ -68,8 +71,8 @@ class Evaluator extends CalcBaseVisitor[Either[Int, Boolean]] {
     }
   }
 
-  class IntegerEvaluator extends CalcBaseVisitor[Int] {
-    override def visitIntExpr(ctx: CalcParser.IntExprContext): Int = {
+  private class IntegerEvaluator extends CalcBaseVisitor[Int] {
+    override def visitIntExpr(ctx: IntExprContext): Int = {
       if (ctx.additionExp() != null) {
         ctx.additionExp().accept(this)
       } else {
@@ -77,31 +80,29 @@ class Evaluator extends CalcBaseVisitor[Either[Int, Boolean]] {
       }
     }
 
-    override def visitAdditionExp(ctx: CalcParser.AdditionExpContext): Int = {
-      val init = ctx.`var`.accept(this)
-      val ops = JavaConverters.asScalaBuffer(ctx.ops).map(op => parseOperation(op))
-      val vars = JavaConverters.asScalaBuffer(ctx.vars)
-        .map(variable => variable.accept(this))
-      vars.zip(ops).foldLeft(init){ (a, tup) => tup._2(a, tup._1)}
+    override def visitAdditionExp(ctx: AdditionExpContext): Int = {
+      processBinaryExpression(ctx.`var`, ctx.vars.asScala, ctx.ops.asScala)
     }
 
-    override def visitMultiplyExp(ctx: CalcParser.MultiplyExpContext): Int = {
-      val init = ctx.`var`.accept(this)
-      val ops = JavaConverters.asScalaBuffer(ctx.ops).map(op => parseOperation(op))
-      val vars = JavaConverters.asScalaBuffer(ctx.vars)
-        .map(variable => variable.accept(this))
-      vars.zip(ops).foldLeft(init){ (a, tup) => tup._2(a, tup._1)}
+    override def visitMultiplyExp(ctx: MultiplyExpContext): Int = {
+      processBinaryExpression(ctx.`var`, ctx.vars.asScala, ctx.ops.asScala)
     }
 
-    override def visitAtomExp(ctx: CalcParser.AtomExpContext): Int = {
-      if (ctx.n != null) {
-        parseLiteral(ctx.n)
-      } else {
-        ctx.intExpr().accept(this)
+    private def processBinaryExpression(init: ParserRuleContext, vars: Seq[ParserRuleContext], ops: Seq[Token]) = {
+      val initValue = init.accept(this)
+      val varValues = vars.map(_.accept(this))
+      val functions = ops.map(parseOperation)
+      varValues.zip(functions).foldLeft(initValue) {
+        case (left, (right, function)) => function(left, right)
       }
     }
 
-    private def parseLiteral(literal: Token): Int = literal.getText.toInt
+    override def visitAtomExp(ctx: AtomExpContext): Int = {
+      ctx.n match {
+        case null => ctx.intExpr().accept(this)
+        case literal => literal.getText.toInt
+      }
+    }
 
     private def parseOperation(operation: Token): (Int, Int) => Int = operation.getText match {
         case "+" => _ + _

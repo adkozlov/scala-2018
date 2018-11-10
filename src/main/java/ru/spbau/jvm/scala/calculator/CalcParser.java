@@ -22,11 +22,11 @@ public class CalcParser extends Parser {
 		AND=18, OR=19, NEWLINE=20, SPACES=21;
 	public static final int
 		RULE_expression = 0, RULE_logicExpr = 1, RULE_intExpr = 2, RULE_logicOrExpr = 3, 
-		RULE_logicAndExpr = 4, RULE_atomLogicExpr = 5, RULE_equalityExpr = 6, 
+		RULE_logicAndExpr = 4, RULE_atomLogicExpr = 5, RULE_comparingExpr = 6, 
 		RULE_additionExp = 7, RULE_multiplyExp = 8, RULE_atomExp = 9;
 	public static final String[] ruleNames = {
 		"expression", "logicExpr", "intExpr", "logicOrExpr", "logicAndExpr", "atomLogicExpr", 
-		"equalityExpr", "additionExp", "multiplyExp", "atomExp"
+		"comparingExpr", "additionExp", "multiplyExp", "atomExp"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -508,11 +508,11 @@ public class CalcParser extends Parser {
 	}
 
 	public static class AtomLogicExprContext extends ParserRuleContext {
-		public EqualityExprContext value;
+		public ComparingExprContext value;
 		public Token constValue;
 		public LogicOrExprContext exp;
-		public EqualityExprContext equalityExpr() {
-			return getRuleContext(EqualityExprContext.class,0);
+		public ComparingExprContext comparingExpr() {
+			return getRuleContext(ComparingExprContext.class,0);
 		}
 		public TerminalNode BoolLiteral() { return getToken(CalcParser.BoolLiteral, 0); }
 		public LogicOrExprContext logicOrExpr() {
@@ -545,7 +545,7 @@ public class CalcParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(102);
-				((AtomLogicExprContext)_localctx).value = equalityExpr();
+				((AtomLogicExprContext)_localctx).value = comparingExpr();
 				}
 				break;
 			case 2:
@@ -607,7 +607,7 @@ public class CalcParser extends Parser {
 		return _localctx;
 	}
 
-	public static class EqualityExprContext extends ParserRuleContext {
+	public static class ComparingExprContext extends ParserRuleContext {
 		public IntExprContext var1;
 		public Token op;
 		public IntExprContext var2;
@@ -627,26 +627,26 @@ public class CalcParser extends Parser {
 		public TerminalNode SPACES(int i) {
 			return getToken(CalcParser.SPACES, i);
 		}
-		public EqualityExprContext(ParserRuleContext parent, int invokingState) {
+		public ComparingExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_equalityExpr; }
+		@Override public int getRuleIndex() { return RULE_comparingExpr; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitEqualityExpr(this);
+			if ( visitor instanceof CalcVisitor ) return ((CalcVisitor<? extends T>)visitor).visitComparingExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final EqualityExprContext equalityExpr() throws RecognitionException {
-		EqualityExprContext _localctx = new EqualityExprContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_equalityExpr);
+	public final ComparingExprContext comparingExpr() throws RecognitionException {
+		ComparingExprContext _localctx = new ComparingExprContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_comparingExpr);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(122);
-			((EqualityExprContext)_localctx).var1 = intExpr();
+			((ComparingExprContext)_localctx).var1 = intExpr();
 			setState(126);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -662,10 +662,10 @@ public class CalcParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(129);
-			((EqualityExprContext)_localctx).op = _input.LT(1);
+			((ComparingExprContext)_localctx).op = _input.LT(1);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EQUAL) | (1L << NOT_EQUAL) | (1L << GT) | (1L << GE) | (1L << LT) | (1L << LE))) != 0)) ) {
-				((EqualityExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+				((ComparingExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 			}
 			else {
 				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -687,7 +687,7 @@ public class CalcParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(136);
-			((EqualityExprContext)_localctx).var2 = intExpr();
+			((ComparingExprContext)_localctx).var2 = intExpr();
 			}
 		}
 		catch (RecognitionException re) {

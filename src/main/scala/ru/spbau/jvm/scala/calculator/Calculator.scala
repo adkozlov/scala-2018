@@ -4,32 +4,34 @@ import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 
 object Calculator {
   private val EXIT = "exit"
-  private val evaluator = new Evaluator()
 
   def main(args: Array[String]): Unit = {
+    val evaluator = new Evaluator()
+
     println("type \"exit\" to exit")
     while (true) {
       try {
         val input = scala.io.StdIn.readLine()
-        val output = evaluate(input)
-        if (output.isEmpty) {
-          return
+        evaluate(input, evaluator) match {
+          case Some(Left(x)) => println(x)
+          case Some(Right(x)) => println(x)
+          case _ => return
         }
-        println(output.get.fold(x => x.toString, x => x.toString))
       } catch {
         case e: Exception => println(e.getMessage)
       }
     }
   }
 
-  def evaluate(input: String): Option[Either[Int, Boolean]] = {
-    if (input == EXIT) {
-      return None
-    }
-    val lexer = new CalcLexer(CharStreams.fromString(input))
-    val tokens = new CommonTokenStream(lexer)
+  def evaluate(input: String, evaluator: Evaluator): Option[Either[Int, Boolean]] = {
+    input match {
+      case EXIT => None
+      case _ =>
+        val lexer = new CalcLexer(CharStreams.fromString(input))
+        val tokens = new CommonTokenStream(lexer)
 
-    val parser = new CalcParser(tokens)
-    Some(parser.expression().accept(evaluator))
+        val parser = new CalcParser(tokens)
+        Some(evaluator.evaluate(parser.expression()))
+    }
   }
 }

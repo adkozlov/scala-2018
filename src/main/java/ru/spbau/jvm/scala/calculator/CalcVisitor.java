@@ -47,11 +47,11 @@ public interface CalcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAtomLogicExpr(CalcParser.AtomLogicExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CalcParser#equalityExpr}.
+	 * Visit a parse tree produced by {@link CalcParser#comparingExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitEqualityExpr(CalcParser.EqualityExprContext ctx);
+	T visitComparingExpr(CalcParser.ComparingExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CalcParser#additionExp}.
 	 * @param ctx the parse tree
