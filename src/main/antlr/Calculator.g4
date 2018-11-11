@@ -1,52 +1,43 @@
 grammar Calculator;
 
-eval returns [String value]
-    : dexp=doubleExpression {$value = Double.toString($dexp.value);}
-    | bexp=booleanExpression {$value = $bexp.value ? "true" : "false";}
+eval
+    : doubleExpression
+    | booleanExpression
     ;
 
-doubleExpression returns [double value]
-    : atom=atomDouble {$value = $atom.value;}
-    | <assoc=left> left=doubleExpression {$value = $left.value;}
-        (
-          '*' righta=atomDouble {$value *= $righta.value;}
-        | '/' righta=atomDouble {$value /= $righta.value;}
-        | '+' right=doubleExpression {$value += $right.value;}
-        | '-' right=doubleExpression {$value -= $right.value;}
-        )
+doubleExpression
+    : atomDouble
+    | <assoc=left> left=doubleExpression (op='*' | op ='/') right=doubleExpression
+    | <assoc=left> left=doubleExpression (op='+' | op ='-') right=doubleExpression
     ;
 
-booleanExpression returns [boolean value]
-    : atom=atomBoolean {$value = $atom.value;}
-    | leftd=doubleExpression
-        (
-          '>=' rightd=doubleExpression {$value = $leftd.value >= $rightd.value;}
-        | '<=' rightd=doubleExpression {$value = $leftd.value <= $rightd.value;}
-        | '==' rightd=doubleExpression {$value = $leftd.value == $rightd.value;}
-        | '!=' rightd=doubleExpression {$value = $leftd.value != $rightd.value;}
-        | '>' rightd=doubleExpression {$value = $leftd.value > $rightd.value;}
-        | '<' rightd=doubleExpression {$value = $leftd.value < $rightd.value;}
-        )
-    | left=booleanExpression
-        (
-          '==' right=booleanExpression {$value = $left.value == $right.value;}
-        | '!=' right=booleanExpression {$value = $left.value != $right.value;}
-        )
-    | left=booleanExpression '&&' right=booleanExpression {$value = $left.value && $right.value;}
-    | left=booleanExpression '||' right=booleanExpression {$value = $left.value || $right.value;}
+booleanExpression
+    : atomBoolean
+    | booleanCompare
+    | left=booleanExpression (op='==' | op='!=') right=booleanExpression
+    | left=booleanExpression (op='&&' | op='||') right=booleanExpression
     ;
 
-
-
-atomDouble returns [double value]
-    : n=NUMBER              {$value = Double.parseDouble($n.text);}
-    | '(' exp=doubleExpression ')' {$value = $exp.value;}
+booleanCompare
+    : left=doubleExpression (op='>=' | op='<=' | op='==' | op='!=' | op='>' | op='<') right=doubleExpression
     ;
 
-atomBoolean returns [boolean value]
-    : b=BOOLEAN {$value = Boolean.parseBoolean($b.text);}
-    | '(' exp=booleanExpression ')' {$value = $exp.value;}
+atomDouble
+    : number
+    | bracedDoubleExpression
     ;
+
+number: n=NUMBER;
+bracedDoubleExpression: '(' exp=doubleExpression ')';
+
+atomBoolean
+    : bool
+    | bracedBooleanExpression
+    ;
+
+bool: b=BOOLEAN;
+bracedBooleanExpression: '(' exp=booleanExpression ')';
+
 
 NUMBER:    [0-9]+('.'[0-9]*)?;
 BOOLEAN: 'true' | 'false' | 'TRUE' | 'FALSE' ;

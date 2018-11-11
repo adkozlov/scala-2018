@@ -52,6 +52,18 @@ public class CalculatorBaseListener implements CalculatorListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBooleanCompare(CalculatorParser.BooleanCompareContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBooleanCompare(CalculatorParser.BooleanCompareContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAtomDouble(CalculatorParser.AtomDoubleContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -64,6 +76,30 @@ public class CalculatorBaseListener implements CalculatorListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNumber(CalculatorParser.NumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumber(CalculatorParser.NumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBracedDoubleExpression(CalculatorParser.BracedDoubleExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBracedDoubleExpression(CalculatorParser.BracedDoubleExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAtomBoolean(CalculatorParser.AtomBooleanContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -71,6 +107,30 @@ public class CalculatorBaseListener implements CalculatorListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAtomBoolean(CalculatorParser.AtomBooleanContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBool(CalculatorParser.BoolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBool(CalculatorParser.BoolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBracedBooleanExpression(CalculatorParser.BracedBooleanExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBracedBooleanExpression(CalculatorParser.BracedBooleanExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

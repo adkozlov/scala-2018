@@ -38,6 +38,16 @@ public interface CalculatorListener extends ParseTreeListener {
 	 */
 	void exitBooleanExpression(CalculatorParser.BooleanExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CalculatorParser#booleanCompare}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanCompare(CalculatorParser.BooleanCompareContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CalculatorParser#booleanCompare}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanCompare(CalculatorParser.BooleanCompareContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CalculatorParser#atomDouble}.
 	 * @param ctx the parse tree
 	 */
@@ -48,6 +58,26 @@ public interface CalculatorListener extends ParseTreeListener {
 	 */
 	void exitAtomDouble(CalculatorParser.AtomDoubleContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CalculatorParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(CalculatorParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CalculatorParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(CalculatorParser.NumberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CalculatorParser#bracedDoubleExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBracedDoubleExpression(CalculatorParser.BracedDoubleExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CalculatorParser#bracedDoubleExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBracedDoubleExpression(CalculatorParser.BracedDoubleExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CalculatorParser#atomBoolean}.
 	 * @param ctx the parse tree
 	 */
@@ -57,4 +87,24 @@ public interface CalculatorListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAtomBoolean(CalculatorParser.AtomBooleanContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CalculatorParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void enterBool(CalculatorParser.BoolContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CalculatorParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void exitBool(CalculatorParser.BoolContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CalculatorParser#bracedBooleanExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBracedBooleanExpression(CalculatorParser.BracedBooleanExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CalculatorParser#bracedBooleanExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBracedBooleanExpression(CalculatorParser.BracedBooleanExpressionContext ctx);
 }

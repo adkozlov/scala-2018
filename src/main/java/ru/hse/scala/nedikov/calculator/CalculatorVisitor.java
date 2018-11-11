@@ -29,15 +29,45 @@ public interface CalculatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBooleanExpression(CalculatorParser.BooleanExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CalculatorParser#booleanCompare}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanCompare(CalculatorParser.BooleanCompareContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CalculatorParser#atomDouble}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAtomDouble(CalculatorParser.AtomDoubleContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CalculatorParser#number}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumber(CalculatorParser.NumberContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CalculatorParser#bracedDoubleExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBracedDoubleExpression(CalculatorParser.BracedDoubleExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CalculatorParser#atomBoolean}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAtomBoolean(CalculatorParser.AtomBooleanContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CalculatorParser#bool}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBool(CalculatorParser.BoolContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CalculatorParser#bracedBooleanExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBracedBooleanExpression(CalculatorParser.BracedBooleanExpressionContext ctx);
 }

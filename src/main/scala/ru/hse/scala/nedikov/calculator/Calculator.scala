@@ -15,6 +15,10 @@ object Calculator {
 
   def evaluate(in: String): String = {
     val calculatorLexer = new CalculatorLexer(CharStreams.fromString(in))
-    new CalculatorParser(new BufferedTokenStream(calculatorLexer)).eval().value
+    val exp = new CalculatorParser(new BufferedTokenStream(calculatorLexer)).eval().accept(new Visitor)
+    exp match {
+      case dExp: DoubleExpression => dExp.evaluate().toString
+      case bExp: BooleanExpression => bExp.evaluate().toString
+    }
   }
 }

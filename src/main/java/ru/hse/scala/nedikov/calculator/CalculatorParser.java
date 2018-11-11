@@ -22,14 +22,16 @@ public class CalculatorParser extends Parser {
 		WS=17;
 	public static final int
 		RULE_eval = 0, RULE_doubleExpression = 1, RULE_booleanExpression = 2, 
-		RULE_atomDouble = 3, RULE_atomBoolean = 4;
+		RULE_booleanCompare = 3, RULE_atomDouble = 4, RULE_number = 5, RULE_bracedDoubleExpression = 6, 
+		RULE_atomBoolean = 7, RULE_bool = 8, RULE_bracedBooleanExpression = 9;
 	public static final String[] ruleNames = {
-		"eval", "doubleExpression", "booleanExpression", "atomDouble", "atomBoolean"
+		"eval", "doubleExpression", "booleanExpression", "booleanCompare", "atomDouble", 
+		"number", "bracedDoubleExpression", "atomBoolean", "bool", "bracedBooleanExpression"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'*'", "'/'", "'+'", "'-'", "'>='", "'<='", "'=='", "'!='", "'>'", 
-		"'<'", "'&&'", "'||'", "'('", "')'"
+		null, "'*'", "'/'", "'+'", "'-'", "'=='", "'!='", "'&&'", "'||'", "'>='", 
+		"'<='", "'>'", "'<'", "'('", "')'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
@@ -85,9 +87,6 @@ public class CalculatorParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class EvalContext extends ParserRuleContext {
-		public String value;
-		public DoubleExpressionContext dexp;
-		public BooleanExpressionContext bexp;
 		public DoubleExpressionContext doubleExpression() {
 			return getRuleContext(DoubleExpressionContext.class,0);
 		}
@@ -117,23 +116,21 @@ public class CalculatorParser extends Parser {
 		EvalContext _localctx = new EvalContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_eval);
 		try {
-			setState(16);
+			setState(22);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(10);
-				((EvalContext)_localctx).dexp = doubleExpression(0);
-				((EvalContext)_localctx).value =  Double.toString(((EvalContext)_localctx).dexp.value);
+				setState(20);
+				doubleExpression(0);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(13);
-				((EvalContext)_localctx).bexp = booleanExpression(0);
-				((EvalContext)_localctx).value =  ((EvalContext)_localctx).bexp.value ? "true" : "false";
+				setState(21);
+				booleanExpression(0);
 				}
 				break;
 			}
@@ -150,10 +147,8 @@ public class CalculatorParser extends Parser {
 	}
 
 	public static class DoubleExpressionContext extends ParserRuleContext {
-		public double value;
 		public DoubleExpressionContext left;
-		public AtomDoubleContext atom;
-		public AtomDoubleContext righta;
+		public Token op;
 		public DoubleExpressionContext right;
 		public AtomDoubleContext atomDouble() {
 			return getRuleContext(AtomDoubleContext.class,0);
@@ -199,75 +194,87 @@ public class CalculatorParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(19);
-			((DoubleExpressionContext)_localctx).atom = atomDouble();
-			((DoubleExpressionContext)_localctx).value =  ((DoubleExpressionContext)_localctx).atom.value;
+			setState(25);
+			atomDouble();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(44);
+			setState(41);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,4,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					{
-					_localctx = new DoubleExpressionContext(_parentctx, _parentState);
-					_localctx.left = _prevctx;
-					_localctx.left = _prevctx;
-					pushNewRecursionContext(_localctx, _startState, RULE_doubleExpression);
-					setState(22);
-					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					((DoubleExpressionContext)_localctx).value =  ((DoubleExpressionContext)_localctx).left.value;
-					setState(40);
+					setState(39);
 					_errHandler.sync(this);
-					switch (_input.LA(1)) {
-					case T__0:
+					switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+					case 1:
 						{
-						setState(24);
-						match(T__0);
-						setState(25);
-						((DoubleExpressionContext)_localctx).righta = atomDouble();
-						_localctx.value *= ((DoubleExpressionContext)_localctx).righta.value;
+						_localctx = new DoubleExpressionContext(_parentctx, _parentState);
+						_localctx.left = _prevctx;
+						_localctx.left = _prevctx;
+						pushNewRecursionContext(_localctx, _startState, RULE_doubleExpression);
+						setState(27);
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						setState(30);
+						_errHandler.sync(this);
+						switch (_input.LA(1)) {
+						case T__0:
+							{
+							setState(28);
+							((DoubleExpressionContext)_localctx).op = match(T__0);
+							}
+							break;
+						case T__1:
+							{
+							setState(29);
+							((DoubleExpressionContext)_localctx).op = match(T__1);
+							}
+							break;
+						default:
+							throw new NoViableAltException(this);
 						}
-						break;
-					case T__1:
-						{
-						setState(28);
-						match(T__1);
-						setState(29);
-						((DoubleExpressionContext)_localctx).righta = atomDouble();
-						_localctx.value /= ((DoubleExpressionContext)_localctx).righta.value;
-						}
-						break;
-					case T__2:
-						{
 						setState(32);
-						match(T__2);
-						setState(33);
-						((DoubleExpressionContext)_localctx).right = doubleExpression(0);
-						_localctx.value += ((DoubleExpressionContext)_localctx).right.value;
+						((DoubleExpressionContext)_localctx).right = doubleExpression(3);
 						}
 						break;
-					case T__3:
+					case 2:
 						{
+						_localctx = new DoubleExpressionContext(_parentctx, _parentState);
+						_localctx.left = _prevctx;
+						_localctx.left = _prevctx;
+						pushNewRecursionContext(_localctx, _startState, RULE_doubleExpression);
+						setState(33);
+						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
 						setState(36);
-						match(T__3);
-						setState(37);
-						((DoubleExpressionContext)_localctx).right = doubleExpression(0);
-						_localctx.value -= ((DoubleExpressionContext)_localctx).right.value;
+						_errHandler.sync(this);
+						switch (_input.LA(1)) {
+						case T__2:
+							{
+							setState(34);
+							((DoubleExpressionContext)_localctx).op = match(T__2);
+							}
+							break;
+						case T__3:
+							{
+							setState(35);
+							((DoubleExpressionContext)_localctx).op = match(T__3);
+							}
+							break;
+						default:
+							throw new NoViableAltException(this);
+						}
+						setState(38);
+						((DoubleExpressionContext)_localctx).right = doubleExpression(2);
 						}
 						break;
-					default:
-						throw new NoViableAltException(this);
-					}
 					}
 					} 
 				}
-				setState(46);
+				setState(43);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,4,_ctx);
 			}
 			}
 		}
@@ -283,20 +290,14 @@ public class CalculatorParser extends Parser {
 	}
 
 	public static class BooleanExpressionContext extends ParserRuleContext {
-		public boolean value;
 		public BooleanExpressionContext left;
-		public AtomBooleanContext atom;
-		public DoubleExpressionContext leftd;
-		public DoubleExpressionContext rightd;
+		public Token op;
 		public BooleanExpressionContext right;
 		public AtomBooleanContext atomBoolean() {
 			return getRuleContext(AtomBooleanContext.class,0);
 		}
-		public List<DoubleExpressionContext> doubleExpression() {
-			return getRuleContexts(DoubleExpressionContext.class);
-		}
-		public DoubleExpressionContext doubleExpression(int i) {
-			return getRuleContext(DoubleExpressionContext.class,i);
+		public BooleanCompareContext booleanCompare() {
+			return getRuleContext(BooleanCompareContext.class,0);
 		}
 		public List<BooleanExpressionContext> booleanExpression() {
 			return getRuleContexts(BooleanExpressionContext.class);
@@ -338,108 +339,62 @@ public class CalculatorParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(78);
+			setState(47);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				{
-				setState(48);
-				((BooleanExpressionContext)_localctx).atom = atomBoolean();
-				((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).atom.value;
+				setState(45);
+				atomBoolean();
 				}
 				break;
 			case 2:
 				{
-				setState(51);
-				((BooleanExpressionContext)_localctx).leftd = doubleExpression(0);
-				setState(76);
-				_errHandler.sync(this);
-				switch (_input.LA(1)) {
-				case T__4:
-					{
-					setState(52);
-					match(T__4);
-					setState(53);
-					((BooleanExpressionContext)_localctx).rightd = doubleExpression(0);
-					((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).leftd.value >= ((BooleanExpressionContext)_localctx).rightd.value;
-					}
-					break;
-				case T__5:
-					{
-					setState(56);
-					match(T__5);
-					setState(57);
-					((BooleanExpressionContext)_localctx).rightd = doubleExpression(0);
-					((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).leftd.value <= ((BooleanExpressionContext)_localctx).rightd.value;
-					}
-					break;
-				case T__6:
-					{
-					setState(60);
-					match(T__6);
-					setState(61);
-					((BooleanExpressionContext)_localctx).rightd = doubleExpression(0);
-					((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).leftd.value == ((BooleanExpressionContext)_localctx).rightd.value;
-					}
-					break;
-				case T__7:
-					{
-					setState(64);
-					match(T__7);
-					setState(65);
-					((BooleanExpressionContext)_localctx).rightd = doubleExpression(0);
-					((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).leftd.value != ((BooleanExpressionContext)_localctx).rightd.value;
-					}
-					break;
-				case T__8:
-					{
-					setState(68);
-					match(T__8);
-					setState(69);
-					((BooleanExpressionContext)_localctx).rightd = doubleExpression(0);
-					((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).leftd.value > ((BooleanExpressionContext)_localctx).rightd.value;
-					}
-					break;
-				case T__9:
-					{
-					setState(72);
-					match(T__9);
-					setState(73);
-					((BooleanExpressionContext)_localctx).rightd = doubleExpression(0);
-					((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).leftd.value < ((BooleanExpressionContext)_localctx).rightd.value;
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
-				}
+				setState(46);
+				booleanCompare();
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(103);
+			setState(63);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,9,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(101);
+					setState(61);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 					case 1:
 						{
 						_localctx = new BooleanExpressionContext(_parentctx, _parentState);
 						_localctx.left = _prevctx;
 						_localctx.left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_booleanExpression);
-						setState(80);
+						setState(49);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(81);
-						match(T__10);
-						setState(82);
+						setState(52);
+						_errHandler.sync(this);
+						switch (_input.LA(1)) {
+						case T__4:
+							{
+							setState(50);
+							((BooleanExpressionContext)_localctx).op = match(T__4);
+							}
+							break;
+						case T__5:
+							{
+							setState(51);
+							((BooleanExpressionContext)_localctx).op = match(T__5);
+							}
+							break;
+						default:
+							throw new NoViableAltException(this);
+						}
+						setState(54);
 						((BooleanExpressionContext)_localctx).right = booleanExpression(3);
-						((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).left.value && ((BooleanExpressionContext)_localctx).right.value;
 						}
 						break;
 					case 2:
@@ -448,55 +403,36 @@ public class CalculatorParser extends Parser {
 						_localctx.left = _prevctx;
 						_localctx.left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_booleanExpression);
-						setState(85);
+						setState(55);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(86);
-						match(T__11);
-						setState(87);
-						((BooleanExpressionContext)_localctx).right = booleanExpression(2);
-						((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).left.value || ((BooleanExpressionContext)_localctx).right.value;
-						}
-						break;
-					case 3:
-						{
-						_localctx = new BooleanExpressionContext(_parentctx, _parentState);
-						_localctx.left = _prevctx;
-						_localctx.left = _prevctx;
-						pushNewRecursionContext(_localctx, _startState, RULE_booleanExpression);
-						setState(90);
-						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(99);
+						setState(58);
 						_errHandler.sync(this);
 						switch (_input.LA(1)) {
 						case T__6:
 							{
-							setState(91);
-							match(T__6);
-							setState(92);
-							((BooleanExpressionContext)_localctx).right = booleanExpression(0);
-							((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).left.value == ((BooleanExpressionContext)_localctx).right.value;
+							setState(56);
+							((BooleanExpressionContext)_localctx).op = match(T__6);
 							}
 							break;
 						case T__7:
 							{
-							setState(95);
-							match(T__7);
-							setState(96);
-							((BooleanExpressionContext)_localctx).right = booleanExpression(0);
-							((BooleanExpressionContext)_localctx).value =  ((BooleanExpressionContext)_localctx).left.value != ((BooleanExpressionContext)_localctx).right.value;
+							setState(57);
+							((BooleanExpressionContext)_localctx).op = match(T__7);
 							}
 							break;
 						default:
 							throw new NoViableAltException(this);
 						}
+						setState(60);
+						((BooleanExpressionContext)_localctx).right = booleanExpression(2);
 						}
 						break;
 					}
 					} 
 				}
-				setState(105);
+				setState(65);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,9,_ctx);
 			}
 			}
 		}
@@ -511,13 +447,106 @@ public class CalculatorParser extends Parser {
 		return _localctx;
 	}
 
+	public static class BooleanCompareContext extends ParserRuleContext {
+		public DoubleExpressionContext left;
+		public Token op;
+		public DoubleExpressionContext right;
+		public List<DoubleExpressionContext> doubleExpression() {
+			return getRuleContexts(DoubleExpressionContext.class);
+		}
+		public DoubleExpressionContext doubleExpression(int i) {
+			return getRuleContext(DoubleExpressionContext.class,i);
+		}
+		public BooleanCompareContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_booleanCompare; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).enterBooleanCompare(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).exitBooleanCompare(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CalculatorVisitor ) return ((CalculatorVisitor<? extends T>)visitor).visitBooleanCompare(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BooleanCompareContext booleanCompare() throws RecognitionException {
+		BooleanCompareContext _localctx = new BooleanCompareContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_booleanCompare);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(66);
+			((BooleanCompareContext)_localctx).left = doubleExpression(0);
+			setState(73);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case T__8:
+				{
+				setState(67);
+				((BooleanCompareContext)_localctx).op = match(T__8);
+				}
+				break;
+			case T__9:
+				{
+				setState(68);
+				((BooleanCompareContext)_localctx).op = match(T__9);
+				}
+				break;
+			case T__4:
+				{
+				setState(69);
+				((BooleanCompareContext)_localctx).op = match(T__4);
+				}
+				break;
+			case T__5:
+				{
+				setState(70);
+				((BooleanCompareContext)_localctx).op = match(T__5);
+				}
+				break;
+			case T__10:
+				{
+				setState(71);
+				((BooleanCompareContext)_localctx).op = match(T__10);
+				}
+				break;
+			case T__11:
+				{
+				setState(72);
+				((BooleanCompareContext)_localctx).op = match(T__11);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			setState(75);
+			((BooleanCompareContext)_localctx).right = doubleExpression(0);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static class AtomDoubleContext extends ParserRuleContext {
-		public double value;
-		public Token n;
-		public DoubleExpressionContext exp;
-		public TerminalNode NUMBER() { return getToken(CalculatorParser.NUMBER, 0); }
-		public DoubleExpressionContext doubleExpression() {
-			return getRuleContext(DoubleExpressionContext.class,0);
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
+		}
+		public BracedDoubleExpressionContext bracedDoubleExpression() {
+			return getRuleContext(BracedDoubleExpressionContext.class,0);
 		}
 		public AtomDoubleContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -540,29 +569,23 @@ public class CalculatorParser extends Parser {
 
 	public final AtomDoubleContext atomDouble() throws RecognitionException {
 		AtomDoubleContext _localctx = new AtomDoubleContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_atomDouble);
+		enterRule(_localctx, 8, RULE_atomDouble);
 		try {
-			setState(113);
+			setState(79);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(106);
-				((AtomDoubleContext)_localctx).n = match(NUMBER);
-				((AtomDoubleContext)_localctx).value =  Double.parseDouble((((AtomDoubleContext)_localctx).n!=null?((AtomDoubleContext)_localctx).n.getText():null));
+				setState(77);
+				number();
 				}
 				break;
 			case T__12:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(108);
-				match(T__12);
-				setState(109);
-				((AtomDoubleContext)_localctx).exp = doubleExpression(0);
-				setState(110);
-				match(T__13);
-				((AtomDoubleContext)_localctx).value =  ((AtomDoubleContext)_localctx).exp.value;
+				setState(78);
+				bracedDoubleExpression();
 				}
 				break;
 			default:
@@ -580,13 +603,104 @@ public class CalculatorParser extends Parser {
 		return _localctx;
 	}
 
+	public static class NumberContext extends ParserRuleContext {
+		public Token n;
+		public TerminalNode NUMBER() { return getToken(CalculatorParser.NUMBER, 0); }
+		public NumberContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_number; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).enterNumber(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).exitNumber(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CalculatorVisitor ) return ((CalculatorVisitor<? extends T>)visitor).visitNumber(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final NumberContext number() throws RecognitionException {
+		NumberContext _localctx = new NumberContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_number);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(81);
+			((NumberContext)_localctx).n = match(NUMBER);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BracedDoubleExpressionContext extends ParserRuleContext {
+		public DoubleExpressionContext exp;
+		public DoubleExpressionContext doubleExpression() {
+			return getRuleContext(DoubleExpressionContext.class,0);
+		}
+		public BracedDoubleExpressionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_bracedDoubleExpression; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).enterBracedDoubleExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).exitBracedDoubleExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CalculatorVisitor ) return ((CalculatorVisitor<? extends T>)visitor).visitBracedDoubleExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BracedDoubleExpressionContext bracedDoubleExpression() throws RecognitionException {
+		BracedDoubleExpressionContext _localctx = new BracedDoubleExpressionContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_bracedDoubleExpression);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(83);
+			match(T__12);
+			setState(84);
+			((BracedDoubleExpressionContext)_localctx).exp = doubleExpression(0);
+			setState(85);
+			match(T__13);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static class AtomBooleanContext extends ParserRuleContext {
-		public boolean value;
-		public Token b;
-		public BooleanExpressionContext exp;
-		public TerminalNode BOOLEAN() { return getToken(CalculatorParser.BOOLEAN, 0); }
-		public BooleanExpressionContext booleanExpression() {
-			return getRuleContext(BooleanExpressionContext.class,0);
+		public BoolContext bool() {
+			return getRuleContext(BoolContext.class,0);
+		}
+		public BracedBooleanExpressionContext bracedBooleanExpression() {
+			return getRuleContext(BracedBooleanExpressionContext.class,0);
 		}
 		public AtomBooleanContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -609,33 +723,119 @@ public class CalculatorParser extends Parser {
 
 	public final AtomBooleanContext atomBoolean() throws RecognitionException {
 		AtomBooleanContext _localctx = new AtomBooleanContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_atomBoolean);
+		enterRule(_localctx, 14, RULE_atomBoolean);
 		try {
-			setState(122);
+			setState(89);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BOOLEAN:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(115);
-				((AtomBooleanContext)_localctx).b = match(BOOLEAN);
-				((AtomBooleanContext)_localctx).value =  Boolean.parseBoolean((((AtomBooleanContext)_localctx).b!=null?((AtomBooleanContext)_localctx).b.getText():null));
+				setState(87);
+				bool();
 				}
 				break;
 			case T__12:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(117);
-				match(T__12);
-				setState(118);
-				((AtomBooleanContext)_localctx).exp = booleanExpression(0);
-				setState(119);
-				match(T__13);
-				((AtomBooleanContext)_localctx).value =  ((AtomBooleanContext)_localctx).exp.value;
+				setState(88);
+				bracedBooleanExpression();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BoolContext extends ParserRuleContext {
+		public Token b;
+		public TerminalNode BOOLEAN() { return getToken(CalculatorParser.BOOLEAN, 0); }
+		public BoolContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_bool; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).enterBool(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).exitBool(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CalculatorVisitor ) return ((CalculatorVisitor<? extends T>)visitor).visitBool(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BoolContext bool() throws RecognitionException {
+		BoolContext _localctx = new BoolContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_bool);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(91);
+			((BoolContext)_localctx).b = match(BOOLEAN);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BracedBooleanExpressionContext extends ParserRuleContext {
+		public BooleanExpressionContext exp;
+		public BooleanExpressionContext booleanExpression() {
+			return getRuleContext(BooleanExpressionContext.class,0);
+		}
+		public BracedBooleanExpressionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_bracedBooleanExpression; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).enterBracedBooleanExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CalculatorListener ) ((CalculatorListener)listener).exitBracedBooleanExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CalculatorVisitor ) return ((CalculatorVisitor<? extends T>)visitor).visitBracedBooleanExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BracedBooleanExpressionContext bracedBooleanExpression() throws RecognitionException {
+		BracedBooleanExpressionContext _localctx = new BracedBooleanExpressionContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_bracedBooleanExpression);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(93);
+			match(T__12);
+			setState(94);
+			((BracedBooleanExpressionContext)_localctx).exp = booleanExpression(0);
+			setState(95);
+			match(T__13);
 			}
 		}
 		catch (RecognitionException re) {
@@ -661,54 +861,48 @@ public class CalculatorParser extends Parser {
 	private boolean doubleExpression_sempred(DoubleExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
+			return precpred(_ctx, 2);
+		case 1:
 			return precpred(_ctx, 1);
 		}
 		return true;
 	}
 	private boolean booleanExpression_sempred(BooleanExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 1:
-			return precpred(_ctx, 2);
 		case 2:
-			return precpred(_ctx, 1);
+			return precpred(_ctx, 2);
 		case 3:
-			return precpred(_ctx, 3);
+			return precpred(_ctx, 1);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\23\177\4\2\t\2\4"+
-		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\2\3\2\3\2\5\2\23\n\2\3\3"+
-		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
-		"\3\3\3\3\3\3\3\5\3+\n\3\7\3-\n\3\f\3\16\3\60\13\3\3\4\3\4\3\4\3\4\3\4"+
-		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
-		"\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4O\n\4\5\4Q\n\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
-		"\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4f\n\4\7\4h\n\4\f"+
-		"\4\16\4k\13\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5t\n\5\3\6\3\6\3\6\3\6\3\6"+
-		"\3\6\3\6\5\6}\n\6\3\6\2\4\4\6\7\2\4\6\b\n\2\2\2\u008a\2\22\3\2\2\2\4\24"+
-		"\3\2\2\2\6P\3\2\2\2\bs\3\2\2\2\n|\3\2\2\2\f\r\5\4\3\2\r\16\b\2\1\2\16"+
-		"\23\3\2\2\2\17\20\5\6\4\2\20\21\b\2\1\2\21\23\3\2\2\2\22\f\3\2\2\2\22"+
-		"\17\3\2\2\2\23\3\3\2\2\2\24\25\b\3\1\2\25\26\5\b\5\2\26\27\b\3\1\2\27"+
-		".\3\2\2\2\30\31\f\3\2\2\31*\b\3\1\2\32\33\7\3\2\2\33\34\5\b\5\2\34\35"+
-		"\b\3\1\2\35+\3\2\2\2\36\37\7\4\2\2\37 \5\b\5\2 !\b\3\1\2!+\3\2\2\2\"#"+
-		"\7\5\2\2#$\5\4\3\2$%\b\3\1\2%+\3\2\2\2&\'\7\6\2\2\'(\5\4\3\2()\b\3\1\2"+
-		")+\3\2\2\2*\32\3\2\2\2*\36\3\2\2\2*\"\3\2\2\2*&\3\2\2\2+-\3\2\2\2,\30"+
-		"\3\2\2\2-\60\3\2\2\2.,\3\2\2\2./\3\2\2\2/\5\3\2\2\2\60.\3\2\2\2\61\62"+
-		"\b\4\1\2\62\63\5\n\6\2\63\64\b\4\1\2\64Q\3\2\2\2\65N\5\4\3\2\66\67\7\7"+
-		"\2\2\678\5\4\3\289\b\4\1\29O\3\2\2\2:;\7\b\2\2;<\5\4\3\2<=\b\4\1\2=O\3"+
-		"\2\2\2>?\7\t\2\2?@\5\4\3\2@A\b\4\1\2AO\3\2\2\2BC\7\n\2\2CD\5\4\3\2DE\b"+
-		"\4\1\2EO\3\2\2\2FG\7\13\2\2GH\5\4\3\2HI\b\4\1\2IO\3\2\2\2JK\7\f\2\2KL"+
-		"\5\4\3\2LM\b\4\1\2MO\3\2\2\2N\66\3\2\2\2N:\3\2\2\2N>\3\2\2\2NB\3\2\2\2"+
-		"NF\3\2\2\2NJ\3\2\2\2OQ\3\2\2\2P\61\3\2\2\2P\65\3\2\2\2Qi\3\2\2\2RS\f\4"+
-		"\2\2ST\7\r\2\2TU\5\6\4\5UV\b\4\1\2Vh\3\2\2\2WX\f\3\2\2XY\7\16\2\2YZ\5"+
-		"\6\4\4Z[\b\4\1\2[h\3\2\2\2\\e\f\5\2\2]^\7\t\2\2^_\5\6\4\2_`\b\4\1\2`f"+
-		"\3\2\2\2ab\7\n\2\2bc\5\6\4\2cd\b\4\1\2df\3\2\2\2e]\3\2\2\2ea\3\2\2\2f"+
-		"h\3\2\2\2gR\3\2\2\2gW\3\2\2\2g\\\3\2\2\2hk\3\2\2\2ig\3\2\2\2ij\3\2\2\2"+
-		"j\7\3\2\2\2ki\3\2\2\2lm\7\21\2\2mt\b\5\1\2no\7\17\2\2op\5\4\3\2pq\7\20"+
-		"\2\2qr\b\5\1\2rt\3\2\2\2sl\3\2\2\2sn\3\2\2\2t\t\3\2\2\2uv\7\22\2\2v}\b"+
-		"\6\1\2wx\7\17\2\2xy\5\6\4\2yz\7\20\2\2z{\b\6\1\2{}\3\2\2\2|u\3\2\2\2|"+
-		"w\3\2\2\2}\13\3\2\2\2\f\22*.NPegis|";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\23d\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3"+
+		"\2\3\2\5\2\31\n\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3!\n\3\3\3\3\3\3\3\3\3\5\3"+
+		"\'\n\3\3\3\7\3*\n\3\f\3\16\3-\13\3\3\4\3\4\3\4\5\4\62\n\4\3\4\3\4\3\4"+
+		"\5\4\67\n\4\3\4\3\4\3\4\3\4\5\4=\n\4\3\4\7\4@\n\4\f\4\16\4C\13\4\3\5\3"+
+		"\5\3\5\3\5\3\5\3\5\3\5\5\5L\n\5\3\5\3\5\3\6\3\6\5\6R\n\6\3\7\3\7\3\b\3"+
+		"\b\3\b\3\b\3\t\3\t\5\t\\\n\t\3\n\3\n\3\13\3\13\3\13\3\13\3\13\2\4\4\6"+
+		"\f\2\4\6\b\n\f\16\20\22\24\2\2\2j\2\30\3\2\2\2\4\32\3\2\2\2\6\61\3\2\2"+
+		"\2\bD\3\2\2\2\nQ\3\2\2\2\fS\3\2\2\2\16U\3\2\2\2\20[\3\2\2\2\22]\3\2\2"+
+		"\2\24_\3\2\2\2\26\31\5\4\3\2\27\31\5\6\4\2\30\26\3\2\2\2\30\27\3\2\2\2"+
+		"\31\3\3\2\2\2\32\33\b\3\1\2\33\34\5\n\6\2\34+\3\2\2\2\35 \f\4\2\2\36!"+
+		"\7\3\2\2\37!\7\4\2\2 \36\3\2\2\2 \37\3\2\2\2!\"\3\2\2\2\"*\5\4\3\5#&\f"+
+		"\3\2\2$\'\7\5\2\2%\'\7\6\2\2&$\3\2\2\2&%\3\2\2\2\'(\3\2\2\2(*\5\4\3\4"+
+		")\35\3\2\2\2)#\3\2\2\2*-\3\2\2\2+)\3\2\2\2+,\3\2\2\2,\5\3\2\2\2-+\3\2"+
+		"\2\2./\b\4\1\2/\62\5\20\t\2\60\62\5\b\5\2\61.\3\2\2\2\61\60\3\2\2\2\62"+
+		"A\3\2\2\2\63\66\f\4\2\2\64\67\7\7\2\2\65\67\7\b\2\2\66\64\3\2\2\2\66\65"+
+		"\3\2\2\2\678\3\2\2\28@\5\6\4\59<\f\3\2\2:=\7\t\2\2;=\7\n\2\2<:\3\2\2\2"+
+		"<;\3\2\2\2=>\3\2\2\2>@\5\6\4\4?\63\3\2\2\2?9\3\2\2\2@C\3\2\2\2A?\3\2\2"+
+		"\2AB\3\2\2\2B\7\3\2\2\2CA\3\2\2\2DK\5\4\3\2EL\7\13\2\2FL\7\f\2\2GL\7\7"+
+		"\2\2HL\7\b\2\2IL\7\r\2\2JL\7\16\2\2KE\3\2\2\2KF\3\2\2\2KG\3\2\2\2KH\3"+
+		"\2\2\2KI\3\2\2\2KJ\3\2\2\2LM\3\2\2\2MN\5\4\3\2N\t\3\2\2\2OR\5\f\7\2PR"+
+		"\5\16\b\2QO\3\2\2\2QP\3\2\2\2R\13\3\2\2\2ST\7\21\2\2T\r\3\2\2\2UV\7\17"+
+		"\2\2VW\5\4\3\2WX\7\20\2\2X\17\3\2\2\2Y\\\5\22\n\2Z\\\5\24\13\2[Y\3\2\2"+
+		"\2[Z\3\2\2\2\\\21\3\2\2\2]^\7\22\2\2^\23\3\2\2\2_`\7\17\2\2`a\5\6\4\2"+
+		"ab\7\20\2\2b\25\3\2\2\2\17\30 &)+\61\66<?AKQ[";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
