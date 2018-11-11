@@ -6,6 +6,6 @@ object Calculator {
   def evaluate(expression: String): Double = {
     val expLexer = new CalculatorLexer(CharStreams.fromString(expression))
     val expParser = new CalculatorParser(new BufferedTokenStream(expLexer))
-    expParser.expr().value
+    new Visitor().visitExpr(expParser.expr())
   }
 }

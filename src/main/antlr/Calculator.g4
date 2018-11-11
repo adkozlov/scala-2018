@@ -11,66 +11,37 @@ grammar Calculator;
 package ru.hse.spb.jvm.scala;
 }
 
-expr returns [double value]
-    :   e=logicalOr {$value = $e.value;}
+expr
+    : logicalOr
     ;
 
-// Precedence: 12
-logicalOr returns [double value]
-    :   e=logicalAnd {$value = $e.value;}
-        (   '||' e=logicalAnd {$value = ($value == 0 ? false : true)
-                               || ($e.value == 0 ? false : true)
-                               ? 1 : 0;}
-        )*
+logicalOr
+    : leftOperand=logicalAnd (operator='||' rightOperand=logicalOr)?
     ;
 
-// Precedence: 11
-logicalAnd returns [double value]
-    :   e=equality {$value = $e.value;}
-        (   '&&' e=equality {$value = ($value == 0 ? false : true)
-                             && ($e.value == 0 ? false : true)
-                             ? 1 : 0;}
-        )*
+logicalAnd
+    : leftOperand=equality (operator='&&' rightOperand=logicalAnd)?
     ;
 
-// Precedence: 7
-equality returns [double value]
-    :   e=relational {$value = $e.value;}
-        (   '==' e=relational {$value = $value == $e.value ? 1 : 0;}
-        |   '!=' e=relational {$value = $value != $e.value ? 1 : 0;}
-        )*
+equality
+    : leftOperand=relational (operator=('==' | '!=') rightOperand=equality)?
     ;
 
-// Precedence: 6
-relational returns [double value]
-    :   e=additive {$value = $e.value;}
-        (   '<=' e=additive {$value = $value <= $e.value ? 1 : 0;}
-        |   '>=' e=additive {$value = $value >= $e.value ? 1 : 0;}
-        |   '>' e=additive {$value = $value > $e.value ? 1 : 0;}
-        |   '<' e=additive {$value = $value < $e.value ? 1 : 0;}
-        )*
+relational
+    : leftOperand=additive (operator=('>=' | '<=' | '>' | '<') rightOperand=relational)?
     ;
 
-// Precedence: 4
-additive returns [double value]
-    :   e=multiplicative {$value = $e.value;}
-        (   '+' e=multiplicative {$value += $e.value;}
-        |   '-' e=multiplicative {$value -= $e.value;}
-        )*
+additive
+    : leftOperand=multiplicative (operator=('+' | '-') rightOperand=additive)?
     ;
 
-// Precedence: 3
-multiplicative returns [double value]
-    :   e=atom {$value = $e.value;}
-        (   '*' e=atom {$value *= $e.value;}
-        |   '/' e=atom {$value /= $e.value;}
-        |   '%' e=atom {$value %= $e.value;}
-        )*
-        ;
+multiplicative
+    : leftOperand=atom (operator=('*' | '/' | '%') rightOperand=multiplicative)?
+;
 
-atom returns [double value]
-    :   DOUBLE {$value = Double.parseDouble($DOUBLE.text);}
-    |   '(' e=expr ')' {$value = $e.value;}
+atom
+    :   DOUBLE #visitDouble
+    |   '(' expr ')' #visitExpressionInBraces
     ;
 
 DOUBLE :   ('-')?[0-9]+('.'[0-9]+)? ;
