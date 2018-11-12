@@ -1,3 +1,4 @@
+import antlr.CalculatorParser.CalculatorContext
 import antlr.{CalculatorBaseVisitor, CalculatorLexer, CalculatorParser}
 import org.antlr.v4.runtime.misc.ParseCancellationException
 import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
@@ -5,34 +6,29 @@ import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 import scala.io.StdIn
 
 object Main {
-
   def main(args: Array[String]): Unit = {
     while (true) {
       val expr = StdIn.readLine()
-      if (expr.equals("exit")) {
+      if (expr == "exit") {
         return
       }
-      println(evalExpr(expr))
+      println(visit(parse(expr)))
     }
   }
 
-  private def visit[T](expr: String, visitor: CalculatorBaseVisitor[_]): Any = {
+  def parse(expr: String): CalculatorContext = {
     val stream = CharStreams.fromString(expr)
-    var lexer = new CalculatorLexer(stream)
+    val lexer = new CalculatorLexer(stream)
     val parser = new CalculatorParser(new CommonTokenStream(lexer))
+    parser.calculator()
+  }
+
+  def visit(treeRoot: CalculatorContext, visitor: CalculatorBaseVisitor[_] = Calculator): Any = {
     try
-      parser.calculator().accept(visitor)
+      treeRoot.accept(visitor)
     catch {
       case e: ParseCancellationException =>
         e.getMessage
     }
-  }
-
-  def evalExpr(expr: String): Any = {
-    visit(expr, Calculator)
-  }
-
-  def toBeautyString(expr: String): Any = {
-    visit(expr, Mirror)
   }
 }

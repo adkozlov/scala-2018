@@ -1,52 +1,32 @@
-import antlr.{CalculatorBaseVisitor, CalculatorParser}
+import antlr.CalculatorParser._
+import antlr.CalculatorBaseVisitor
 import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.tree.RuleNode
 
-object Mirror extends CalculatorBaseVisitor[String] {
-  private def exprToString(ctx: ParserRuleContext) : String = {
-    s"${ctx.children.get(0).accept(this)} ${ctx.children.get(1).getText} ${ctx.children.get(2).accept(this)}"
+object Mirror extends CalculatorBaseVisitor[String] with ExprEvaluter {
+  private def toString(leftValue: String, operator: String, rightValue: String): String = s"$leftValue $operator $rightValue"
+
+  override def visitChildren(node: RuleNode): String = node match {
+    case ctx: ArithmeticExponentExprContext => eval(ctx, this, toString)
+    case ctx: ArithmeticPrior2BinaryExprContext => eval(ctx, this, toString)
+    case ctx: ArithmeticPrior1BinaryExprContext => eval(ctx, this, toString)
+    case ctx: LogicalBinaryExprContext => eval(ctx, this, toString)
+    case ctx: LogicalCompareExprContext => eval(ctx, this, toString)
+    case ctx: ArithmeticParensExprContext => s"(${ctx.arithm_expr().accept(this)})"
+    case ctx: LogicalParensExprContext => s"(${ctx.logic_expr().accept(this)})"
+    case ctx: ArithmeticNegativeExprContext => s"-${ctx.arithm_expr().accept(this)}"
+    case ctx: LogicNegativeExprContext => s"!${ctx.logic_expr().accept(this)}"
+    case _ => super.visitChildren(node)
   }
 
-  override def visitCalculator(ctx: CalculatorParser.CalculatorContext): String = {
+  override def visitCalculator(ctx: CalculatorContext): String = {
     ctx.children.get(0).accept(this)
   }
 
-  override def visitArithmeticExponentExpr(ctx: CalculatorParser.ArithmeticExponentExprContext): String = {
-    exprToString(ctx)
-  }
+  override def visitArithmeticAtomExpr(ctx: ArithmeticAtomExprContext): String =
+    ctx.INT().getText
 
-  override def visitArithmeticPrior1BinaryExpr(ctx: CalculatorParser.ArithmeticPrior1BinaryExprContext): String = {
-    exprToString(ctx)
-  }
-
-  override def visitArithmeticPrior2BinaryExpr(ctx: CalculatorParser.ArithmeticPrior2BinaryExprContext): String = {
-    exprToString(ctx)
-  }
-
-  override def visitArithmeticParensExpr(ctx: CalculatorParser.ArithmeticParensExprContext): String = {
-    val not = if (ctx.MINUS() != null) {"-"} else {""}
-    not + s"(${ctx.arithm_expr().accept(this)})"
-  }
-
-  override def visitArithmeticAtomExpr(ctx: CalculatorParser.ArithmeticAtomExprContext): String = {
-    val not = if (ctx.MINUS() != null) {"-"} else {""}
-    not + ctx.INT().getText
-  }
-
-  override def visitLogicalCompareExpr(ctx: CalculatorParser.LogicalCompareExprContext): String = {
-    exprToString(ctx)
-  }
-
-  override def visitLogicalBinaryExpr(ctx: CalculatorParser.LogicalBinaryExprContext): String = {
-    exprToString(ctx)
-  }
-
-  override def visitLogicalParensExpr(ctx: CalculatorParser.LogicalParensExprContext): String = {
-    val not = if (ctx.NOT() != null) {"!"} else {""}
-    not + s"(${ctx.logic_expr().accept(this)})"
-  }
-
-  override def visitLogicalAtomExpr(ctx: CalculatorParser.LogicalAtomExprContext): String = {
-    val not = if (ctx.NOT() != null) {"!"} else {""}
-    not + ctx.BOOL().getText
+  override def visitLogicalAtomExpr(ctx: LogicalAtomExprContext): String = {
+    ctx.BOOL().getText
   }
 }

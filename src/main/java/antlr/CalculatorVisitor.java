@@ -24,6 +24,13 @@ public interface CalculatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLogicalCompareExpr(CalculatorParser.LogicalCompareExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code LogicNegativeExpr}
+	 * labeled alternative in {@link CalculatorParser#logic_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogicNegativeExpr(CalculatorParser.LogicNegativeExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code LogicalBinaryExpr}
 	 * labeled alternative in {@link CalculatorParser#logic_expr}.
 	 * @param ctx the parse tree
@@ -58,6 +65,13 @@ public interface CalculatorVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitArithmeticExponentExpr(CalculatorParser.ArithmeticExponentExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ArithmeticNegativeExpr}
+	 * labeled alternative in {@link CalculatorParser#arithm_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArithmeticNegativeExpr(CalculatorParser.ArithmeticNegativeExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ArithmeticPrior2BinaryExpr}
 	 * labeled alternative in {@link CalculatorParser#arithm_expr}.
@@ -109,4 +123,6 @@ public interface CalculatorVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLogic_op(CalculatorParser.Logic_opContext ctx);
+
+	T visitArithm_exprContext(CalculatorParser.Arithm_exprContext ctx);
 }

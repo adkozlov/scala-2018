@@ -1,91 +1,87 @@
+import antlr.CalculatorParser._
 import antlr.{CalculatorBaseVisitor, _}
 import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.tree.RuleNode
 
-object Calculator extends CalculatorBaseVisitor[Any] {
-  override def visitCalculator(ctx: CalculatorParser.CalculatorContext): Any = {
-    if (ctx.arithm_expr() != null) {
-      return ctx.arithm_expr().accept(AritmeticCalculator)
-    }
-    if (ctx.logic_expr() != null) {
-      return ctx.logic_expr().accept(LogicCalculator)
-    }
+object Calculator extends CalculatorBaseVisitor[AnyVal] {
+  override def visitCalculator(ctx: CalculatorContext): AnyVal = ctx.children.get(0) match {
+    case child: Arithm_exprContext => child.accept(AritmeticCalculator)
+    case child: Logic_exprContext => child.accept(LogicCalculator)
   }
 }
 
-private object AritmeticCalculator extends CalculatorBaseVisitor[Int] with ExprEvalutor {
-  private def evalArithmeticExpr(x: Int, y: Int, op: String): Int = op match {
-    case "+" => x + y
-    case "-" => x - y
-    case "*" => x * y
-    case "/" => x / y
-    case "%" => x % y
-    case "^" => Math.pow(x, y).toInt
+private object AritmeticCalculator extends CalculatorBaseVisitor[Int] with ExprEvaluter {
+  private def evalArithmeticExpr(leftValue: Int, operator: String, rightValue: Int): Int = operator match {
+    case "+" => leftValue + rightValue
+    case "-" => leftValue - rightValue
+    case "*" => leftValue * rightValue
+    case "/" => leftValue / rightValue
+    case "%" => leftValue % rightValue
+    case "^" => Math.pow(leftValue, rightValue).toInt
   }
 
-  override def visitArithmeticExponentExpr(ctx: CalculatorParser.ArithmeticExponentExprContext): Int = {
-    eval(ctx, this, evalArithmeticExpr)
+  private def visitBinaryExpr(ctx: Arithm_exprContext): Int = eval(ctx, this, evalArithmeticExpr)
+
+  override def visitChildren(node: RuleNode): Int = node match {
+    case ctx: ArithmeticExponentExprContext => visitBinaryExpr(ctx)
+    case ctx: ArithmeticPrior2BinaryExprContext => visitBinaryExpr(ctx)
+    case ctx: ArithmeticPrior1BinaryExprContext => visitBinaryExpr(ctx)
+    case _ => super.visitChildren(node)
   }
 
-  override def visitArithmeticPrior1BinaryExpr(ctx: CalculatorParser.ArithmeticPrior1BinaryExprContext): Int = {
-    eval(ctx, this, evalArithmeticExpr)
-  }
+  override def visitArithmeticNegativeExpr(ctx: ArithmeticNegativeExprContext): Int =
+    -ctx.arithm_expr().accept(this)
 
-  override def visitArithmeticPrior2BinaryExpr(ctx: CalculatorParser.ArithmeticPrior2BinaryExprContext): Int = {
-    eval(ctx, this, evalArithmeticExpr)
-  }
+  override def visitArithmeticParensExpr(ctx: ArithmeticParensExprContext): Int =
+    ctx.arithm_expr().accept(this)
 
-  override def visitArithmeticParensExpr(ctx: CalculatorParser.ArithmeticParensExprContext): Int = {
-    val value = ctx.arithm_expr().accept(this)
-    if (ctx.MINUS() == null) value else -value
-  }
-
-  override def visitArithmeticAtomExpr(ctx: CalculatorParser.ArithmeticAtomExprContext): Int = {
-    val value = ctx.INT().getText.toInt
-    if (ctx.MINUS() == null) value else -value
-  }
+  override def visitArithmeticAtomExpr(ctx: ArithmeticAtomExprContext): Int =
+    ctx.INT().getText.toInt
 }
 
-private object LogicCalculator extends CalculatorBaseVisitor[Boolean] with ExprEvalutor {
-  private def evalCompareExpr(x: Int, y: Int, op: String): Boolean = op match {
-    case "<" => x < y
-    case ">" => x > y
-    case "<=" => x <= y
-    case ">=" => x >= y
-    case "==" => x == y
-    case "!=" => x != y
+private object LogicCalculator extends CalculatorBaseVisitor[Boolean] with ExprEvaluter {
+  private def evalCompareExpr(leftValue: Int, operator: String, rightValue: Int): Boolean = operator match {
+    case "<" => leftValue < rightValue
+    case ">" => leftValue > rightValue
+    case "<=" => leftValue <= rightValue
+    case ">=" => leftValue >= rightValue
+    case "==" => leftValue == rightValue
+    case "!=" => leftValue != rightValue
   }
 
-  private def evalLogicalExpr(x: Boolean, y: Boolean, op: String): Boolean = op match {
-    case "&&" => x && y
-    case "||" => x || y
-    case "^^" => x ^ y
+  private def evalLogicalExpr(leftValue: Boolean, operator: String, rightValue: Boolean): Boolean = operator match {
+    case "&&" => leftValue && rightValue
+    case "||" => leftValue || rightValue
+    case "^^" => leftValue ^ rightValue
   }
 
+  override def visitLogicNegativeExpr(ctx: LogicNegativeExprContext): Boolean =
+    !ctx.logic_expr().accept(this)
 
-  override def visitLogicalCompareExpr(ctx: CalculatorParser.LogicalCompareExprContext): Boolean = {
+  override def visitLogicalCompareExpr(ctx: LogicalCompareExprContext): Boolean =
     eval(ctx, AritmeticCalculator, evalCompareExpr)
-  }
 
-  override def visitLogicalBinaryExpr(ctx: CalculatorParser.LogicalBinaryExprContext): Boolean = {
+
+  override def visitLogicalBinaryExpr(ctx: LogicalBinaryExprContext): Boolean =
     eval(ctx, this, evalLogicalExpr)
-  }
 
-  override def visitLogicalParensExpr(ctx: CalculatorParser.LogicalParensExprContext): Boolean = {
-    val value = ctx.logic_expr().accept(this)
-    if (ctx.NOT() == null) value else !value
-  }
+  override def visitLogicalParensExpr(ctx: LogicalParensExprContext): Boolean =
+    ctx.logic_expr().accept(this)
 
-  override def visitLogicalAtomExpr(ctx: CalculatorParser.LogicalAtomExprContext): Boolean = {
-    val value = ctx.BOOL().getText.toBoolean
-    if (ctx.NOT() == null) value else !value
-  }
+  override def visitLogicalAtomExpr(ctx: LogicalAtomExprContext): Boolean =
+    ctx.BOOL().getText.toBoolean
+
 }
 
-private trait ExprEvalutor {
-  def eval[A, B](ctx: ParserRuleContext, visitor: CalculatorBaseVisitor[A], evalFunction: (A, A, String) => B): B = {
-    val lvalue = ctx.children.get(0).accept(visitor)
-    val op = ctx.children.get(1).getText
-    val rvalue = ctx.children.get(2).accept(visitor)
-    evalFunction(lvalue, rvalue, op)
+object Index extends Enumeration {
+  val leftValue, operator, rightValue = Value
+}
+
+trait ExprEvaluter {
+  def eval[A, B](ctx: ParserRuleContext, visitor: CalculatorBaseVisitor[A], evalFunction: (A, String, A) => B): B = {
+    val lvalue = ctx.children.get(Index.leftValue.id).accept(visitor)
+    val op = ctx.children.get(Index.operator.id).getText
+    val rvalue = ctx.children.get(Index.rightValue.id).accept(visitor)
+    evalFunction(lvalue, op, rvalue)
   }
 }
