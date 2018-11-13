@@ -1,5 +1,6 @@
 package ru.spbau.jvm.scala.calculator
 
+import org.antlr.v4.runtime.Token
 import ru.spbau.jvm.scala.calculator.ExpressionsParser._
 
 class LogicalExpressionsVisitor extends ExpressionsBaseVisitor[Boolean] {
@@ -10,13 +11,13 @@ class LogicalExpressionsVisitor extends ExpressionsBaseVisitor[Boolean] {
     UnaryLogicalFunctionProvider(ctx.op)(ctx.operand.accept(this))
 
   override def visitAnd(ctx: ExpressionsParser.AndContext): Boolean =
-    BinaryLogicalFunctionProvider(ctx.op)(ctx.left.accept(this), ctx.right.accept(this))
+    evaluateBinaryLogicalExpression(ctx.op, ctx.left, ctx.right)
 
   override def visitXor(ctx: ExpressionsParser.XorContext): Boolean =
-    BinaryLogicalFunctionProvider(ctx.op)(ctx.left.accept(this), ctx.right.accept(this))
+    evaluateBinaryLogicalExpression(ctx.op, ctx.left, ctx.right)
 
   override def visitOr(ctx: ExpressionsParser.OrContext): Boolean =
-    BinaryLogicalFunctionProvider(ctx.op)(ctx.left.accept(this), ctx.right.accept(this))
+    evaluateBinaryLogicalExpression(ctx.op, ctx.left, ctx.right)
 
   override def visitEqLogical(ctx: ExpressionsParser.EqLogicalContext): Boolean =
     EqualityComparisonFunctionProvider(ctx.op)(BooleanType(ctx.left.accept(this)), BooleanType(ctx.right.accept(this)))
@@ -32,4 +33,7 @@ class LogicalExpressionsVisitor extends ExpressionsBaseVisitor[Boolean] {
 
   override def visitBool(ctx: ExpressionsParser.BoolContext): Boolean =
     ctx.BOOL().getSymbol.getText.toBoolean
+
+  private def evaluateBinaryLogicalExpression(op: Token, left: LogicalExpressionContext, right: LogicalExpressionContext) =
+    BinaryLogicalFunctionProvider(op).apply(left.accept(this), right.accept(this))
 }
