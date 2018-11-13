@@ -4,7 +4,8 @@ import ru.hse.spb._
 import org.antlr.v4.runtime.tree._
 
 class AntlrAstVisitor extends CalcBaseVisitor[Expr] {
-  override def visitParenthesisedExpr(ctx: CalcParser.ParenthesisedExprContext): Expr = {
+  override def visitParenthesisedExpr(
+      ctx: CalcParser.ParenthesisedExprContext): Expr = {
     visit(ctx.expression)
   }
 
