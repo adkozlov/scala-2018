@@ -57,11 +57,11 @@ class LexerTest extends AssertionsForJUnit {
       "a[3]",
       "1 $ 2",
       "3x + 1"
-    ).map(EvaluatorProvider.applyLexer)
+    ).map(EvaluatorProvider.makeTokenListByExpression)
   }
 
   private def toTokensList(expressionAsString: String): List[String] = {
-    val tokenStream = EvaluatorProvider.applyLexer(expressionAsString)
+    val tokenStream = EvaluatorProvider.makeTokenListByExpression(expressionAsString)
     tokenStream.fill()
     val tokens = new ListBuffer[String]()
     tokenStream.getTokens.forEach(token => if (token.getText != "<EOF>") tokens += token.getText)

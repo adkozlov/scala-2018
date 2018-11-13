@@ -69,8 +69,8 @@ class ParserTest extends AssertionsForJUnit {
    */
   private def bfsAstAndGetTokens(expressionAsString: String): List[String] = {
     traversedTokens.clear()
-    val tokenStream = EvaluatorProvider.applyLexer(expressionAsString)
-    val astRoot: ParserRuleContext = EvaluatorProvider.applyParser(tokenStream)
+    val tokenStream = EvaluatorProvider.makeTokenListByExpression(expressionAsString)
+    val astRoot: ParserRuleContext = EvaluatorProvider.provideASTForTokenList(tokenStream)
     bfs(astRoot)
     traversedTokens.toList
   }
