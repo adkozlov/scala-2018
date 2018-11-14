@@ -5,15 +5,13 @@ import org.antlr.v4.runtime.Token
 
 object ArithmeticEvaluator extends CalculatorBaseVisitor[Double] {
 
-  object ArithmeticEvaluator {
-    def binaryOperation(left: Double, op: Token, right: Double): Double =
-      op.getType match {
-        case MULT => left * right
-        case DIV => left / right
-        case PLUS => left + right
-        case MINUS => left - right
-      }
-  }
+  def binaryOperation(left: Double, op: Token, right: Double): Double =
+    op.getType match {
+      case MULT => left * right
+      case DIV => left / right
+      case PLUS => left + right
+      case MINUS => left - right
+    }
 
   override def visitAddend(ctx: AddendContext): Double =
     ArithmeticEvaluator.binaryOperation(ctx.left.accept(this), ctx.op, ctx.right.accept(this))
