@@ -1,6 +1,7 @@
 package ru.spbau.jvm.scala.calculator
 
 import java.util.InputMismatchException
+import org.antlr.v4.runtime.RecognitionException
 
 import scala.io.StdIn
 import ru.spbau.jvm.scala.calculator.EvaluatorProvider._
@@ -11,6 +12,7 @@ object Main {
       println(eval(StdIn.readLine()))
     } catch {
       case e: InputMismatchException => println("Error: input mismatch: " + e.getMessage)
+      case e: RecognitionException => println("Error: " + e.getMessage)
     }
   }
 
