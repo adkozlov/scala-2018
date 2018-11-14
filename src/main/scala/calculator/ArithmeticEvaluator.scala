@@ -3,23 +3,23 @@ package calculator
 import calculator.CalculatorParser._
 import org.antlr.v4.runtime.Token
 
-class ArithmeticEvaluator extends CalculatorBaseVisitor[Double] {
+object ArithmeticEvaluator extends CalculatorBaseVisitor[Double] {
 
-  def apply: ArithmeticEvaluator = new ArithmeticEvaluator()
-
-  private def binaryOperation(left: Double, op: Token, right: Double) =
-    op.getType match {
-      case MULT => left * right
-      case DIV => left / right
-      case PLUS => left + right
-      case MINUS => left - right
-    }
+  object ArithmeticEvaluator {
+    def binaryOperation(left: Double, op: Token, right: Double): Double =
+      op.getType match {
+        case MULT => left * right
+        case DIV => left / right
+        case PLUS => left + right
+        case MINUS => left - right
+      }
+  }
 
   override def visitAddend(ctx: AddendContext): Double =
-    binaryOperation(ctx.left.accept(this), ctx.op, ctx.right.accept(this))
+    ArithmeticEvaluator.binaryOperation(ctx.left.accept(this), ctx.op, ctx.right.accept(this))
 
   override def visitMultiplier(ctx: MultiplierContext): Double =
-    binaryOperation(ctx.left.accept(this), ctx.op, ctx.right.accept(this))
+    ArithmeticEvaluator.binaryOperation(ctx.left.accept(this), ctx.op, ctx.right.accept(this))
 
   override def visitSignedAtom(ctx: SignedAtomContext): Double =
     (ctx.sign.getType match {

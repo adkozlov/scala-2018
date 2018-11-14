@@ -2,12 +2,12 @@ package calculator
 
 import calculator.CalculatorParser.{ArithmeticContext, LogicContext}
 
-class CalculatorEvaluator extends CalculatorBaseVisitor[Any] {
+object CalculatorEvaluator extends CalculatorBaseVisitor[AnyVal] {
 
   override def visitLogic(ctx: LogicContext): Boolean =
-    ctx.logicExpression().accept(new LogicEvaluator())
+    ctx.logicExpression().accept(LogicEvaluator)
 
   override def visitArithmetic(ctx: ArithmeticContext): Double =
-    ctx.arithmeticExpression().accept(new ArithmeticEvaluator())
+    ctx.arithmeticExpression().accept(ArithmeticEvaluator)
 
 }

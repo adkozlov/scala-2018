@@ -2,7 +2,7 @@ package calculator
 
 import calculator.CalculatorParser._
 
-class LogicEvaluator extends CalculatorBaseVisitor[Boolean] {
+object LogicEvaluator extends CalculatorBaseVisitor[Boolean] {
 
   override def visitConjunction(ctx: ConjunctionContext): Boolean =
     ctx.left.accept(this) && ctx.right.accept(this)
