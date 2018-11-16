@@ -6,16 +6,12 @@ expression
     : orExpression EOF;
 
 atomExpression
-    : boolLiteral
-    | intLiteral
+    : BoolLiteral
+    | IntLiteral
     | expressionWithBraces
     ;
 
 expressionWithBraces : '(' orExpression ')';
-
-intLiteral : IntLiteral;
-
-boolLiteral : BoolLiteral;
 
 orExpression
     : orExpression OrOp andExpression

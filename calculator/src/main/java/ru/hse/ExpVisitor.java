@@ -29,18 +29,6 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpressionWithBraces(ExpParser.ExpressionWithBracesContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ExpParser#intLiteral}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIntLiteral(ExpParser.IntLiteralContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ExpParser#boolLiteral}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBoolLiteral(ExpParser.BoolLiteralContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link ExpParser#orExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
