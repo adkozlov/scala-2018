@@ -9,7 +9,7 @@ data: expression EOF;
 expression
     :   binaryExpression
     |   Number
-        LeftParen expression RightParen;
+        parenExp;
 
 binaryExpression: logicalExp;
 
@@ -26,10 +26,13 @@ additionExp: multiplyExp ((Plus | Minus) multiplyExp)*;
 
 multiplyExp: atomExp ((Mult | Div | Mod) atomExp)*;
 
-atomExp:  Number | bool | LeftParen expression RightParen;
+atomExp:  Number | bool | parenExp;
+
+parenExp: LeftParen expression RightParen;
 
 bool: True | False;
 
+operation: NotEquals | IsEqual | LessEqual | GreaterEqual | Less | Greater;
 //////////////////////////////////////////////////////////////////////
 
 True: 'true';
