@@ -9,6 +9,7 @@ private case class TreeNode[+A](key: A, left: Tree[A], right: Tree[A]) extends T
 }
 
 private object TreeNode {
+
   def find[A](element: A)(tree: Tree[A])(implicit ordering: Ordering[A]): Option[Tree[A]] = tree match {
     case TreeNil => None
     case TreeNode(key, left, right) =>
@@ -85,6 +86,33 @@ private object TreeNode {
 
   def empty[A]: Tree[A] = TreeNil
 
+  def map[A: Ordering, B: Ordering](function: A => B)(tree: Tree[A]): Tree[B] = tree match {
+    case TreeNil => TreeNil
+    case TreeNode(key, left, right) => new TreeNode[B](function(key), map(function)(left), map(function)(right))
+  }
+
+  def foreach[A: Ordering](action: A => Unit)(tree: Tree[A]): Unit = tree match {
+    case TreeNil =>
+    case TreeNode(key, left, right) =>
+      foreach(action)(left)
+      action(key)
+      foreach(action)(right)
+  }
+
+  def withFilter[A: Ordering](predicate: A => Boolean)(tree: Tree[A]): Tree[A] = tree match {
+    case TreeNil => TreeNil
+    case node@TreeNode(key, left, right) =>
+      if (predicate(key))
+        new TreeNode(key, withFilter(predicate)(left), withFilter(predicate)(right))
+      else
+        withFilter(predicate)(getLeft(removeKey(key)(node)))
+  }
+
+  def inorder[A: Ordering](tree: Tree[A]): Seq[A] = tree match {
+    case TreeNil => Seq.empty[A]
+    case TreeNode(key, left, right) => inorder(left) ++ Seq(key) ++ inorder(right)
+  }
+
   private def removeNode[A](node: TreeNode[A])(implicit ordering: Ordering[A]): Tree[A] = {
     val lower: Option[A] = nearestLower[A](node)
     lower match {
@@ -96,5 +124,10 @@ private object TreeNode {
         new TreeNode(key, newNode.left, newNode.right)
       case _ => node.right
     }
+  }
+
+  private def getLeft[A, B](either: Either[A, B]): A = either match {
+    case Left(a) => a
+    case _ => throw new IllegalArgumentException()
   }
 }
