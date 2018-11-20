@@ -4,7 +4,7 @@ private sealed abstract class Tree[+A]
 
 private case object TreeNil extends Tree[Nothing] {}
 
-private case class TreeNode[+A] private (key: A, left: Tree[A], right: Tree[A]) extends Tree[A] {
+private case class TreeNode[+A](key: A, left: Tree[A], right: Tree[A]) extends Tree[A] {
   def this(key: A) = this(key, TreeNil, TreeNil)
 }
 
@@ -29,6 +29,22 @@ private object TreeNode {
           case Right(message) => Right(message)
         }
         case _ => insert(element)(right) match {
+          case Left(newRight) => Left(new TreeNode(key, left, newRight))
+          case Right(message) => Right(message)
+        }
+      }
+  }
+
+  def removeKey[A](element: A)(tree: Tree[A])(implicit ordering: Ordering[A]): Either[Tree[A], String] = tree match {
+    case TreeNil => Right("Such element does not exist")
+    case node@TreeNode(key, left, right) =>
+      ordering.compare(element, key) match {
+        case 0 => Left(removeNode[A](node))
+        case r if r < 0 => removeKey(element)(left) match {
+          case Left(newLeft) => Left(new TreeNode(key, newLeft, right))
+          case Right(message) => Right(message)
+        }
+        case _ => removeKey(element)(right) match {
           case Left(newRight) => Left(new TreeNode(key, left, newRight))
           case Right(message) => Right(message)
         }
@@ -68,4 +84,17 @@ private object TreeNode {
   }
 
   def empty[A]: Tree[A] = TreeNil
+
+  private def removeNode[A](node: TreeNode[A])(implicit ordering: Ordering[A]): Tree[A] = {
+    val lower: Option[A] = nearestLower[A](node)
+    lower match {
+      case Some(key: A) =>
+        var newNode: TreeNode[A] = removeKey(key)(node) match {
+          case Left(newTree: TreeNode[A]) => newTree
+          case _ => node
+        }
+        new TreeNode(key, newNode.left, newNode.right)
+      case _ => node.right
+    }
+  }
 }

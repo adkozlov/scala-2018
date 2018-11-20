@@ -8,7 +8,14 @@ sealed class BinarySearchTree[A] private (tree: Tree[A])(implicit val ordering: 
     case _ => None
   }
 
+  def contains(element: A): Boolean = find(element).isDefined
+
   def insert(element: A): Either[BinarySearchTree[A], String] = TreeNode.insert(element)(tree) match {
+    case Left(newTree) => Left(new BinarySearchTree(newTree))
+    case Right(message) => Right(message)
+  }
+
+  def removeKey(key: A): Either[BinarySearchTree[A], String] = TreeNode.removeKey(key)(tree) match {
     case Left(newTree) => Left(new BinarySearchTree(newTree))
     case Right(message) => Right(message)
   }
