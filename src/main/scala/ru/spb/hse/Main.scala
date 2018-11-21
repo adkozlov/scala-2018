@@ -1,13 +1,12 @@
-package ru.hse.spb
-
-import ru.spb.hse.Calculator
+package ru.spb.hse
 
 object Main {
   def main(args: Array[String]): Unit = {
-    if (args.length != 1) {
-      println("Provide an expression to calculate as an argument")
-      return
+    val output = args match {
+      case Array(argument) => argument + " = " + Calculator.run(argument)
+      case _ => "Provide an expression to calculate as an argument"
     }
-    println(args(0) + " = " + Calculator.run(args(0)))
+
+    println(output)
   }
 }

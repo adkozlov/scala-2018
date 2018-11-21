@@ -2,36 +2,53 @@ package ru.spb.hse
 import ru.spb.hse.calculator.ExpParser
 import ru.spb.hse.calculator.ExpBaseVisitor
 
-class ExpVisitor extends ExpBaseVisitor[Int] {
-  override def visitExpression(ctx: ExpParser.ExpressionContext): Int = {
-    if (ctx.inBraces != null) {
-      return ctx.inBraces.accept(this)
+class ReturnValue(val value: Int, val wasBoolean: Boolean = false)
+
+object ExpVisitor extends ExpBaseVisitor[ReturnValue] {
+  private val True = 1
+  private val False = 0
+  override def visitExpression(ctx: ExpParser.ExpressionContext): ReturnValue = {
+    ctx.inBraces match {
+      case null =>
+      case context => return context.accept(this)
     }
-    if (ctx.LITERAL != null) {
-      return ctx.LITERAL().getText.toInt
+    ctx.LITERAL match {
+      case null =>
+      case value => return new ReturnValue(value.getText.toInt)
     }
-    if (ctx.BOOL_LITERAL != null) {
-      ctx.BOOL_LITERAL.toString match {
-        case "true" => return 1
-        case "false" => return 0
+
+    ctx.BOOL_LITERAL match {
+      case null =>
+      case value => return value.toString match {
+        case "true" => new ReturnValue(True, true)
+        case "false" => new ReturnValue(False, true)
       }
     }
-    val left = ctx.left.accept(this)
-    val right = ctx.right.accept(this)
+    val left = ctx.left.accept(this).value
+    val right = ctx.right.accept(this).value
     ctx.operator.getText match {
-      case "*" => left * right
-      case "/" => left / right
-      case "%" => left % right
-      case "+" => left + right
-      case "-" => left - right
-      case ">" => if (left > right) 1 else 0
-      case "<" => if (left < right) 1 else 0
-      case ">=" => if (left >= right) 1 else 0
-      case "<=" => if (left <= right) 1 else 0
-      case "==" => if (left == right) 1 else 0
-      case "!=" => if (left != right) 1 else 0
-      case "&&" => if (left != 0 && right != 0) 1 else 0
-      case "||" => if (left != 0 || right != 0) 1 else 0
+      case operation @ ("*" | "/" | "%" | "+" | "-") =>
+        new ReturnValue(makeArithmetic(operation, left, right))
+      case operation => new ReturnValue(
+        if (makeLogic(operation, left, right)) True else False, true)
     }
+  }
+
+  private def makeArithmetic(operation : String, left: Int, right: Int): Int = operation match {
+    case "*" => left * right
+    case "/" => left / right
+    case "%" => left % right
+    case "+" => left + right
+    case "-" => left - right
+  }
+
+  private def makeLogic(operation: String, left: Int, right: Int): Boolean = operation match {
+    case "<" => left < right
+    case ">=" => left >= right
+    case "<=" => left <= right
+    case "==" => left == right
+    case "!=" => left != right
+    case "&&" => left != 0 && right != 0
+    case "||" => left != 0 || right != 0
   }
 }
