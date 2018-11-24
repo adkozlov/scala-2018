@@ -58,7 +58,7 @@ sealed class AvlTree[A] private[AvlTree](tree: Tree[A])(implicit val ordering: O
 }
 
 object AvlTree {
-  def apply[A: Ordering](element: A): AvlTree[A] = new AvlTree[A](new AvlNode[A](element))
+  def apply[A: Ordering](element: A): AvlTree[A] = new AvlTree[A](AvlNode[A](element))
   def apply[A: Ordering](elements: A*): AvlTree[A] = {
     val tree = new AvlTree[A]()
     elements.foreach(tree +)

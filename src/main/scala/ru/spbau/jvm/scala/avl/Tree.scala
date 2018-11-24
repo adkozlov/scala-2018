@@ -2,11 +2,9 @@ package ru.spbau.jvm.scala.avl
 
 private sealed abstract class Tree[+A]
 
-private case object AvlNil extends Tree[Nothing] {}
+private case object AvlNil extends Tree[Nothing]
 
-private case class AvlNode[+A](key: A, left: Tree[A], right: Tree[A]) extends Tree[A] {
-  def this(key: A) = this(key, AvlNil, AvlNil)
-}
+private case class AvlNode[+A](key: A, left: Tree[A] = AvlNil, right: Tree[A] = AvlNil) extends Tree[A]
 
 private object AvlNode {
 
@@ -26,16 +24,16 @@ private object AvlNode {
   }
 
   def insert[A](element: A)(tree: Tree[A])(implicit ordering: Ordering[A]): Either[Tree[A], String] = tree match {
-    case AvlNil => Left(new AvlNode(element))
+    case AvlNil => Left(AvlNode(element))
     case AvlNode(key, left, right) =>
       ordering.compare(element, key) match {
         case 0 => Right("Such key already is in tree")
         case r if r < 0 => insert(element)(left) match {
-          case Left(newLeft) => Left(AvlUtils.rebalanceIfNeeded(new AvlNode(key, newLeft, right)))
+          case Left(newLeft) => Left(AvlUtils.rebalanceIfNeeded(AvlNode(key, newLeft, right)))
           case Right(message) => Right(message)
         }
         case _ => insert(element)(right) match {
-          case Left(newRight) => Left(AvlUtils.rebalanceIfNeeded(new AvlNode(key, left, newRight)))
+          case Left(newRight) => Left(AvlUtils.rebalanceIfNeeded(AvlNode(key, left, newRight)))
           case Right(message) => Right(message)
         }
       }
@@ -47,11 +45,11 @@ private object AvlNode {
       ordering.compare(element, key) match {
         case 0 => Left(removeNode[A](node))
         case r if r < 0 => removeKey(element)(left) match {
-          case Left(newLeft) => Left(AvlUtils.rebalanceIfNeeded(new AvlNode(key, newLeft, right)))
+          case Left(newLeft) => Left(AvlUtils.rebalanceIfNeeded(AvlNode(key, newLeft, right)))
           case Right(message) => Right(message)
         }
         case _ => removeKey(element)(right) match {
-          case Left(newRight) => Left(AvlUtils.rebalanceIfNeeded(new AvlNode(key, left, newRight)))
+          case Left(newRight) => Left(AvlUtils.rebalanceIfNeeded(AvlNode(key, left, newRight)))
           case Right(message) => Right(message)
         }
       }
@@ -93,7 +91,7 @@ private object AvlNode {
 
   def map[A, B](function: A => B)(tree: Tree[A]): Tree[B] = tree match {
     case AvlNil => AvlNil
-    case AvlNode(key, left, right) => new AvlNode[B](function(key), map(function)(left), map(function)(right))
+    case AvlNode(key, left, right) => AvlNode[B](function(key), map(function)(left), map(function)(right))
   }
 
   def foreach[A](action: A => Unit)(tree: Tree[A]): Unit = tree match {
@@ -108,7 +106,7 @@ private object AvlNode {
     case AvlNil => AvlNil
     case node@AvlNode(key, left, right) =>
       if (predicate(key)) {
-        new AvlNode(key, withFilter(predicate)(left), withFilter(predicate)(right))
+        AvlNode(key, withFilter(predicate)(left), withFilter(predicate)(right))
       } else {
         withFilter(predicate)(removeNode(node))
       }
@@ -135,9 +133,9 @@ private object AvlNode {
   private def replaceKey[A](tree: Tree[A])(oldElement: A)(newElement: A)(implicit ordering: Ordering[A]): Tree[A] = tree match {
     case AvlNil => AvlNil
     case AvlNode(key, left, right) => ordering.compare(oldElement, key) match {
-      case 0 => new AvlNode[A](newElement, left, right)
-      case r if r < 0 => new AvlNode[A](key, replaceKey(left)(oldElement)(newElement), right)
-      case _ => new AvlNode[A](key, left, replaceKey(right)(oldElement)(newElement))
+      case 0 => AvlNode[A](newElement, left, right)
+      case r if r < 0 => AvlNode[A](key, replaceKey(left)(oldElement)(newElement), right)
+      case _ => AvlNode[A](key, left, replaceKey(right)(oldElement)(newElement))
     }
   }
 
@@ -154,13 +152,13 @@ private object AvlNode {
 
     private def rotateLeft[A](tree: Tree[A]): Tree[A] = tree match {
       case AvlNode(parentKey, parentLeft, AvlNode(childKey, childLeft, childRight)) =>
-        new AvlNode(childKey, new AvlNode(parentKey, parentLeft, childLeft), childRight)
+        AvlNode(childKey, AvlNode(parentKey, parentLeft, childLeft), childRight)
       case _ => throw new AvlRotationException("left rotation", tree)
     }
 
     private def rotateRight[A](tree: Tree[A]): Tree[A] = tree match {
       case AvlNode(parentKey, AvlNode(childKey, childLeft, childRight), parentRight) =>
-        new AvlNode(childKey, childLeft, new AvlNode(parentKey, childRight, parentRight))
+        AvlNode(childKey, childLeft, AvlNode(parentKey, childRight, parentRight))
       case _ => throw new AvlRotationException("right rotation", tree)
     }
 
@@ -173,7 +171,7 @@ private object AvlNode {
     private def rebalanceToRight[A](tree: Tree[A]): Tree[A] = tree match {
       case node@AvlNode(key, left, right) => balance(left) match {
         case r if r >= 0 => rotateRight(tree)
-        case _ => rotateRight(new AvlNode[A](key, rotateLeft(left), right))
+        case _ => rotateRight(AvlNode(key, rotateLeft(left), right))
       }
       case _ => throw new AvlRotationException("left rotation", tree)
     }
@@ -181,7 +179,7 @@ private object AvlNode {
     private def rebalanceToLeft[A](tree: Tree[A]): Tree[A] = tree match {
       case node@AvlNode(key, left, right) => balance(right) match {
         case r if r <= 0 => rotateLeft(tree)
-        case _ => rotateLeft(new AvlNode[A](key, left, rotateRight(right)))
+        case _ => rotateLeft(AvlNode(key, left, rotateRight(right)))
       }
       case _ => throw new AvlRotationException("right rotation", tree)
     }
