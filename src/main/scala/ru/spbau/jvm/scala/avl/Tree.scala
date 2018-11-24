@@ -79,12 +79,12 @@ private object AvlNode {
     case AvlNode(_, _, right) => max(right)
   }
 
-  def nearestLower[A](tree: Tree[A]): Option[A] = tree match {
+  def predecessor[A](tree: Tree[A]): Option[A] = tree match {
     case AvlNil => None
     case AvlNode(_, left, _) => max(left)
   }
 
-  def nearestUpper[A](tree: Tree[A]): Option[A] = tree match {
+  def successor[A](tree: Tree[A]): Option[A] = tree match {
     case AvlNil => None
     case AvlNode(_, _, right) => min(right)
   }
@@ -120,7 +120,7 @@ private object AvlNode {
   }
 
   private def removeNode[A](node: AvlNode[A])(implicit ordering: Ordering[A]): Tree[A] = {
-    val lower: Option[A] = nearestLower[A](node)
+    val lower: Option[A] = predecessor[A](node)
     lower match {
       case Some(newKey) =>
         var newNode: AvlNode[A] = removeKey(newKey)(node) match {

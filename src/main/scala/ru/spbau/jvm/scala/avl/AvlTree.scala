@@ -46,8 +46,8 @@ sealed class AvlTree[A] private[AvlTree](tree: Tree[A])(implicit val ordering: O
   def min: Option[A] = AvlNode.min(tree)
   def max: Option[A] = AvlNode.max(tree)
 
-  def nearestLower: Option[A] = AvlNode.nearestLower(tree)
-  def nearestUpper: Option[A] = AvlNode.nearestUpper(tree)
+  def predecessor: Option[A] = AvlNode.predecessor(tree)
+  def successor: Option[A] = AvlNode.successor(tree)
 
   def map[B: Ordering](function: A => B): AvlTree[B] = new AvlTree(AvlNode.map(function)(tree))
   def foreach(action: A => Unit): Unit = AvlNode.foreach(action)(tree)

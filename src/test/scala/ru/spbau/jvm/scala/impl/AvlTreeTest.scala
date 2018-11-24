@@ -25,8 +25,8 @@ class AvlTreeTest extends AssertionsForJUnit {
     assert(tree.key.contains(2))
     assert(tree.min.contains(1))
     assert(tree.max.contains(5))
-    assert(tree.nearestLower.contains(1))
-    assert(tree.nearestUpper.contains(3))
+    assert(tree.predecessor.contains(1))
+    assert(tree.successor.contains(3))
   }
 
   /*
@@ -52,8 +52,8 @@ class AvlTreeTest extends AssertionsForJUnit {
     assert(tree.key.contains(2))
     assert(tree.min.contains(1))
     assert(tree.max.contains(5))
-    assert(tree.nearestLower.contains(1))
-    assert(tree.nearestUpper.contains(3))
+    assert(tree.predecessor.contains(1))
+    assert(tree.successor.contains(3))
   }
 
   /*
@@ -71,8 +71,8 @@ class AvlTreeTest extends AssertionsForJUnit {
     assert(tree.size == 4)
     assert(tree.height == 3)
     assert(tree.key.contains(4))
-    assert(tree.nearestLower.contains(3))
-    assert(tree.nearestUpper.contains(5))
+    assert(tree.predecessor.contains(3))
+    assert(tree.successor.contains(5))
     assert(tree.max.contains(5))
     assert(!tree.contains(1))
 
@@ -80,16 +80,16 @@ class AvlTreeTest extends AssertionsForJUnit {
     assert(tree.size == 3)
     assert(tree.height == 2)
     assert(tree.key.contains(4))
-    assert(tree.nearestLower.contains(3))
-    assert(tree.nearestUpper.contains(5))
+    assert(tree.predecessor.contains(3))
+    assert(tree.successor.contains(5))
     assert(tree.max.contains(5))
 
     tree = tree - 3 match { case Left(a) => a; case _ => tree }
     assert(tree.size == 2)
     assert(tree.height == 2)
     assert(tree.key.contains(4))
-    assert(tree.nearestLower.isEmpty)
-    assert(tree.nearestUpper.contains(5))
+    assert(tree.predecessor.isEmpty)
+    assert(tree.successor.contains(5))
     assert(tree.max.contains(5))
   }
 
