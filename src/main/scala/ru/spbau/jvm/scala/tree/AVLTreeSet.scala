@@ -42,7 +42,7 @@ class AVLTreeSet[A] private (private val tree: AVLTree[A] = AVLNil)(implicit ord
   override def diff(other: MyBaseSet[A]): AVLTreeSet[A] = this -- other
 
   class AVLTreeIterator extends MyIterator[A] {
-    private var stack: List[AVLTree[A]] = Nil
+    private var stack: MyList[AVLTree[A]] = MyNil
 
     {
       goLeft(tree)
@@ -51,7 +51,7 @@ class AVLTreeSet[A] private (private val tree: AVLTree[A] = AVLNil)(implicit ord
     private def goLeft(tree: AVLTree[A]): Unit = {
       var node = tree
       while (node != AVLNil) {
-        stack = node :: stack
+        stack = MyCons(node, stack)
         val AVLNode(_, left: AVLTree[A], _) = node
         node = left
       }
@@ -60,8 +60,8 @@ class AVLTreeSet[A] private (private val tree: AVLTree[A] = AVLNil)(implicit ord
     def hasNext: Boolean = stack.nonEmpty
 
     def next: A = stack match {
-      case Nil => throw new NoSuchElementException()
-      case node :: st =>
+      case MyNil => throw new NoSuchElementException()
+      case MyCons(node, st) =>
         stack = st
         node match {
           case AVLNil => throw new IllegalStateException()
