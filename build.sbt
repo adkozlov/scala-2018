@@ -5,6 +5,5 @@ version := "0.1"
 scalaVersion := "2.12.7"
 
 libraryDependencies ++= Seq(
-  "com.novocode" % "junit-interface" % "0.11" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.5" % Test
 )
-
