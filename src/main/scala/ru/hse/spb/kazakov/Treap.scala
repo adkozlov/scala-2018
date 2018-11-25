@@ -89,13 +89,15 @@ class Treap[A](implicit ordering: Ordering[A]) extends Collection[A] {
     dfs(root)
   }
 
-  def map[B](fun: Function[_ >: A, B])(implicit ordering: Ordering[B]): Treap[B] = {
+  def map[B](fun: Function[_ >: A, B])(
+      implicit ordering: Ordering[B]): Treap[B] = {
     val result = new Treap[B]()(ordering)
     foreach(e => result.add(fun.apply(e)))
     result
   }
 
-  def flatMap[B](fun: Function[_ >: A, Treap[B]])(implicit ordering: Ordering[B]): Treap[B] = {
+  def flatMap[B](fun: Function[_ >: A, Treap[B]])(
+      implicit ordering: Ordering[B]): Treap[B] = {
     val result = new Treap[B]()(ordering)
     foreach(e => result.addAll(fun.apply(e)))
     result
