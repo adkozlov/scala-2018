@@ -1,6 +1,6 @@
 package ru.hse.spb.kazakov
 
-class Treap[A](implicit ordering: Ordering[A]) extends Collection[A] {
+class Treap[A](implicit ordering: Ordering[_ >: A]) extends Collection[A] {
   private var _size = 0
   private var root: Node = _
 
