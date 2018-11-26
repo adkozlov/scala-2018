@@ -17,21 +17,21 @@ sealed class AvlTree[A] private[AvlTree](tree: Tree[A])(implicit val ordering: O
 
   def contains(element: A): Boolean = find(element).isDefined
 
-  def +(element: A): Either[AvlTree[A], String] = AvlNode.insert(element)(tree) match {
-    case Left(newTree) => Left(new AvlTree(newTree))
-    case Right(message) => Right(message)
+  def +(element: A): Either[String, AvlTree[A]] = AvlNode.insert(element)(tree) match {
+    case Left(message) => Left(message)
+    case Right(newTree) => Right(new AvlTree(newTree))
   }
 
-  def -(key: A): Either[AvlTree[A], String] = AvlNode.removeKey(key)(tree) match {
-    case Left(newTree) => Left(new AvlTree(newTree))
-    case Right(message) => Right(message)
+  def -(key: A): Either[String, AvlTree[A]] = AvlNode.removeKey(key)(tree) match {
+    case Left(message) => Left(message)
+    case Right(newTree) => Right(new AvlTree(newTree))
   }
 
   def ++(otherBST: AvlTree[A]): AvlTree[A] = {
     var mergedTree = this
     otherBST.foreach(key => {
       mergedTree = mergedTree + key match {
-        case Left(newTree) => newTree
+        case Right(newTree) => newTree
         case _ => mergedTree
       }
     })

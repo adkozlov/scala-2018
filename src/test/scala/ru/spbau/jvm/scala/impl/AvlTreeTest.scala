@@ -191,8 +191,8 @@ class AvlTreeTest extends AssertionsForJUnit {
     assertResult(Some(List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))) { AvlTree.unapplySeq(tree4) }
   }
 
-  private def renewTree[A: Ordering](oldTree: AvlTree[A])(newTreeOrWarning: Either[AvlTree[A], String]): AvlTree[A] = newTreeOrWarning match {
-    case Left(newTree) => newTree
+  private def renewTree[A: Ordering](oldTree: AvlTree[A])(newTreeOrWarning: Either[String, AvlTree[A]]): AvlTree[A] = newTreeOrWarning match {
+    case Right(newTree) => newTree
     case _ => oldTree
   }
 }

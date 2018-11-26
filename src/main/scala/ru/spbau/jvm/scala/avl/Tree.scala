@@ -23,34 +23,34 @@ private object AvlNode {
       }
   }
 
-  def insert[A](element: A)(tree: Tree[A])(implicit ordering: Ordering[A]): Either[Tree[A], String] = tree match {
-    case AvlNil => Left(AvlNode(element))
+  def insert[A](element: A)(tree: Tree[A])(implicit ordering: Ordering[A]): Either[String, Tree[A]] = tree match {
+    case AvlNil => Right(AvlNode(element))
     case AvlNode(key, left, right) =>
       ordering.compare(element, key) match {
-        case 0 => Right("Such key already is in tree")
+        case 0 => Left("Such key already is in tree")
         case r if r < 0 => insert(element)(left) match {
-          case Left(newLeft) => Left(AvlUtils.rebalanceIfNeeded(AvlNode(key, newLeft, right)))
-          case Right(message) => Right(message)
+          case Left(message) => Left(message)
+          case Right(newLeft) => Right(AvlUtils.rebalanceIfNeeded(AvlNode(key, newLeft, right)))
         }
         case _ => insert(element)(right) match {
-          case Left(newRight) => Left(AvlUtils.rebalanceIfNeeded(AvlNode(key, left, newRight)))
-          case Right(message) => Right(message)
+          case Left(message) => Left(message)
+          case Right(newRight) => Right(AvlUtils.rebalanceIfNeeded(AvlNode(key, left, newRight)))
         }
       }
   }
 
-  def removeKey[A](element: A)(tree: Tree[A])(implicit ordering: Ordering[A]): Either[Tree[A], String] = tree match {
-    case AvlNil => Right("Such element does not exist")
+  def removeKey[A](element: A)(tree: Tree[A])(implicit ordering: Ordering[A]): Either[String, Tree[A]] = tree match {
+    case AvlNil => Left("Such element does not exist")
     case node@AvlNode(key, left, right) =>
       ordering.compare(element, key) match {
-        case 0 => Left(removeNode[A](node))
+        case 0 => Right(removeNode[A](node))
         case r if r < 0 => removeKey(element)(left) match {
-          case Left(newLeft) => Left(AvlUtils.rebalanceIfNeeded(AvlNode(key, newLeft, right)))
-          case Right(message) => Right(message)
+          case Left(message) => Left(message)
+          case Right(newLeft) => Right(AvlUtils.rebalanceIfNeeded(AvlNode(key, newLeft, right)))
         }
         case _ => removeKey(element)(right) match {
-          case Left(newRight) => Left(AvlUtils.rebalanceIfNeeded(AvlNode(key, left, newRight)))
-          case Right(message) => Right(message)
+          case Left(message) => Left(message)
+          case Right(newRight) => Right(AvlUtils.rebalanceIfNeeded(AvlNode(key, left, newRight)))
         }
       }
   }
@@ -122,7 +122,7 @@ private object AvlNode {
     lower match {
       case Some(newKey) =>
         var newNode: AvlNode[A] = removeKey(newKey)(node) match {
-          case Left(newTree: AvlNode[A]) => newTree
+          case Right(newTree: AvlNode[A]) => newTree
           case _ => node
         }
         replaceKey(newNode)(node.key)(newKey)
