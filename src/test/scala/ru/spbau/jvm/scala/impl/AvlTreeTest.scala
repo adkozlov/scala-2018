@@ -15,7 +15,7 @@ class AvlTreeTest extends AssertionsForJUnit {
    */
   @Test
   def `insert some different numbers`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
+    var tree: AvlTree[Int] = AvlTree[Int]()
     Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
     assert(tree.find(1).nonEmpty)
     assert(tree.find(0).isEmpty)
@@ -42,7 +42,7 @@ class AvlTreeTest extends AssertionsForJUnit {
    */
   @Test
   def `insert some equal numbers`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
+    var tree: AvlTree[Int] = AvlTree[Int]()
     Array(1, 2, 3, 4, 5, 1, 2, 3, 4, 5).foreach(i => tree = renewTree(tree)(tree + i))
     assert(tree.find(1).nonEmpty)
     assert(tree.find(0).isEmpty)
@@ -65,8 +65,7 @@ class AvlTreeTest extends AssertionsForJUnit {
    */
   @Test
   def `remove present numbers`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
-    Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
+    var tree: AvlTree[Int] = AvlTree[Int](3, 1, 2, 5, 4)
     tree = renewTree(tree)(tree - 1)
     assert(tree.size == 4)
     assert(tree.height == 3)
@@ -102,8 +101,7 @@ class AvlTreeTest extends AssertionsForJUnit {
    */
   @Test
   def `remove non-present numbers`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
-    Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
+    var tree: AvlTree[Int] = AvlTree[Int](3, 1, 2, 5, 4)
     Array(3, 7, 8).foreach(i => tree = renewTree(tree)(tree - i))
 
     assert(tree.size == 4)
@@ -116,15 +114,13 @@ class AvlTreeTest extends AssertionsForJUnit {
 
   @Test
   def `test inorder function`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
-    Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
+    var tree: AvlTree[Int] = AvlTree[Int](3, 1, 2, 5, 4)
     assertResult(Some(List(1, 2, 3, 4, 5)))  { AvlTree.unapplySeq(tree) }
   }
 
   @Test
   def `test map function`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
-    Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
+    var tree: AvlTree[Int] = AvlTree[Int](3, 1, 2, 5, 4)
     assertResult(Some(List("2", "4", "6", "8", "10"))) { AvlTree.unapplySeq(tree.map(i => (i * 2).toString)) }
   }
 
@@ -137,16 +133,14 @@ class AvlTreeTest extends AssertionsForJUnit {
    */
   @Test
   def `test filter function`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
-    Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
+    var tree: AvlTree[Int] = AvlTree[Int](3, 1, 2, 5, 4)
     assertResult(Some(List(2, 4))) { AvlTree.unapplySeq(tree.withFilter(i => i % 2 == 0)) }
     assertResult(Some(List.empty)) { AvlTree.unapplySeq(tree.withFilter(i => i > 5)) }
   }
 
   @Test
   def `test foldLeft function`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
-    Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
+    var tree: AvlTree[Int] = AvlTree[Int](3, 1, 2, 5, 4)
     val add: (Int, Int) => Int = _ + _
     val sub: (Int, Int) => Int = _ - _
 
@@ -158,8 +152,7 @@ class AvlTreeTest extends AssertionsForJUnit {
 
   @Test
   def `test foldRight function`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
-    Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
+    var tree: AvlTree[Int] = AvlTree[Int](3, 1, 2, 5, 4)
     val add: (Int, Int) => Int = _ + _
     val sub: (Int, Int) => Int = _ - _
 
@@ -171,8 +164,7 @@ class AvlTreeTest extends AssertionsForJUnit {
 
   @Test
   def `test foldRight is lazy by second argument`(): Unit = {
-    var tree: AvlTree[Int] = new AvlTree[Int]()
-    Array(3, 1, 2, 5, 4).foreach(i => tree = renewTree(tree)(tree + i))
+    var tree: AvlTree[Int] = AvlTree[Int](3, 1, 2, 5, 4)
     val `+?`: (Int, Int) => Int = (a, b) => if (a % 2 == 0) a else a + b
 
     // foldr +? 0 [1, 2, 3, 4, 5] = 1 +? (foldr +? 0 [2, 3, 4, 5]) = 1 +? (2 +? (foldr +? 0 [3, 4, 5])) = 1 +? 2 = 3
@@ -181,10 +173,8 @@ class AvlTreeTest extends AssertionsForJUnit {
 
   @Test
   def `test trees merging`(): Unit = {
-    var tree1: AvlTree[Int] = new AvlTree[Int]()
-    Array(6, 7, 2, 9, 1).foreach(i => tree1 = renewTree(tree1)(tree1 + i))
-    var tree2: AvlTree[Int] = new AvlTree[Int]()
-    Array(4, 8, 5, 3, 10).foreach(i => tree2 = renewTree(tree2)(tree2 + i))
+    var tree1: AvlTree[Int] = AvlTree[Int](6, 7, 2, 9, 1)
+    var tree2: AvlTree[Int] = AvlTree[Int](4, 8, 5, 3, 10)
     val tree3 = tree1 ++ tree2
     val tree4 = tree2 ++ tree1
     assertResult(Some(List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))) { AvlTree.unapplySeq(tree3) }

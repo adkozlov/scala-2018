@@ -1,12 +1,6 @@
 package ru.spbau.jvm.scala.avl
 
-sealed class AvlTree[A] private[AvlTree](tree: Tree[A])(implicit val ordering: Ordering[A]) {
-  def this()(implicit ord: Ordering[A]) = this(AvlNode.empty)(ord)
-
-  def this(elements: Array[A])(implicit ord: Ordering[A]) = {
-    this()
-    elements.foreach(this.+)
-  }
+sealed class AvlTree[A] private[AvlTree](tree: Tree[A] = AvlNode.empty)(implicit val ordering: Ordering[A]) {
 
   def key: Option[A] = AvlNode.key(tree)
 
@@ -60,8 +54,8 @@ sealed class AvlTree[A] private[AvlTree](tree: Tree[A])(implicit val ordering: O
 object AvlTree {
   def apply[A: Ordering](element: A): AvlTree[A] = new AvlTree[A](AvlNode[A](element))
   def apply[A: Ordering](elements: A*): AvlTree[A] = {
-    val tree = new AvlTree[A]()
-    elements.foreach(tree +)
+    var tree = new AvlTree[A]()
+    elements.foreach(element => tree = tree + element match { case Left(_) => tree; case Right(newTree) => newTree })
     tree
   }
 
