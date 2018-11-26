@@ -276,4 +276,29 @@ class AVLTreeSetTest extends FlatSpec with Matchers {
     val mapped = set.map(element => element * 0.1)
     mapped.containsAll(setExpected) should be(true)
   }
+
+  "flatMap method" should "converts each element to a new one and returns new set" in {
+    val set = new AVLTreeSet[Int]
+    val result = new Array[Double](4)
+    val expected = Array(0.8, 1, 4, 5)
+    set.add(10)
+    set.add(8)
+    val mapped = set.flatMap(element => {
+      val newTreeSet = new AVLTreeSet[Double]
+      newTreeSet.add(element * 0.1)
+      newTreeSet.add(element * 0.5)
+      newTreeSet
+    })
+    mapped.toArray(result) should be(expected)
+  }
+
+  "filter method" should "remove from set all given elements that satisfies given predicate and return new set" in {
+    val setCheck = new AVLTreeSet[Int]
+    setCheck.add(10)
+    setCheck.add(9)
+    setCheck.add(12)
+    val expected = Array(9, 10)
+    val filtered = new Array[Int](2)
+    setCheck.filter({ el => el > 11 }).toArray(filtered) should be(expected)
+  }
 }

@@ -17,6 +17,32 @@ class AVLTreeSet[E](implicit val ordering: Ordering[E]) extends MutableCollectio
     this
   }
 
+  def map[B](f: E => B)(implicit ordering: Ordering[B]): AVLTreeSet[B] = {
+    val newCollection = new AVLTreeSet[B]
+    for (element <- this) {
+      newCollection.add(f(element))
+    }
+    newCollection
+  }
+
+  def flatMap[B](f: E => AVLTreeSet[B])(implicit ordering: Ordering[B]): AVLTreeSet[B] = {
+    val newCollection = new AVLTreeSet[B]
+    for (element <- this) {
+      newCollection.addAll(f(element))
+    }
+    newCollection
+  }
+
+  def filter(f: E => Boolean): AVLTreeSet[E] = {
+    val newCollection = new AVLTreeSet[E]
+    for (element <- this) {
+      if (!f(element)) {
+        newCollection.add(element)
+      }
+    }
+    newCollection
+  }
+
   override def remove(key: E): Boolean = {
     var node = findNode(key).orNull
     if (node == null) return false
@@ -232,14 +258,6 @@ class AVLTreeSet[E](implicit val ordering: Ordering[E]) extends MutableCollectio
       }
     }
     Option(successor)
-  }
-
-  def map[B](f: E => B)(implicit ordering: Ordering[B]): AVLTreeSet[B] = {
-    val newCollection = new AVLTreeSet[B]
-    for (element <- this) {
-      newCollection.add(f(element))
-    }
-    newCollection
   }
 
   class AVLNode private[AVLTreeSet](k: E, p: AVLNode = null) {
