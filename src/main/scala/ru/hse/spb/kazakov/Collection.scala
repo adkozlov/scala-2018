@@ -15,6 +15,8 @@ trait Collection[A] {
 
   def clear(): Unit
 
+  def iterator: Iterator[A]
+
   def containsAll(collection: Collection[_ <: A]): Boolean = {
     var result = true
     collection.foreach(e => result &= contains(e))
@@ -33,5 +35,10 @@ trait Collection[A] {
     result
   }
 
-  def foreach[B](fun: (_ >: A) => B): Unit
+  def foreach[B](fun: (_ >: A) => B): Unit = {
+    val _iterator = iterator
+    while (_iterator.hasNext) {
+      fun.apply(_iterator.next())
+    }
+  }
 }

@@ -1,5 +1,7 @@
 package ru.hse.spb.kazakov
 
+import java.util.ConcurrentModificationException
+
 import org.scalatest.FlatSpec
 
 import scala.collection.mutable.ListBuffer
@@ -107,7 +109,7 @@ class TreapTest extends FlatSpec {
     assert(treap.isEmpty)
   }
 
-  it should "be iterable in sorted order with for comprehension" in {
+  it should "be iterable in sorted order using for comprehension" in {
     val treap = new Treap[String]()(Ordering.by[String, Int](_.length))
     treap.add("max value")
     treap.add("min")
@@ -122,40 +124,63 @@ class TreapTest extends FlatSpec {
     assert(foreach.toList == List("min", "mean", "mean2", "max value"))
   }
 
-  it should "build correct treap using map" in {
+  it should "be iterable in sorted order using for comprehension with a condition" in {
+    val treap = new Treap[String]()(Ordering.by[String, Int](_.length))
+    treap.add("max value")
+    treap.add("min")
+    treap.add("mean2")
+    treap.add("mean")
+
+    var foreach = new ListBuffer[String]
+    for (e: String <- treap if e.length == 4 || e.length == 5) {
+      foreach += e
+    }
+
+    assert(foreach.toList == List("mean", "mean2"))
+  }
+
+  "Yield" should "build correct treap" in {
+    val treap = fromList(List("azqwe", "xanm", "bcfgre", "xzdc"))
+    val mapped = for(e <- treap) yield {
+      e.codePointAt(1)
+    }
+    assert(Utils.toList(mapped) == List(97, 99, 122, 122))
+  }
+
+  "A Treap" should "build correct treap using map" in {
     val treap = fromList(List("azqwe", "xanm", "bcfgre", "xzdc"))
     val mapped = treap.map(_.codePointAt(1))
-    assert(toList(mapped) == List(97, 99, 122, 122))
+    assert(Utils.toList(mapped) == List(97, 99, 122, 122))
   }
 
   it should "not be modified by map" in {
     val treap = fromList(List("az", "xa", "bc", "xz"))
     treap.map(_.codePointAt(0))
-    assert(toList(treap) == List("az", "bc", "xa", "xz"))
+    assert(Utils.toList(treap) == List("az", "bc", "xa", "xz"))
   }
 
   it should "build correct treap using flatMap" in {
     val treap = fromList(List("az", "xa", "bc"))
     val mapped = treap.flatMap[Char]((s: String) => fromList(s.seq.toList))
-    assert(toList(mapped) == List('a', 'a', 'b', 'c', 'x', 'z'))
+    assert(Utils.toList(mapped) == List('a', 'a', 'b', 'c', 'x', 'z'))
   }
 
   it should "not be modified by flatMap" in {
     val treap = fromList(List("b", "tr", "aa"))
     treap.flatMap[Char]((s: String) => fromList(s.seq.toList))
-    assert(toList(treap) == List("aa", "b", "tr"))
+    assert(Utils.toList(treap) == List("aa", "b", "tr"))
   }
 
   it should "build correct treap using filter" in {
     val treap = fromList(List(0, -100, 55, -1011))
     val filtered = treap.filter((n: Int) => n % 2 == 0)
-    assert(toList(filtered) == List(-100, 0))
+    assert(Utils.toList(filtered) == List(-100, 0))
   }
 
   it should "not be modified by filter" in {
     val treap = fromList(List(0, -100, 5, -101))
     treap.filter((n: Int) => n < 0)
-    assert(toList(treap) == List(-101, -100, 0, 5))
+    assert(Utils.toList(treap) == List(-101, -100, 0, 5))
   }
 
   it should "have the same hashcode with identical treap" in {
@@ -193,14 +218,14 @@ class TreapTest extends FlatSpec {
     val treap = fromList(List(1.0, -2.1, -23, 43.03, 5))
     val toRemove = fromList(List(5, -2.1, -1))
     assert(!treap.removeAll(toRemove))
-    assert(toList(treap) == List(-23, 1.0, 43.03))
+    assert(Utils.toList(treap) == List(-23, 1.0, 43.03))
   }
 
   it should "add collection of elements correctly" in {
     val treap = fromList(List('a', 'e'))
     val toAdd = fromList(List('a', 'q'))
     assert(treap.addAll(toAdd))
-    assert(toList(treap) == List('a', 'a', 'e', 'q'))
+    assert(Utils.toList(treap) == List('a', 'a', 'e', 'q'))
   }
 
   it should "contain all elements from collection with added elements" in {
@@ -215,10 +240,90 @@ class TreapTest extends FlatSpec {
     assert(!treap.containsAll(unique))
   }
 
-  private def toList[A](treap: Treap[A]): List[A] = {
-    var result = new ListBuffer[A]
-    treap.foreach(result += _)
-    result.toList
+  it should "be iterable in sorted order with iterator" in {
+    val treap = new Treap[Int]
+    treap.add(-32)
+    treap.add(543)
+    treap.add(12)
+    treap.add(45)
+
+    val iterated = new ListBuffer[Int]
+    val iterator = treap.iterator
+    while (iterator.hasNext) {
+      iterated += iterator.next()
+    }
+
+    assert(Utils.toList(treap) == iterated.toList)
+  }
+
+  "Iterator" should "be able to remove an element" in {
+    val treap = new Treap[Int]
+    treap.add(5)
+    treap.add(1332)
+    treap.add(41)
+
+    val iterator = treap.iterator
+    iterator.next()
+    iterator.next()
+    iterator.remove()
+
+    assert(Utils.toList(treap) == List(5, 1332))
+  }
+
+  "Remove" should "throw NoSuchElementException if next() has not been called" in {
+    val treap = new Treap[Char]
+    treap.add(5)
+    intercept[NoSuchElementException] {
+      treap.iterator.remove()
+    }
+  }
+
+  it should "throw NoSuchElementException after second call in a pow" in {
+    val treap = new Treap[Char]
+    treap.add(56)
+    treap.add(5)
+    treap.add(521)
+
+    val iterator = treap.iterator
+    iterator.next()
+    iterator.remove()
+    intercept[NoSuchElementException] {
+      treap.iterator.remove()
+    }
+  }
+
+  it should "throw ConcurrentModificationException if treap has been modified" in {
+    val treap = new Treap[Char]
+    treap.add(56)
+    val iterator = treap.iterator
+    iterator.next()
+    treap.add(1)
+
+    intercept[ConcurrentModificationException] {
+      iterator.remove()
+    }
+  }
+
+  "Next" should "throw NoSuchElementException if there is no next element" in {
+    val treap = new Treap[Char]
+    treap.add(56)
+    val iterator = treap.iterator
+    iterator.next()
+    intercept[NoSuchElementException] {
+      iterator.next()
+    }
+  }
+
+  it should "throw ConcurrentModificationException if treap has been modified" in {
+    val treap = new Treap[Char]
+    treap.add(56)
+    val iterator = treap.iterator
+    iterator.next()
+    treap.add(1)
+
+    intercept[ConcurrentModificationException] {
+      iterator.next()
+    }
   }
 
   private def fromList[A](list: List[A])(implicit ordering: Ordering[A]): Treap[A] = {
