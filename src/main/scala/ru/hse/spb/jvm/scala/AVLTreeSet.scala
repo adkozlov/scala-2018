@@ -234,6 +234,14 @@ class AVLTreeSet[E](implicit val ordering: Ordering[E]) extends MutableCollectio
     Option(successor)
   }
 
+  def map[B](f: E => B)(implicit ordering: Ordering[B]): AVLTreeSet[B] = {
+    val newCollection = new AVLTreeSet[B]
+    for (element <- this) {
+      newCollection.add(f(element))
+    }
+    newCollection
+  }
+
   class AVLNode private[AVLTreeSet](k: E, p: AVLNode = null) {
     private[AVLTreeSet] var _key: E = k
     private[AVLTreeSet] var _parent: AVLNode = p
@@ -258,20 +266,26 @@ class AVLTreeSet[E](implicit val ordering: Ordering[E]) extends MutableCollectio
     def key: E = _key
   }
 
+  private def minNode(): AVLNode = {
+    if (root == null) throw new UnsupportedOperationException("empty tree")
+    var node = root
+    while (node.left != null) node = node.left
+    node
+  }
+
   class AVLTreeIterator extends MyIterator[E] {
-    var currentNode: AVLNode = root
+    var currentNode: AVLNode = _
     var currentIndex: Int = -1
 
     override def next: E = {
       if (!hasNext) {
         throw new UnsupportedOperationException("There is no next element")
       }
-      currentNode = AVLTreeSet.this.next(currentNode).get
+      currentNode = if (currentNode eq null) minNode() else AVLTreeSet.this.next(currentNode).get
       currentIndex += 1
       currentNode._key
     }
 
     override def hasNext: Boolean = currentIndex + 1 < size
   }
-
 }

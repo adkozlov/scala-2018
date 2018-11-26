@@ -23,6 +23,10 @@ trait MutableCollection[E, Collection <: MutableCollection[E, Collection]] {
 
   def remove(e: E): Boolean
 
+  def -=(key: E): Collection
+
+  def +=(key: E): Collection
+
   def foreach(f: E => Unit): Unit = {
     val it = iterator
     while (it.hasNext) {
@@ -40,14 +44,10 @@ trait MutableCollection[E, Collection <: MutableCollection[E, Collection]] {
     true
   }
 
-  def -=(key: E): Collection
-
-  def +=(key: E): Collection
-
   def foldLeft[B](z: B)(op: (B, E) => B): B = {
     var acc = z
     val it = iterator
-    while (!it.hasNext) {
+    while (it.hasNext) {
       acc = op(acc, it.next)
     }
     acc
@@ -70,22 +70,22 @@ trait MutableCollection[E, Collection <: MutableCollection[E, Collection]] {
   }
 
   def removeIf(filter: E => Boolean): Boolean = {
-    var isChanged = false
+    val toDelete = new SimpleList[E]
     for (element <- this) {
       if (filter(element)) {
-        isChanged = remove(element)
+        toDelete.add(element)
       }
     }
-    isChanged
+    removeAll(toDelete)
   }
 
   def retainAll(collection: MutableCollection[E, _]): Boolean = {
-    var isChanged = false
+    val toDelete = new SimpleList[E]
     for (element <- this) {
       if (!collection.contains(element)) {
-        isChanged = remove(element)
+        toDelete.add(element)
       }
     }
-    isChanged
+    removeAll(toDelete)
   }
 }
