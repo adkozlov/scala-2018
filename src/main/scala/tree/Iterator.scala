@@ -15,6 +15,16 @@ trait Iterator[E] {
 
     new ConcatIterator(this, iterator)
   }
+
+  def foldl[S](z: S)(f: (S, E) => S): S = {
+    var result: S = z
+    while (this.hasNext) {
+      result = f(result, this.next)
+    }
+    result
+  }
+
+  def foldr[S](z: S)(f: (E, S) => S): S = if (this.hasNext) f(this.next, foldr(this)) else z
 }
 
 class EmptyIterator[E] extends Iterator[E] {

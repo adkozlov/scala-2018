@@ -35,4 +35,9 @@ trait Collection[E] {
     !forall(!p(_))
   }
 
+  def foldl[S](z: S)(f: (S, E) => S): S = iterator.foldl(z)(f)
+
+  def foldr[S](z: S)(f: (E, S) => S): S = iterator.foldr(z)(f)
+
+  def flatMap[S](f: E => S)(implicit ordering: Ordering[S]): Collection[S]
 }
