@@ -74,6 +74,25 @@ class TreapTest {
     assertEquals(List(2, 3, 4), treapToList(treap))
   }
 
+  @Test def removeAll(): Unit = {
+    for (i <- 0 to 10) {
+      treap = treapForTest
+      assertTrue(treap.contains(1))
+      assertTrue(treap.remove(1))
+      assertTrue(treap.remove(2))
+      assertTrue(treap.remove(3))
+      assertEquals(1, treap.size)
+      assertEquals(List(4), treapToList(treap))
+      assertTrue(treap.remove(4))
+      assertEquals(0, treap.size)
+    }
+  }
+
+  @Test def strangeComparator(): Unit = {
+    val stringTreap = Treap("b", "aa", "ccc")((x, y) => x.length - y.length)
+    assertEquals(List("b", "aa", "ccc"), treapToList(stringTreap))
+  }
+
   @Test def removeNotExistant(): Unit = {
     assertFalse(treap.contains(5))
     assertFalse(treap.remove(5))

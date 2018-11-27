@@ -17,7 +17,7 @@ class Treap[T](implicit ord: Ordering[T]) {
     if (contains(key)) {
       false
     } else {
-      root = add(root, new Node(key))
+      changeRoot(add(root, new Node(key)))
       _size += 1
       true
     }
@@ -27,7 +27,18 @@ class Treap[T](implicit ord: Ordering[T]) {
     if (!contains(key)) {
       false
     } else {
-      root = remove(root, key)
+      val node = find(root, key)
+      val mergeResult = merge(node.left, node.right)
+      if (node.parent != null) {
+        val parent = node.parent
+        if (node == parent.right) {
+          parent.right = mergeResult
+        } else {
+          parent.left = mergeResult
+        }
+      } else {
+        changeRoot(mergeResult)
+      }
       _size -= 1
       true
     }
@@ -52,23 +63,11 @@ class Treap[T](implicit ord: Ordering[T]) {
     result
   }
 
-  def contains(key: T): Boolean = contains(root, key)
+  def contains(key: T): Boolean = find(root, key) != null
 
   def isEmpty: Boolean = size == 0
 
   def iterator: Iterator = new Iterator
-
-  private def remove(node: Node, key: T): Node = {
-    if (ord.gt(key, node.key)) {
-      node.right = remove(node.right, key)
-      node
-    } else if (ord.equiv(key, node.key)) {
-      merge(node.left, node.right)
-    } else {
-      node.left = remove(node.left, key)
-      node
-    }
-  }
 
   private def add(node: Node, newKey: Node): Node = {
     if (node == null) {
@@ -87,16 +86,21 @@ class Treap[T](implicit ord: Ordering[T]) {
     }
   }
 
+  private def changeRoot(newRoot: Node): Unit = {
+    root = newRoot
+    if (root != null) {
+      root.parent = null
+    }
+  }
+
   @tailrec
-  private def contains(node: Node, key: T): Boolean = {
-    if (node == null) {
-      false
+  private def find(node: Node, key: T): Node = {
+    if (node == null || ord.equiv(key, node.key)) {
+      node
     } else if (ord.gt(key, node.key)) {
-      contains(node.right, key)
-    } else if (ord.equiv(key, node.key)) {
-      true
+      find(node.right, key)
     } else {
-      contains(node.left, key)
+      find(node.left, key)
     }
   }
 
@@ -132,19 +136,6 @@ class Treap[T](implicit ord: Ordering[T]) {
       }
   }
 
-  def printIt(): Unit = printTreap(root)
-
-  private def printTreap(node: Node): Unit = {
-    if (node == null) {
-      return
-    }
-    print("[" + node.key + "](")
-    printTreap(node.left)
-    print(",")
-    printTreap(node.right)
-    print(")")
-  }
-
   class Iterator private[Treap] {
     private var nextNode: Node = if (Treap.this.root == null) null else Treap.this.root.leftLeaf
 
@@ -163,7 +154,7 @@ class Treap[T](implicit ord: Ordering[T]) {
   private class Node(val key: T) {
     val priority: Int = Random.nextInt
 
-    private var _parent: Node = _
+    var parent: Node = _
     private var _left: Node = _
     private var _right: Node = _
 
@@ -171,18 +162,17 @@ class Treap[T](implicit ord: Ordering[T]) {
 
     def right: Node = _right
 
-    def parent: Node = _parent
 
     def left_=(node: Node): Unit = {
       if (node != null) {
-        node._parent = this
+        node.parent = this
       }
       _left = node
     }
 
     def right_=(node: Node): Unit = {
       if (node != null) {
-        node._parent = this
+        node.parent = this
       }
       _right = node
     }
