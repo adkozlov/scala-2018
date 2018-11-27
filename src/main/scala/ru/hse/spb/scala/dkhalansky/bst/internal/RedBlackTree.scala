@@ -2,6 +2,7 @@ package ru.hse.spb.scala.dkhalansky.bst.internal
 
 sealed abstract class RedBlackTree[+A] {
   def makeBlack: RedBlackTree[A]
+  val size: Int
 }
 
 sealed trait Color
@@ -15,10 +16,12 @@ final case class Node[+A](color: Color,
                           rightTree: RedBlackTree[A])
     extends RedBlackTree[A] {
   override def makeBlack = copy(color = Black)
+  override val size = leftTree.size + rightTree.size + 1
 }
 
 final case object Leaf extends RedBlackTree[Nothing] {
   override def makeBlack: RedBlackTree[Nothing] = this
+  override val size = 0
 }
 
 object RedBlackTree {
@@ -37,6 +40,12 @@ object RedBlackTree {
   }
 
   def insert[A](a: A, tree: RedBlackTree[A])(
+      implicit ordering: Ordering[A]): RedBlackTree[A] = insertInternal(a, tree).makeBlack
+
+  def delete[A](a: A, tree: RedBlackTree[A])(
+      implicit ordering: Ordering[A]): RedBlackTree[A] = deleteInternal(a, tree).makeBlack
+
+  private def insertInternal[A](a: A, tree: RedBlackTree[A])(
       implicit ordering: Ordering[A]): RedBlackTree[A] = tree match {
     case Leaf => Node(Red, Leaf, a, Leaf)
     case node @ Node(color, leftTree, value, rightTree) =>
@@ -46,24 +55,24 @@ object RedBlackTree {
       else
         rebalance(
           if (a < value)
-            node.copy(leftTree = insert(a, leftTree))
+            node.copy(leftTree = insertInternal(a, leftTree))
           else
-            node.copy(rightTree = insert(a, rightTree)))
+            node.copy(rightTree = insertInternal(a, rightTree)))
   }
 
-  def delete[A](a: A, tree: RedBlackTree[A])(
+  private def deleteInternal[A](a: A, tree: RedBlackTree[A])(
       implicit ordering: Ordering[A]): RedBlackTree[A] = tree match {
     case Leaf => Leaf
     case node @ Node(color, leftTree, value, rightTree) =>
       import ordering._
       if (a < value) {
-        val newTree = node.copy(leftTree = delete(a, leftTree))
+        val newTree = node.copy(leftTree = deleteInternal(a, leftTree))
         color match {
           case Black => leftBalance(newTree)
           case Red => newTree
         }
       } else if (a > value) {
-        val newTree = node.copy(rightTree = delete(a, rightTree))
+        val newTree = node.copy(rightTree = deleteInternal(a, rightTree))
         color match {
           case Black => rightBalance(newTree)
           case Red => newTree
@@ -71,7 +80,7 @@ object RedBlackTree {
       } else fuse(leftTree, rightTree)
   }
 
-  def fuse[A](tree1: RedBlackTree[A],
+  private def fuse[A](tree1: RedBlackTree[A],
               tree2: RedBlackTree[A]): RedBlackTree[A] = (tree1, tree2) match {
     case (Leaf, t) => t
     case (t, Leaf) => t
