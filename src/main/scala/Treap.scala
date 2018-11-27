@@ -4,13 +4,13 @@ import scala.util.Random
 object Treap {
   private val randomizer = new Random()
 
-  protected def merge[T <: Comparable[T]](left: Treap[T], right: Treap[T]): Treap[T] = {
+  protected def merge[T <: Ordering[T]](left: Treap[T], right: Treap[T]): Treap[T] = {
     new Treap(mergeNodes(left.root, right.root))
   }
 
-  protected def mergeNodes[T <: Comparable[T]](left: TreapNode[T], right: TreapNode[T]): TreapNode[T]
+  protected def mergeNodes[T <: Ordering[T]](left: TreapNode[T], right: TreapNode[T]): TreapNode[T]
   = (left, right) match {
-    case (EmptyNode, _) | (_, EmptyNode) => _
+    case (EmptyNode(), _) | (_, EmptyNode()) => if (left.isInstanceOf[EmptyNode.type]) right else left
     case (left: Node[T], right: Node[T]) =>
       if (left.y > right.y) {
         left.updateChildren(newRightChild = mergeNodes(left.getRight, right))
@@ -21,15 +21,15 @@ object Treap {
       }
   }
 
-  protected def split[T <: Comparable[T]](treap: Treap[T], key: T): (Treap[T], Treap[T]) = {
+  protected def split[T <: Ordering[T]](treap: Treap[T], key: T): (Treap[T], Treap[T]) = {
     val (left, right) = splitNode(treap.root, key)
     (new Treap(left), new Treap(right))
   }
 
-  protected def splitNode[T <: Comparable[T]](node: TreapNode[T], key: T): (TreapNode[T], TreapNode[T]) = {
-    case _: EmptyNode.type => Tuple2(EmptyNode(), EmptyNode())
+  protected def splitNode[T <: Ordering[T]](node: TreapNode[T], key: T): (TreapNode[T], TreapNode[T]) = node match {
+    case EmptyNode() => Tuple2(EmptyNode(), EmptyNode())
     case node: Node[T] =>
-      node.x.compareTo(key) match {
+      key.compare(node.x, key) match {
         case -1 | 0 =>
           val (lesser, greater) = splitNode(node.getRight, key)
           node.updateChildren(newRightChild = lesser)
@@ -42,15 +42,19 @@ object Treap {
   }
 }
 
-class Treap[T <: Comparable[T]] private(private var root: TreapNode[T]) extends Tree[T] {
+class Treap[T <: Ordering[T]] private(private var root: TreapNode[T]) extends Tree[T] {
+  def this() {
+    this(EmptyNode())
+  }
+
   override def size(): Int = root.size()
 
   private def find(t: T): Node[T] = {
     @tailrec
     def findNode(root: TreapNode[T], x: T): Node[T] = root match {
-      case EmptyNode => null
+      case EmptyNode() => null
       case root: Node[T] => if (root.x.equals(x)) root else {
-        val nextNode = if (root.x.compareTo(x) < 0) root.getRight else root.getLeft
+        val nextNode = if (x.compare(root.x, x) < 0) root.getRight else root.getLeft
         findNode(nextNode, x)
       }
     }
@@ -88,9 +92,9 @@ class Treap[T <: Comparable[T]] private(private var root: TreapNode[T]) extends 
     case null => 0
   }
 
-  override def map[U <: Comparable[U]](f: T => U): Tree[U] = ???
+  override def map[U <: Ordering[U]](f: T => U): Tree[U] = ???
 
-  override def flatMap[U <: Comparable[U]](f: T => Tree[U]): Tree[U] = ???
+  override def flatMap[U <: Ordering[U]](f: T => Tree[U]): Tree[U] = ???
 
   override def filter(f: T => Boolean): Tree[T] = ???
 }

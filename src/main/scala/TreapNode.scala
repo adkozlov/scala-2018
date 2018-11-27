@@ -1,12 +1,12 @@
-sealed trait TreapNode[T <: Comparable[T]] {
+sealed trait TreapNode[T <: Ordering[T]] {
   def size(): Int
-  protected def updateParent(node: Node[T]): Unit = {}
+  //protected def updateParent(node: Node[T]): Unit = {}
 }
 
-case object EmptyNode extends TreapNode[Nothing] {
+final case class EmptyNode[T <: Ordering[T]]() extends TreapNode[T] {
   override def size(): Int = 0
 }
-final case class Node[T](x: T, y: Int) extends TreapNode[T] {
+final case class Node[T <: Ordering[T]](x: T, y: Int) extends TreapNode[T] {
   var counter = 0
   private var parent: Node[T] = _
   private var left: TreapNode[T] = EmptyNode()
@@ -23,9 +23,9 @@ final case class Node[T](x: T, y: Int) extends TreapNode[T] {
     right = newRightChild
 
     subtreeSize = left.size() + right.size()
-    left.updateParent(this)
-    right.updateParent(this)
+    //left.updateParent(this)
+    //right.updateParent(this)
   }
 
-  override protected def updateParent(node: Node[T]): Unit = parent = node
+  //override protected def updateParent(node: Node[T]): Unit = parent = node
 }
