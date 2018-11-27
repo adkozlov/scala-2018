@@ -155,6 +155,6 @@ class TreeSetTest {
       assertEquals(j, i)
       j = j + 2
     }
-    assertEquals(j, 7)
+    assertEquals(7, j)
   }
 }
