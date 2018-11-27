@@ -3,6 +3,7 @@ package ru.hse.jvm.scala.set
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import ru.hse.jvm.scala.set.TreeSet.emptySet
 
 object ALVTreeTest {
   def generateTree(n: Int): AVLTree[Int] = {
