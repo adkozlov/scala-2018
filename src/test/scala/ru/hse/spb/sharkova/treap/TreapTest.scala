@@ -279,4 +279,19 @@ class TreapTest {
 
     assertTrue(treap.equals(treapBeforeMap))
   }
+
+  @Test
+  def testIterator(): Unit = {
+    val treap = new Treap[Int]()
+    treap.addAll(5, 1, 9, 3)
+    val iterator = treap.iterator
+    assertTrue(iterator.hasNext)
+    assertEquals(1, iterator.next())
+    assertTrue(iterator.hasNext)
+    assertEquals(3, iterator.next())
+    assertTrue(iterator.hasNext)
+    assertEquals(5, iterator.next())
+    assertTrue(iterator.hasNext)
+    assertEquals(9, iterator.next())
+  }
 }
