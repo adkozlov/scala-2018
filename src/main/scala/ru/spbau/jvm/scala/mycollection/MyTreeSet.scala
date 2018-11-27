@@ -152,7 +152,7 @@ object MyTreeSet {
       goToNext(root)
     }
 
-    override def hasNext: Boolean = !stack.empty
+    override def hasNext: Boolean = !stack.isEmpty
 
     override def next(): A = stack match {
       case ListNil => throw new NoSuchElementException
