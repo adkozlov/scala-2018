@@ -1,9 +1,9 @@
 package ru.spbau.jvm.scala
 
-trait ImmutableCollection[A] {
-  def add(e: A): ImmutableCollection[A]
+trait ImmutableCollection[+A] {
+  def add(e: _ <: A): ImmutableCollection[A]
 
-  def addAll(c: ImmutableCollection[A]): ImmutableCollection[A] = {
+  def addAll(c: ImmutableCollection[_ <: A]): ImmutableCollection[A] = {
     var res = this
     c.forEach(e => res = res.add(e))
     res
@@ -11,9 +11,9 @@ trait ImmutableCollection[A] {
 
   def clear(): ImmutableCollection[A]
 
-  def contains(e: A): Boolean
+  def contains(e: _ <: A): Boolean
 
-  def containsAll(c: ImmutableCollection[A]): Boolean = {
+  def containsAll(c: ImmutableCollection[_ <: A]): Boolean = {
     var res = true
     c.forEach(res &= contains(_))
     res
