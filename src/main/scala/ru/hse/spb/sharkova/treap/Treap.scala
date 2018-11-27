@@ -90,6 +90,13 @@ class Treap[T](implicit ordering: Ordering[_ >: T]) extends Collection[T] {
 
   def withFilter(predicate: T => Boolean): WithFilter = new WithFilter(predicate)
 
+  def foldRight[S](initial: S)(function: (T, S) => S): S = {
+    var returnValue = initial
+    val reversedList = toList.reverse
+    reversedList.foreach(it => returnValue = function(it, returnValue))
+    returnValue
+  }
+
   private def split(node: Node, key: T): (Node, Node) = {
     if (node == null) {
       (null, null)

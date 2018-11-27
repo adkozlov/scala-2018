@@ -66,4 +66,13 @@ class ListTest {
     assertFalse(iterator.hasNext)
     iterator.next()
   }
+
+  @Test
+  def testReverse(): Unit = {
+    val list = new List[Int]
+    list.addAll(1, 2, 3, 4)
+    val reversedList = new List[Int]
+    reversedList.addAll(4, 3, 2, 1)
+    assertTrue(reversedList.equals(list.reverse))
+  }
 }

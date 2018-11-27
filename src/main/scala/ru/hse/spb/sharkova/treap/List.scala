@@ -72,6 +72,16 @@ class List[T] extends Collection[T] {
 
   override def iterator: Iterator[T] = new ListIterator
 
+  def reverse: List[T] = {
+    val reversedList = new List[T]
+    var node = tail
+    while (node != null) {
+      reversedList.add(node.value)
+      node = node.prev
+    }
+    reversedList
+  }
+
   private final class Node(var prev: Node = null,
                            var next: Node = null,
                            val value: T = null.asInstanceOf[T])

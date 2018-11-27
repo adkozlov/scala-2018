@@ -294,4 +294,18 @@ class TreapTest {
     assertTrue(iterator.hasNext)
     assertEquals(9, iterator.next())
   }
+
+  @Test
+  def testFoldLeft(): Unit = {
+    val treap = new Treap[Int]()
+    treap.addAll(1, 2, 3, 4)
+    assertEquals(-10, treap.foldLeft(0)((a, b) => a - b))
+  }
+
+  @Test
+  def testFoldRight(): Unit = {
+    val treap = new Treap[Int]()
+    treap.addAll(1, 2, 3, 4)
+    assertEquals(-2, treap.foldRight(0)((a, b) => a - b))
+  }
 }

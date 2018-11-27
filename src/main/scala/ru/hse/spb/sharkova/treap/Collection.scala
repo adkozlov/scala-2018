@@ -36,4 +36,10 @@ trait Collection[T] {
       function.apply(iter.next())
     }
   }
+
+  def foldLeft[S](initial: S)(function: (S, T) => S): S = {
+    var returnValue = initial
+    foreach(it => returnValue = function(returnValue, it))
+    returnValue
+  }
 }
