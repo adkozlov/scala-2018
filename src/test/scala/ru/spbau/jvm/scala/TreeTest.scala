@@ -112,4 +112,25 @@ class TreeTest {
     }
     assertFalse(tree('z'))
   }
+
+  @Test
+  def diff() : Unit = {
+    val tree1 = Tree[String]("a", "b", "c")
+    val tree2 = Tree[String]("d", "b", "c")
+    assertTreeEquals[String](List("a", "d"), tree1 diff tree2)
+  }
+
+  @Test
+  def intersect() : Unit = {
+    val tree1 = Tree[String]("a", "b", "c")
+    val tree2 = Tree[String]("d", "b", "c")
+    assertTreeEquals[String](List("b", "c"), tree1 & tree2)
+  }
+
+  @Test
+  def merge() : Unit = {
+    val tree1 = Tree[Integer](1, 3, 2)
+    val tree2 = Tree[Integer](6, 8, 4)
+    assertTreeEquals[Integer](List(1, 2, 3, 4, 6, 8), tree1.merge(tree2))
+  }
 }
