@@ -90,4 +90,15 @@ class Test {
       i += 1
     }
   }
+
+  @junit.Test
+  def testFoldLeft(): Unit = {
+    val treap = new Treap[Int]()
+    treap.add(1)
+    treap.add(2)
+    treap.add(3)
+    treap.add(4)
+    treap.add(5)
+    assert(treap.foldLeft((a:Int, b:Int) => {a + b}, 0) == 15)
+  }
 }

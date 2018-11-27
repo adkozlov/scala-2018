@@ -104,6 +104,41 @@ class Treap[T] (implicit order: Ordering[T]) extends Collection[T] {
     private var _size = 0
     override def size(): Int = _size
 
+    def filter(f: T => Boolean) : Treap[T] = {
+        val newTreap = new Treap[T]()
+        for (element <- this) {
+            if (f(element)) {
+                newTreap.add(element)
+            }
+        }
+        newTreap
+    }
+
+    def map[E](f: T => E)(implicit orderE: Ordering[E]) : Treap[E] = {
+        val newTreap = new Treap[E]()
+        for (element <- this) {
+            newTreap.add(f(element))
+        }
+        newTreap
+    }
+
+    def flatMap[E](f: T => Treap[E])(implicit orderE: Ordering[E]) : Treap[E] = {
+        val newTreap = new Treap[E]()
+        for (element <- this) {
+            newTreap.addAll(f(element))
+        }
+        newTreap
+    }
+
+    def foldLeft[E](f: (T, E) => E, e: E) : E = {
+        var result = e
+        for (element <- this) {
+            result = f(element, result)
+        }
+        result
+    }
+
+
     private def split(node: Node, x: T): (Node, Node) = {
         if (node == null) {
             return (null, null)
