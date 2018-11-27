@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-object TestALVTree {
+object ALVTreeTest {
   def generateTree(n: Int): AVLTree[Int] = {
     var result: AVLTree[Int] = AVLNil
     for (i <- 1 to n)
@@ -13,7 +13,7 @@ object TestALVTree {
   }
 }
 
-class TestAVLTree {
+class AVLTreeTest {
   @Test
   def testEmptyTree(): Unit = {
     val tree: AVLTree[Int] = AVLNil
@@ -34,7 +34,7 @@ class TestAVLTree {
 
   @Test
   def testAddManyElements(): Unit = {
-    val tree = TestALVTree.generateTree(1000)
+    val tree = ALVTreeTest.generateTree(1000)
     assertTrue(tree.height <= math.log(1000) / 0.2)
   }
 
@@ -45,7 +45,7 @@ class TestAVLTree {
 
   @Test
   def testSize(): Unit = {
-    assertEquals(3, TestALVTree.generateTree(3).size)
+    assertEquals(3, ALVTreeTest.generateTree(3).size)
   }
 
   @Test
@@ -67,7 +67,7 @@ class TestAVLTree {
 
   @Test
   def testEraseMany(): Unit = {
-    var tree = TestALVTree.generateTree(3)
+    var tree = ALVTreeTest.generateTree(3)
     assertEquals(true, tree.contains(2))
     tree = tree.erase(2)
     assertEquals(false, tree.contains(2))
@@ -87,6 +87,6 @@ class TestAVLTree {
 
   @Test
   def testMax(): Unit = {
-    assertEquals(10, TestALVTree.generateTree(10).max())
+    assertEquals(10, ALVTreeTest.generateTree(10).max())
   }
 }

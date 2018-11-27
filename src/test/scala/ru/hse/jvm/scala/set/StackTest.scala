@@ -5,7 +5,7 @@ import org.junit.Test
 
 import java.util.NoSuchElementException
 
-class TestStack {
+class StackTest {
   @Test
   def testNil(): Unit = {
     val stack: Stack[Int] = StackNil

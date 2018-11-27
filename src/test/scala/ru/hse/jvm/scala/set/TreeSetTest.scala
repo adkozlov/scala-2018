@@ -3,11 +3,11 @@ package ru.hse.jvm.scala.set
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-object TestTreeSet {
-  def generateSet(n: Int): TreeSet[Int] = new TreeSet[Int](TestALVTree.generateTree(n))
+object TreeSetTest {
+  def generateSet(n: Int): TreeSet[Int] = new TreeSet[Int](ALVTreeTest.generateTree(n))
 }
 
-class TestAVLTreeSet {
+class TreeSetTest {
   @Test
   def testEmpty(): Unit = {
     val set = TreeSet.emptySet[Int]
@@ -34,7 +34,7 @@ class TestAVLTreeSet {
 
   @Test
   def testContains(): Unit = {
-    val set = TestTreeSet.generateSet(5)
+    val set = TreeSetTest.generateSet(5)
     for (i <- 1 to 5)
       assertEquals(true, set.contains(i))
 
@@ -52,22 +52,12 @@ class TestAVLTreeSet {
 
   @Test
   def testAddAll(): Unit = {
-    assertEquals(TestTreeSet.generateSet(5), TreeSet.emptySet[Int] ++ (1 to 5))
-  }
-
-  @Test
-  def testAddAllSet(): Unit = {
-    assertEquals(TestTreeSet.generateSet(5), TreeSet.setOf(5, 4) ++ TestTreeSet.generateSet(3))
+    assertEquals(TreeSetTest.generateSet(5), TreeSet.setOf(5, 4) ++ TreeSetTest.generateSet(3))
   }
 
   @Test
   def testRemoveAll(): Unit = {
-    assertEquals(TestTreeSet.generateSet(0), TestTreeSet.generateSet(5) -- (1 to 5))
-  }
-
-  @Test
-  def testRemoveAllSet(): Unit = {
-    assertEquals(TestTreeSet.generateSet(0), TestTreeSet.generateSet(5) -- TestTreeSet.generateSet(5))
+    assertEquals(TreeSetTest.generateSet(0), TreeSetTest.generateSet(5) -- TreeSetTest.generateSet(5))
   }
 
   @Test
@@ -88,18 +78,18 @@ class TestAVLTreeSet {
   @Test
   def testForeach(): Unit = {
     var sum = 0
-    TestTreeSet.generateSet(5).foreach(key => sum = sum + key)
+    TreeSetTest.generateSet(5).foreach(key => sum = sum + key)
     assertEquals(15, sum)
   }
 
   @Test
   def testFoldLeft(): Unit = {
-    assertEquals(-15, TestTreeSet.generateSet(5).foldLeft(0)((a, b) => a - b))
+    assertEquals(-15, TreeSetTest.generateSet(5).foldLeft(0)((a, b) => a - b))
   }
 
   @Test
   def testFoldRight(): Unit = {
-    assertEquals(3, TestTreeSet.generateSet(5).foldRight(0)((a, b) => a - b))
+    assertEquals(3, TreeSetTest.generateSet(5).foldRight(0)((a, b) => a - b))
   }
 
   @Test
@@ -109,28 +99,28 @@ class TestAVLTreeSet {
 
   @Test
   def testMap(): Unit = {
-    assertEquals(TreeSet.setOf(-1, -3, -2), TestTreeSet.generateSet(3).map(-_))
+    assertEquals(TreeSet.setOf(-1, -3, -2), TreeSetTest.generateSet(3).map(-_))
   }
 
   @Test
   def testFlatMap(): Unit = {
-    assertEquals(TestTreeSet.generateSet(6), TreeSet.setOf(1, 5, 3).flatMap(key => TreeSet.setOf(key, key + 1)))
+    assertEquals(TreeSetTest.generateSet(6), TreeSet.setOf(1, 5, 3).flatMap(key => TreeSet.setOf(key, key + 1)))
   }
 
   @Test
   def testFilter(): Unit = {
-    assertEquals(TreeSet.setOf(1, 3, 5), TestTreeSet.generateSet(6).filter(_ % 2 == 1))
+    assertEquals(TreeSet.setOf(1, 3, 5), TreeSetTest.generateSet(6).filter(_ % 2 == 1))
   }
 
   @Test
   def testFilterNot(): Unit = {
-    assertEquals(TreeSet.setOf(2, 4, 6), TestTreeSet.generateSet(6).filterNot(_ % 2 == 1))
+    assertEquals(TreeSet.setOf(2, 4, 6), TreeSetTest.generateSet(6).filterNot(_ % 2 == 1))
   }
 
   @Test
   def testForComprehension(): Unit = {
     var j = 1
-    for (i <- TestTreeSet.generateSet(5)) {
+    for (i <- TreeSetTest.generateSet(5)) {
       assertEquals(j, i)
       j = j + 1
     }
@@ -140,7 +130,7 @@ class TestAVLTreeSet {
   @Test
   def testForComprehensionGuard(): Unit = {
     var j = 1
-    for (i <- TestTreeSet.generateSet(5) if i % 2 == 1) {
+    for (i <- TreeSetTest.generateSet(5) if i % 2 == 1) {
       assertEquals(j, i)
       j = j + 2
     }

@@ -54,11 +54,7 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
 
   def ++(other: TreeSet[K]): TreeSet[K] = foldLeft(other)((set, key) => set + key)
 
-  def ++(other: Seq[K]): TreeSet[K] = other.foldLeft(this)((set, key) => set + key)
-
   def --(other: TreeSet[K]): TreeSet[K] = other.foldLeft(this)((set, key) => set - key)
-
-  def --(other: Seq[K]): TreeSet[K] = other.foldLeft(this)((set, key) => set - key)
 
   def &(other: TreeSet[K]): TreeSet[K] = filter(other.contains)
 
@@ -78,7 +74,7 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
         return false
     }
 
-    return true
+    true
   }
 
   override def equals(that: Any): Boolean = that match {
@@ -97,5 +93,6 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
 
 object TreeSet {
   def emptySet[K](implicit keyOrdering: Ordering[K]): TreeSet[K] = new TreeSet[K]()
-  def setOf[K](values: K*)(implicit keyOrdering: Ordering[K]): TreeSet[K] = emptySet[K] ++ values
+
+  def setOf[K](values: K*)(implicit keyOrdering: Ordering[K]): TreeSet[K] = values.foldLeft(TreeSet.emptySet[K])(_+_)
 }
