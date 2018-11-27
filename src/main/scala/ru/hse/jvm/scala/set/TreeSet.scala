@@ -46,21 +46,38 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
     foldLeft(TreeSet.emptySet[V])(_ ++ function(_))
 
   def filter(predicate: K => Boolean): TreeSet[K] =
-    flatMap(key => if (predicate(key)) TreeSet.singleElementSet(key) else TreeSet.emptySet[K])
+    flatMap(key => if (predicate(key)) TreeSet.setOf(key) else TreeSet.emptySet[K])
 
   def filterNot(predicate: K => Boolean): TreeSet[K] = filter(key => !predicate(key))
 
   def withFilter(predicate: K => Boolean): WithFilter = new WithFilter(predicate)
 
+  private def applyToVarargs[T](function: (TreeSet[K], TreeSet[K]) => T)(values: K*) =
+    function(this, TreeSet.setOf(values: _*))
+
   def ++(other: TreeSet[K]): TreeSet[K] = foldLeft(other)(_ + _)
+
+  def ++(values: K*): TreeSet[K] = applyToVarargs(_ ++ _)(values: _*)
 
   def --(other: TreeSet[K]): TreeSet[K] = other.foldLeft(this)(_ - _)
 
+  def --(values: K*): TreeSet[K] = applyToVarargs(_ -- _)(values: _*)
+
   def &(other: TreeSet[K]): TreeSet[K] = filter(other.contains)
+
+  def &(values: K*): TreeSet[K] = applyToVarargs(_ & _)(values: _*)
 
   def &~(other: TreeSet[K]): TreeSet[K] = this -- other
 
+  def &~(values: K*): TreeSet[K] = applyToVarargs(_ &~ _)(values: _*)
+
   def |(other: TreeSet[K]): TreeSet[K] = this ++ other
+
+  def |(values: K*): TreeSet[K] = applyToVarargs(_ | _)(values: _*)
+
+  def containsAll(other: TreeSet[K]): Boolean = other.foldLeft(true)(_ && contains(_))
+
+  def containsAll(values: K*): Boolean = applyToVarargs(_ containsAll _)(values: _*)
 
   def elementsEquals(that: TreeSet[K]): Boolean = {
     if (size != that.size)
@@ -93,5 +110,5 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
 
 object TreeSet {
   def emptySet[K](implicit keyOrdering: Ordering[K]): TreeSet[K] = new TreeSet[K]()
-  def singleElementSet[K](key: K)(implicit keyOrdering: Ordering[K]): TreeSet[K] = emptySet + key
+  def setOf[K](values: K*)(implicit keyOrdering: Ordering[K]): TreeSet[K] = values.foldLeft(emptySet[K])(_+_)
 }

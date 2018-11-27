@@ -2,11 +2,9 @@ package ru.hse.jvm.scala.set
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import ru.hse.jvm.scala.set.TreeSet.emptySet
 
 object TreeSetTest {
   def generateSet(n: Int): TreeSet[Int] = new TreeSet[Int](ALVTreeTest.generateTree(n))
-  def setOf[K](values: K*)(implicit keyOrdering: Ordering[K]): TreeSet[K] = values.foldLeft(emptySet[K])(_+_)
 }
 
 class TreeSetTest {
@@ -20,7 +18,7 @@ class TreeSetTest {
 
   @Test
   def testNonEmpty(): Unit = {
-    val set = TreeSetTest.setOf(5)
+    val set = TreeSet.setOf(5)
     assertEquals(1, set.size)
     assertEquals(false, set.isEmpty)
     assertEquals(true, set.isNotEmpty)
@@ -45,7 +43,7 @@ class TreeSetTest {
 
   @Test
   def testErase(): Unit = {
-    var set = TreeSetTest.setOf(1, 3)
+    var set = TreeSet.setOf(1, 3)
     set = set - 2
     assertEquals(true, set.contains(1))
     set = set - 1
@@ -53,28 +51,49 @@ class TreeSetTest {
   }
 
   @Test
-  def testAddAll(): Unit = {
-    assertEquals(TreeSetTest.generateSet(5), TreeSetTest.setOf(5, 4) ++ TreeSetTest.generateSet(3))
+  def testAddAllSet(): Unit = {
+    assertEquals(TreeSetTest.generateSet(5), TreeSet.setOf(5, 4) ++ TreeSetTest.generateSet(3))
   }
 
   @Test
-  def testRemoveAll(): Unit = {
+  def testAddAll(): Unit = {
+    assertEquals(TreeSetTest.generateSet(5), TreeSet.setOf(5, 4) ++ (1, 2, 3))
+  }
+
+  @Test
+  def testRemoveAllSet(): Unit = {
     assertEquals(TreeSetTest.generateSet(0), TreeSetTest.generateSet(5) -- TreeSetTest.generateSet(5))
   }
 
   @Test
+  def testRemoveAll(): Unit = {
+    assertEquals(TreeSetTest.generateSet(0), TreeSetTest.generateSet(5) -- (1, 2, 3, 4, 5))
+  }
+
+  @Test
   def testIntersection(): Unit = {
-    assertEquals(TreeSetTest.setOf(2, 3), TreeSetTest.setOf(1, 2, 3) & TreeSetTest.setOf(4, 2, 3))
+    assertEquals(TreeSet.setOf(2, 3), TreeSet.setOf(1, 2, 3) & TreeSet.setOf(4, 2, 3))
   }
 
   @Test
   def testDifference(): Unit = {
-    assertEquals(TreeSetTest.setOf(1), TreeSetTest.setOf(1, 2, 3) &~ TreeSetTest.setOf(4, 2, 3))
+    assertEquals(TreeSet.setOf(1), TreeSet.setOf(1, 2, 3) &~ TreeSet.setOf(4, 2, 3))
   }
 
   @Test
   def testUnion(): Unit = {
-    assertEquals(TreeSetTest.setOf(1, 3, 4, 2), TreeSetTest.setOf(1, 2, 3) | TreeSetTest.setOf(4, 2, 3))
+    assertEquals(TreeSet.setOf(1, 3, 4, 2), TreeSet.setOf(1, 2, 3) | TreeSet.setOf(4, 2, 3))
+  }
+
+  @Test
+  def testContainsAllFalse(): Unit = {
+    assertEquals(false, TreeSet.setOf(1, 2, 3).contains(4))
+    assertEquals(false, TreeSet.setOf(1, 2, 3).containsAll(1, 3, 4))
+  }
+
+  @Test
+  def testContainsAllTrue(): Unit = {
+    assertEquals(true, TreeSet.setOf(1, 2, 3).containsAll(1, 3))
   }
 
   @Test
@@ -96,27 +115,27 @@ class TreeSetTest {
 
   @Test
   def testFoldLeftDifferentTypes(): Unit = {
-    assertEquals(true, TreeSetTest.setOf(0, 1).foldLeft(false)((zero, key) => key != 0))
+    assertEquals(true, TreeSet.setOf(0, 1).foldLeft(false)((zero, key) => key != 0))
   }
 
   @Test
   def testMap(): Unit = {
-    assertEquals(TreeSetTest.setOf(-1, -3, -2), TreeSetTest.generateSet(3).map(-_))
+    assertEquals(TreeSet.setOf(-1, -3, -2), TreeSetTest.generateSet(3).map(-_))
   }
 
   @Test
   def testFlatMap(): Unit = {
-    assertEquals(TreeSetTest.generateSet(6), TreeSetTest.setOf(1, 5, 3).flatMap(key => TreeSetTest.setOf(key, key + 1)))
+    assertEquals(TreeSetTest.generateSet(6), TreeSet.setOf(1, 5, 3).flatMap(key => TreeSet.setOf(key, key + 1)))
   }
 
   @Test
   def testFilter(): Unit = {
-    assertEquals(TreeSetTest.setOf(1, 3, 5), TreeSetTest.generateSet(6).filter(_ % 2 == 1))
+    assertEquals(TreeSet.setOf(1, 3, 5), TreeSetTest.generateSet(6).filter(_ % 2 == 1))
   }
 
   @Test
   def testFilterNot(): Unit = {
-    assertEquals(TreeSetTest.setOf(2, 4, 6), TreeSetTest.generateSet(6).filterNot(_ % 2 == 1))
+    assertEquals(TreeSet.setOf(2, 4, 6), TreeSetTest.generateSet(6).filterNot(_ % 2 == 1))
   }
 
   @Test
