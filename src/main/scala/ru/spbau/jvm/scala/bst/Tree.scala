@@ -85,21 +85,15 @@ case class Node[T <: Comparable[T]](leftChild: Tree[T], rightChild: Tree[T], key
   }
 
   override def split(keyToSplit: T): (Tree[T], Tree[T]) = {
-    def splitLeft: (Tree[T], Tree[T]) = {
-      val (leftTree, rightTree) = leftChild.split(keyToSplit)
-      (leftTree, rightTree.merge(Node(empty, rightChild, key, priority)))
-    }
-
-    def splitRight: (Tree[T], Tree[T]) = {
-      val (leftTree, rightTree) = rightChild.split(keyToSplit)
-      (Node(leftChild, empty, key, priority).merge(leftTree), rightTree)
-    }
-
     val compare = keyToSplit.compareTo(key)
     compare match {
       case 0 => (leftChild, rightChild)
-      case x if x < 0 => splitLeft
-      case _ => splitRight
+      case x if x < 0 =>
+        val (leftTree, rightTree) = leftChild.split(keyToSplit)
+        (leftTree, rightTree.merge(Node(empty, rightChild, key, priority)))
+      case _ =>
+        val (leftTree, rightTree) = rightChild.split(keyToSplit)
+        (Node(leftChild, empty, key, priority).merge(leftTree), rightTree)
     }
   }
 
