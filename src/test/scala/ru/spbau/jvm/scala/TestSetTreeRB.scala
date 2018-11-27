@@ -6,7 +6,7 @@ import org.junit.Assert.assertEquals
 class TestSetTreeRB {
 
   @Test
-  def foreachTest() = {
+  def foreachTest(): Unit = {
     var result = 0
     val treeSet = SetTreeRB[Int](-1, 0, 1, 2, 3, -2)
     treeSet.foreach(node => {
@@ -16,7 +16,7 @@ class TestSetTreeRB {
   }
 
   @Test
-  def mapTest() = {
+  def mapTest(): Unit = {
     val treeSet = SetTreeRB[Int](-1, 0, 1, 2, 3, -2)
     val newTreeSet = treeSet.map(node => node + 1)
 
@@ -29,7 +29,7 @@ class TestSetTreeRB {
   }
 
   @Test
-  def filterTest() = {
+  def filterTest(): Unit = {
     val treeSet = SetTreeRB[Int](-1, 0, 1, 2, 3, -2)
     val newTreeSet = treeSet.filter(node => node < 0)
 
@@ -42,14 +42,14 @@ class TestSetTreeRB {
   }
 
   @Test
-  def foldLeftTest() = {
+  def foldLeftTest(): Unit = {
     val treeSet = SetTreeRB[Int](-1, 0, 1, 2, 3, -2)
     val sum = treeSet.foldLeft(0)((a, b) => a + b)
     assertEquals(3, sum)
   }
 
   @Test
-  def forComprehensionsTest()  = {
+  def forComprehensionsTest(): Unit  = {
     val treeSet = SetTreeRB[String]("a", "", "aa")
     val newTreeSet =
       for (node <- treeSet)
