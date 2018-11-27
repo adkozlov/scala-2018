@@ -43,7 +43,7 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
     foldLeft(TreeSet.emptySet[V])((set, key) => set + function(key))
 
   def flatMap[V](function: K => TreeSet[V])(implicit keyOrdering: Ordering[V]): TreeSet[V] =
-    foldLeft(TreeSet.emptySet[V])((set, key) => set ++ function(key))
+    foldLeft(TreeSet.emptySet[V])(_ ++ function(_))
 
   def filter(predicate: K => Boolean): TreeSet[K] =
     flatMap(key => if (predicate(key)) TreeSet.setOf(key) else TreeSet.emptySet[K])
@@ -52,9 +52,9 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
 
   def withFilter(predicate: K => Boolean): WithFilter = new WithFilter(predicate)
 
-  def ++(other: TreeSet[K]): TreeSet[K] = foldLeft(other)((set, key) => set + key)
+  def ++(other: TreeSet[K]): TreeSet[K] = foldLeft(other)(_ + _)
 
-  def --(other: TreeSet[K]): TreeSet[K] = other.foldLeft(this)((set, key) => set - key)
+  def --(other: TreeSet[K]): TreeSet[K] = other.foldLeft(this)(_ - _)
 
   def &(other: TreeSet[K]): TreeSet[K] = filter(other.contains)
 
@@ -94,5 +94,10 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
 object TreeSet {
   def emptySet[K](implicit keyOrdering: Ordering[K]): TreeSet[K] = new TreeSet[K]()
 
-  def setOf[K](values: K*)(implicit keyOrdering: Ordering[K]): TreeSet[K] = values.foldLeft(TreeSet.emptySet[K])(_+_)
+  def setOf[K](values: K*)(implicit keyOrdering: Ordering[K]): TreeSet[K] = {
+    if (values.isEmpty)
+      emptySet[K]
+    else
+      setOf[K](values.tail: _*) + values.head
+  }
 }
