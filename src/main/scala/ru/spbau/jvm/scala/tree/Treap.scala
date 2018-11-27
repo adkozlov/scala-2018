@@ -193,6 +193,7 @@ class Treap[T](implicit ord: Ordering[T]) {
     @tailrec
     final def rightParent: Node = if (parent != null && parent.right == this) parent.rightParent else parent
   }
+
 }
 
 object Treap {
@@ -201,5 +202,6 @@ object Treap {
     keys.foreach(result.add)
     result
   }
+
   def empty[T](implicit ord: Ordering[T]): Treap[T] = Treap[T]()
 }

@@ -31,6 +31,7 @@ class TreapTest {
     treap = Treap.empty[Int]
     assertEquals(0, treap.size)
     assertFalse(treap.iterator.hasNext)
+    assertTrue(treap.isEmpty)
   }
 
   @Test def oneElement(): Unit = {
@@ -62,19 +63,22 @@ class TreapTest {
   @Test def addDuplicate(): Unit = {
     assertTrue(treap.contains(1))
     assertFalse(treap.add(1))
+    assertEquals(4, treap.size)
     assertEquals(expectedList, treapToList(treap))
   }
 
   @Test def remove(): Unit = {
     assertTrue(treap.contains(1))
     assertTrue(treap.remove(1))
+    assertEquals(3, treap.size)
     assertEquals(List(2, 3, 4), treapToList(treap))
   }
 
   @Test def removeNotExistant(): Unit = {
     assertFalse(treap.contains(5))
     assertFalse(treap.remove(5))
-    assertEquals(List(1, 2, 3, 4), treapToList(treap))
+    assertEquals(4, treap.size)
+    assertEquals(expectedList, treapToList(treap))
   }
 
   @Test def foreach(): Unit = {
