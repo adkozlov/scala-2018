@@ -40,7 +40,7 @@ class TreeSet[K](private val tree: AVLTree[K] = AVLNil)(implicit keyOrdering: Or
   }
 
   def map[V](function: K => V)(implicit keyOrdering: Ordering[V]): TreeSet[V] =
-    foldLeft(TreeSet.emptySet[V])((set, key) => set + function(key))
+    foldLeft(TreeSet.emptySet[V])(_ + function(_))
 
   def flatMap[V](function: K => TreeSet[V])(implicit keyOrdering: Ordering[V]): TreeSet[V] =
     foldLeft(TreeSet.emptySet[V])(_ ++ function(_))
