@@ -23,8 +23,6 @@ trait Iterator[E] {
     }
     result
   }
-
-  def foldr[S](z: S)(f: (E, S) => S): S = if (this.hasNext) f(this.next, foldr(this)) else z
 }
 
 class EmptyIterator[E] extends Iterator[E] {

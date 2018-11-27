@@ -101,7 +101,7 @@ class ListTest extends FlatSpec with Matchers {
     it.hasNext should be(false)
   }
 
-  "List.foreach" should "should work correctly" in {
+  "List.foreach" should "work correctly" in {
     var list: List[String] = new Nil[String]()
     list = list.add("1")
     list = list.add("2")
@@ -111,5 +111,13 @@ class ListTest extends FlatSpec with Matchers {
     s should be("321")
   }
 
+  "List.foldl" should "work correctly" in {
+    var list: List[Int] = new Nil[Int]()
+    list = list.add(1)
+    list = list.add(2)
+    list = list.add(3)
+    list.foldl(10)((a, b) => a + b) should be(16)
+    list.foldl(10)((a, b) => a - b) should be(4)
+  }
 
 }

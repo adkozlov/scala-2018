@@ -36,7 +36,7 @@ abstract sealed class Tree[E](implicit ordering: Ordering[E]) extends Collection
     case Branch(l, v, r) => l.iterator.concat(new SingleIterator[E](v)).concat(r.iterator)
   }
 
-  override def flatMap[S](f: E => S)(implicit ordering: Ordering[S]): Tree[S] = {
+  def flatMap[S](f: E => S)(implicit ordering: Ordering[S]): Tree[S] = {
     val tree = this match {
       case Leaf() => Leaf()
       case Branch(l, v, r) => Branch(l.flatMap(f), f(v), r.flatMap(f))
