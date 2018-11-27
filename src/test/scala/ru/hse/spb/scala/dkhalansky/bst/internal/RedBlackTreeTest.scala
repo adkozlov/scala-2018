@@ -15,15 +15,16 @@ class RedBlackTreeTest extends FunSuite {
     }
     val blackHeight = leftLeafBlackHeight(tree)
 
-    def assertProperHeight(tree: RedBlackTree[T], height: Int): Unit = tree match {
-      case Leaf => assert(blackHeight === height)
-      case Node(Red, leftTree, _, rightTree) =>
-        assertProperHeight(leftTree, height)
-        assertProperHeight(rightTree, height)
-      case Node(Black, leftTree, _, rightTree) =>
-        assertProperHeight(leftTree, 1 + height)
-        assertProperHeight(rightTree, 1 + height)
-    }
+    def assertProperHeight(tree: RedBlackTree[T], height: Int): Unit =
+      tree match {
+        case Leaf => assert(blackHeight === height)
+        case Node(Red, leftTree, _, rightTree) =>
+          assertProperHeight(leftTree, height)
+          assertProperHeight(rightTree, height)
+        case Node(Black, leftTree, _, rightTree) =>
+          assertProperHeight(leftTree, 1 + height)
+          assertProperHeight(rightTree, 1 + height)
+      }
 
     tree match {
       case Node(color, _, _, _) => assert(Black === color)
@@ -51,4 +52,3 @@ class RedBlackTreeTest extends FunSuite {
   }
 
 }
-

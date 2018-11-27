@@ -1,7 +1,8 @@
 package ru.hse.spb.scala.dkhalansky.bst
 import internal._
 
-final class BinarySearchTree[A](tree: RedBlackTree[A])(implicit val ordering: Ordering[A]) {
+final class BinarySearchTree[A](tree: RedBlackTree[A])(
+    implicit val ordering: Ordering[A]) {
 
   override def toString() = tree.toString()
 
@@ -20,7 +21,8 @@ final class BinarySearchTree[A](tree: RedBlackTree[A])(implicit val ordering: Or
     foreachRBT(tree)
   }
 
-  def map[B](function: A => B)(implicit ordering: Ordering[B]): BinarySearchTree[B] = {
+  def map[B](function: A => B)(
+      implicit ordering: Ordering[B]): BinarySearchTree[B] = {
     def mapRBT(tree: RedBlackTree[A]): RedBlackTree[B] = tree match {
       case Leaf => Leaf
       case Node(color, leftTree, value, rightTree) =>
@@ -31,9 +33,11 @@ final class BinarySearchTree[A](tree: RedBlackTree[A])(implicit val ordering: Or
 
   def flatMap[B](function: A => BinarySearchTree[A]): BinarySearchTree[A] = {
     var acc: RedBlackTree[A] = Leaf
-    this.foreach { (el: A) => function(el).foreach { (el: A) =>
-      acc = RedBlackTree.insert(el, acc)
-    } }
+    this.foreach { (el: A) =>
+      function(el).foreach { (el: A) =>
+        acc = RedBlackTree.insert(el, acc)
+      }
+    }
     new BinarySearchTree(acc)
   }
 
@@ -47,9 +51,11 @@ final class BinarySearchTree[A](tree: RedBlackTree[A])(implicit val ordering: Or
 
   def withFilter(predicate: A => Boolean): BinarySearchTree[A] = {
     var acc: RedBlackTree[A] = Leaf
-    this.foreach { (el: A) => if (predicate(el)) {
+    this.foreach { (el: A) =>
+      if (predicate(el)) {
         acc = RedBlackTree.insert(el, acc)
-    } }
+      }
+    }
     new BinarySearchTree(acc)
   }
 
@@ -65,7 +71,8 @@ final class BinarySearchTree[A](tree: RedBlackTree[A])(implicit val ordering: Or
 
 object BinarySearchTree {
 
-  def apply[T](elements: T*)(implicit ordering: Ordering[T]): BinarySearchTree[T] = {
+  def apply[T](elements: T*)(
+      implicit ordering: Ordering[T]): BinarySearchTree[T] = {
     var tree: RedBlackTree[T] = Leaf
     for (e <- elements) {
       tree = RedBlackTree.insert(e, tree)
@@ -73,6 +80,7 @@ object BinarySearchTree {
     new BinarySearchTree(tree)
   }
 
-  def empty[T](implicit ordering: Ordering[T]): BinarySearchTree[T] = new BinarySearchTree(Leaf)
+  def empty[T](implicit ordering: Ordering[T]): BinarySearchTree[T] =
+    new BinarySearchTree(Leaf)
 
 }
