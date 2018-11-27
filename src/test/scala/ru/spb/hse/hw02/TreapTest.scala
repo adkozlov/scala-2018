@@ -3,7 +3,16 @@ package ru.spb.hse.hw02
 import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers}
 
 class TreapTest extends FlatSpec with Matchers with BeforeAndAfter {
-  private val testLinkedList: LinkedList[Int] = LinkedList(2, 3, 9, -1, 5, 6)
+  private def testLinkedList: LinkedList[Int] = {
+    val list: LinkedList[Int] = new LinkedList[Int]()
+    list.add(2)
+    list.add(3)
+    list.add(9)
+    list.add(-1)
+    list.add(5)
+    list.add(6)
+    list
+  }
 
   private var treap: Treap[Int] = _
 
@@ -14,7 +23,7 @@ class TreapTest extends FlatSpec with Matchers with BeforeAndAfter {
 
 
   "Treap.size" should "return correct set's size in a simple case" in {
-    val set: Treap[Int] = Treap()
+    val set: Treap[Int] = new Treap[Int]()
     set.size should be(0)
     set.add(1)
     set.size should be(1)
@@ -23,7 +32,7 @@ class TreapTest extends FlatSpec with Matchers with BeforeAndAfter {
   }
 
   it should "return correct set's size with duplicates" in {
-    val set: Treap[Int] = Treap()
+    val set: Treap[Int] = new Treap[Int]()
     set.size should be(0)
     set.add(1)
     set.size should be(1)
@@ -36,7 +45,7 @@ class TreapTest extends FlatSpec with Matchers with BeforeAndAfter {
   }
 
   it should "return correct set's size in a hard test case" in {
-    val set: Treap[Int] = Treap()
+    val set: Treap[Int] = new Treap[Int]()
     set.size should be(0)
     set.add(1)
     set.size should be(1)
@@ -150,7 +159,6 @@ class TreapTest extends FlatSpec with Matchers with BeforeAndAfter {
     outputList.contains(9) should be(true)
   }
 
-
   "treap add and remove" should "return correct boolean results" in {
     treap.remove(10) should be(false)
     treap.remove(9) should be(true)
@@ -159,7 +167,6 @@ class TreapTest extends FlatSpec with Matchers with BeforeAndAfter {
     treap.remove(9) should be(false)
     treap.add(9) should be(true)
   }
-
 
   "treap.iterator" should "return increasing list" in {
     val values = Set(-1, 2, 3, 5, 6, 9)
@@ -178,7 +185,6 @@ class TreapTest extends FlatSpec with Matchers with BeforeAndAfter {
     count should be(6)
   }
 
-
   "treap.map" should "return treap containing squares" in {
     treap = treap.map(value => value * value)
     treap.size should be(6)
@@ -193,7 +199,7 @@ class TreapTest extends FlatSpec with Matchers with BeforeAndAfter {
 
   "treap.flatMap" should "return treap of all base values plus {-1, 0, 1}" in {
     treap = treap.flatMap(value => {
-      val newTreap: Treap[Int] = Treap()
+      val newTreap: Treap[Int] = new Treap[Int]()
       newTreap.add(value - 1)
       newTreap.add(value)
       newTreap.add(value + 1)

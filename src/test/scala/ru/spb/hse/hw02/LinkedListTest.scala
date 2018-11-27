@@ -4,7 +4,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class LinkedListTest extends FlatSpec with Matchers {
   "LinkedList.size" should "return correct list's size in several cases" in {
-    val list: LinkedList[Int] = LinkedList()
+    val list: LinkedList[Int] = new LinkedList[Int]()
     list.size should be(0)
     list.add(1)
     list.size should be(1)
@@ -23,7 +23,13 @@ class LinkedListTest extends FlatSpec with Matchers {
   }
 
   "LinkedList forall, exists and count" should "return correct boolean results in several cases" in {
-    val list: LinkedList[Int] = LinkedList(1, -1, 3, -3, 2, -2)
+    val list: LinkedList[Int] = new LinkedList[Int]()
+    list.add(1)
+    list.add(-1)
+    list.add(3)
+    list.add(-3)
+    list.add(2)
+    list.add(-2)
 
     list.forall(Math.abs(_) < 4) should be(true)
     list.forall(Math.abs(_) < 3) should be(false)
@@ -38,7 +44,13 @@ class LinkedListTest extends FlatSpec with Matchers {
   }
 
   "LinkedList folds" should "return correct results in several cases" in {
-    val list: LinkedList[Int] = LinkedList(1, 2, 3, 4, 5, 6)
+    val list: LinkedList[Int] = new LinkedList[Int]()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    list.add(4)
+    list.add(5)
+    list.add(6)
 
     list.fold(0)((first, second) => first + second) should be(21)
     list.foldLeft("")((str, value) => str + " " + value.toString) should be(" 1 2 3 4 5 6")
@@ -46,7 +58,7 @@ class LinkedListTest extends FlatSpec with Matchers {
   }
 
   "LinkedList add, contains and remove" should "return correct boolean results in several cases" in {
-    val list: LinkedList[Int] = LinkedList()
+    val list: LinkedList[Int] = new LinkedList[Int]()
     list.contains(1) should be(false)
     list.add(1) should be(true)
     list.add(1) should be(true)
@@ -57,7 +69,11 @@ class LinkedListTest extends FlatSpec with Matchers {
   }
 
   "LinkedList.iterator" should "return correct iterator with element in the same order" in {
-    val list: LinkedList[Int] = LinkedList(1, 3, 2, 4)
+    val list: LinkedList[Int] = new LinkedList[Int]()
+    list.add(1)
+    list.add(3)
+    list.add(2)
+    list.add(4)
 
     val it: Iterator[Int] = list.iterator
     it.next should be(1)
@@ -67,7 +83,10 @@ class LinkedListTest extends FlatSpec with Matchers {
   }
 
   "LinkedList.toLinkedList" should "return list with the same structure" in {
-    val list: LinkedList[Int] = LinkedList(2, 3, 9)
+    val list: LinkedList[Int] = new LinkedList[Int]()
+    list.add(2)
+    list.add(3)
+    list.add(9)
 
     val first: Iterator[Int] = list.iterator
     val second: Iterator[Int] = list.toLinkedList.iterator

@@ -97,11 +97,3 @@ class LinkedList[T](implicit ordering: Ordering[T]) extends Collection[T] {
     elements.forEach(element => add(element))
   }
 }
-
-object LinkedList {
-  def apply[T](elements: T*)(implicit ordering: Ordering[T]): LinkedList[T] = {
-    val list: LinkedList[T] = new LinkedList[T]()
-    elements.foreach(list.add)
-    list
-  }
-}

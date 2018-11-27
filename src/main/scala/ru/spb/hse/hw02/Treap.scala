@@ -148,11 +148,3 @@ class Treap[T](implicit ordering: Ordering[T]) extends Collection[T] {
     newTreap
   }
 }
-
-object Treap {
-  def apply[T](elements: T*)(implicit ordering: Ordering[T]): Treap[T] = {
-    val treap: Treap[T] = new Treap[T]()
-    elements.foreach(treap.add)
-    treap
-  }
-}
