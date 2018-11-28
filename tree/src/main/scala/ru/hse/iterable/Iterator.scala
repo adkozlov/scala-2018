@@ -88,6 +88,8 @@ trait Iterator[+A] {
       nextValue
     } else empty.next()
   }
+
+  def withFilter(p: A => Boolean): Iterator[A] = filter(p)
 }
 
 object Iterator {

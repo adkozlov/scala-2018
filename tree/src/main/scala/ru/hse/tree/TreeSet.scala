@@ -180,7 +180,7 @@ object TreeSet {
             if (left == Empty) {
               root
             } else {
-              if (right != Empty) stack.push(root)
+              stack.push(root)
               leftmost(left)
             }
         }
@@ -207,5 +207,4 @@ object TreeSet {
   case class Node[A](value: A, left: Tree[A], right: Tree[A])(implicit ordering: Ordering[A]) extends Tree[A]
 
   object Empty extends Tree
-
 }

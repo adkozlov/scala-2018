@@ -1,6 +1,8 @@
 package ru.hse.stack
 
-class Stack[A] extends Iterable[A] {
+import ru.hse.iterable
+
+class Stack[A] extends iterable.Iterable[A] {
 
   import Stack.{Entry, Element, Nil}
 
@@ -20,12 +22,12 @@ class Stack[A] extends Iterable[A] {
   }
 
   /** The behavior of this method is undefined in case of modification during iteration. */
-  override def iterator: Iterator[A] = new Iterator[A] {
+  override def iterator: iterable.Iterator[A] = new iterable.Iterator[A] {
     private var current = root
 
     override def hasNext: Boolean = current match {
       case Nil => false
-      case Element(elem, prev) => prev != Nil
+      case Element(_, _) => true
     }
 
     override def next(): A = current match {

@@ -17,6 +17,8 @@ trait Iterable[+A] {
     override def iterator: Iterator[A] = Iterable.this.iterator filter p
   }
 
+  def withFilter(p: A => Boolean): Iterable[A] = filter(p)
+
   def forall(p: A => Boolean): Boolean =
     iterator.forall(p)
 
