@@ -233,6 +233,13 @@ class AATreeSet[T](implicit ordering: Ordering[T]) {
     this
   }
 
+  def forEach(op: T => Unit): Unit = {
+    val iterator1 = iterator
+    while (iterator1.hasNext) {
+      op(iterator1.next)
+    }
+  }
+
   def iterator: Iterator[T] = new MyIterator()
 }
 

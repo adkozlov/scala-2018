@@ -22,4 +22,9 @@ class Test extends FlatSpec with Matchers {
   "AATreeSet" should "-=" in assert(asList(AATreeSet(1, 2, 4) -= 2) == List(1, 4))
   "AATreeSet" should "foldLeft" in assert(AATreeSet(1, 2, 4).foldLeft("")((s:String, t:Int) => s + t.toString) == "124")
   "AATreeSet" should "foldRight" in assert(AATreeSet(1, 2, 4).foldRight("")((t:Int, s:String) => s + t.toString) == "421")
+  "AATreeSet" should "forEach" in {
+    var ct = 0
+    AATreeSet(4, 2, 3) forEach (x => ct = x - ct)
+    assert(ct == 3)
+  }
 }
