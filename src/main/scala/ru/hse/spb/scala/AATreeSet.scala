@@ -2,50 +2,19 @@ package ru.hse.spb.scala
 
 class AATreeSet[T](implicit ordering: Ordering[T]) {
 
-  private[AATreeSet] final case class Node(private[AATreeSet] var value: T, private[AATreeSet] var level: Int = 1, private[AATreeSet] var left: Node = null, private[AATreeSet] var right: Node = null, private[AATreeSet] var parent: Node = null){
-    private def skew(): Node = if (left == null || left.level != level) {
-      this
-    } else {
-      var z = Node(value, level, left.right, right)
-      var x = Node(left.value, left.level, left.left, z, parent)
-      z.parent = x
-      x
-    }
+  private[AATreeSet] final case class Node(private[AATreeSet] var value: T, private[AATreeSet] var level: Int = 1, private[AATreeSet] var left: Node = null, private[AATreeSet] var right: Node = null, private[AATreeSet] var parent: Node = null) {
 
-    private def split(): Node = if (right == null || right.right == null || right.right.level != level) {
-      this
-    } else {
-      var z = Node(value, level, left, right.left)
-      var x = Node(right.value, right.level + 1, z, right.right, parent)
-      z.parent = x
-      x
-    }
-
-    def insert(_value: T): Node = if (_value == value) {
-      this
-    } else if (ordering.lt(_value, value)) {
-      Node(value, level, if (left == null) Node(_value) else left.insert(_value), right, parent)
-        .skew()
-        .split()
-    } else {
-      Node(value, level, left, right.insert(_value), parent)
-        .skew()
-        .split()
-    }
-
-    private def predecessor(): Node = {
-      if (left == null) {
+    private[AATreeSet] def predecessor(): Node = if (left == null) {
         null
-      } else {
-        var ans = left
-        while (ans.right != null) {
-          ans = ans.right
-        }
-        ans
+    } else {
+      var ans = left
+      while (ans.right != null) {
+        ans = ans.right
       }
+      ans
     }
 
-    def successor(): Node = if (right == null) {
+    private[AATreeSet] def successor(): Node = if (right == null) {
       null
     } else {
       var ans = right
@@ -55,57 +24,14 @@ class AATreeSet[T](implicit ordering: Ordering[T]) {
       ans
     }
 
-    private def decreaseLevel(): Node = {
-      val newLevel = math.min(if (left != null) left.level else 0, if (right != null) right.level else 0) + 1
-      var x = Node(value, newLevel, left, null, parent)
-      var z = if (right != null) Node(right.value, math.min(newLevel, right.level), null, null, x) else null
-      x.right = z
-      x
-    }
-
-    private def change(): Node = {
-      var t = decreaseLevel()
-        .skew()
-      if (t.right != null) {
-        var x = t.right.skew()
-        if (x.right != null) {
-          x.right = x.right.skew()
-        }
-        t.right = x
-      }
-      t = t.split()
-      if (t.right != null) {
-        t.right = t.right.split()
-      }
-      t
-    }
-
-    def remove(_value: T): Node = if (ordering.lt(_value, value)) {
-      Node(value, level, if (left != null) left.remove(_value) else null, right, parent)
-        .change()
-    } else if (ordering.gt(_value, value)) {
-      Node(value, level, left, if (left != null) right.remove(_value) else null, parent)
-        .change()
-    } else {
-      if (left != null) {
-        val t = predecessor()
-        Node(t.value, level, left.remove(t.value), right, parent)
-          .change()
-      } else if (right != null) {
-        val t = successor()
-        Node(t.value, level, left, right.remove(t.value), parent)
-          .change()
-      } else {
-        null
-      }
-    }
-
     def contains(elem: T): Boolean = if (value == elem)
       true
-    else if (ordering.gt(value, elem))
-      if (left != null) left.contains(elem) else false
-    else
+    else {
+      if (ordering.gt(value, elem))
+        if (left != null) left.contains(elem) else false
+      else
       if (right != null) right.contains(elem) else false
+    }
 
     def foldLeft[S](z: S)(op: (S, T) => S): S = {
       var t = z
@@ -132,8 +58,132 @@ class AATreeSet[T](implicit ordering: Ordering[T]) {
     }
   }
 
+  private def skew(a: Node): Node =
+    if (a == null || a.left == null || a.left.level != a.level) {
+      a
+    } else {
+      var z = a.left
+      a.left = z.right
+      if (a.left != null) {
+        a.left.parent = a
+      }
+      z.right = a
+      z.parent = a.parent
+      a.parent = z
+      z
+    }
+
+  private def split(a: Node): Node =
+    if (a == null || a.right == null || a.right.right == null || a.right.right.level != a.level) {
+      a
+    } else {
+      var z = a.right
+      a.right = z.left
+      if (a.right != null) {
+        a.right.parent = a
+      }
+      z.left = a
+      z.parent = a.parent
+      a.parent = z
+      z.level = a.level + 1
+      z
+    }
+
+  private def insert(_value: T, a: Node = root): Node = {
+    var t = if (a == null) {
+      Node(_value)
+    } else if (ordering.equiv(_value, a.value)) {
+      a
+    } else if (ordering.lt(_value, a.value)) {
+      a.left = insert(_value, a.left)
+      a.left.parent = a
+      split(skew(a))
+    } else {
+      a.right = insert(_value, a.right)
+      a.right.parent = a
+      split(skew(a))
+    }
+    t.parent = null
+    t
+  }
+
+  private def decreaseLevel(t: Node): Node =
+    if (t == null) {
+      null
+    } else {
+      val newLevel = math.min(if (t.left != null) t.left.level else 0, if (t.right != null) t.right.level else 0) + 1
+      t.level = newLevel
+      if (t.right != null) {
+        t.right.level = math.min(t.right.level, newLevel)
+      }
+      t.parent = null
+      t
+    }
+
+  private def change(a: Node): Node =
+    if (a == null) {
+      null
+    } else {
+      var t = skew(decreaseLevel(a))
+      if (t.right != null) {
+        var x = skew(t.right)
+        if (x.right != null) {
+          x.right = skew(x.right)
+        }
+        t.right = x
+      }
+      t = split(t)
+      if (t.right != null) {
+        t.right = split(t.right)
+      }
+      t.parent = null
+      t
+    }
+
+  def remove(_value: T, a: Node): Node = {
+    var t = if (a == null) {
+      null
+    } else if (ordering.lt(_value, a.value)) {
+      a.left = remove(_value, a.left)
+      if (a.left != null) {
+        a.left.parent = a
+      }
+      change(a)
+    } else if (ordering.gt(_value, a.value)) {
+      a.right = remove(_value, a.right)
+      if (a.right != null) {
+        a.right.parent = a
+      }
+      change(a)
+    } else if (a.left != null) {
+      val t = a.predecessor()
+      a.left = remove(t.value, a.left)
+      if (a.left != null) {
+        a.left.parent = a
+      }
+      a.value = t.value
+      change(a)
+    } else if (a.right != null) {
+      val t = a.successor()
+      a.right = remove(t.value, a.right)
+      if (a.right != null) {
+        a.right.parent = a
+      }
+      a.value = t.value
+      change(a)
+    } else {
+      null
+    }
+    if (t != null) {
+      t.parent = null
+    }
+    t
+  }
+
+  private var root: Node = null
+
   class MyIterator extends Iterator[T] {
-    var cur: Node = if (root == null) null else {
+    private var cur: Node = if (root == null) null else {
       var left = root
       while (left.left != null) {
         left = left.left
@@ -141,34 +191,22 @@ class AATreeSet[T](implicit ordering: Ordering[T]) {
       left
     }
 
-    val rightmostValue: T = {
-      var right = root
-      while (right.right != null) {
-        right = right.right
-      }
-      right.value
-    }
-
-    override def hasNext: Boolean = {
-      cur.value != rightmostValue
-    }
+    override def hasNext: Boolean = cur != null
 
     override def next: T = {
       val ans = cur.value
-      var next = cur.successor()
-      if (next == null) {
-        next = cur.parent
-        while (next != null && next.right.value == cur.value) {
-          cur = next
-          next = cur.parent
+      var n = cur.successor()
+      if (n == null) {
+        n = cur.parent
+        while (n != null && n.right.value == cur.value) {
+          cur = n
+          n = cur.parent
         }
-        cur = next
       }
+      cur = n
       ans
     }
   }
-
-  private var root: Node = null
 
   def map[S](f: T => S)(implicit ordering: Ordering[S]): AATreeSet[S] = {
     var ansSet = new AATreeSet[S]()
@@ -186,18 +224,12 @@ class AATreeSet[T](implicit ordering: Ordering[T]) {
   def contains(elem: T): Boolean = if (root == null) false else root.contains(elem)
 
   def +=(elem: T): AATreeSet[T] = {
-    if (root == null) {
-      root = Node(elem)
-    } else {
-      root.insert(elem)
-    }
+    root = insert(elem, root)
     this
   }
 
   def -=(elem: T): AATreeSet[T] = {
-    if (root != null) {
-      root.remove(elem)
-    }
+    root = remove(elem, root)
     this
   }
 
