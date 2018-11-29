@@ -17,6 +17,8 @@ abstract class AVLTree[+V]() {
   def max(): AVLTree[V]
 
   def isBalanced: Boolean
+
+  def iterator: AVLIterator[V]
 }
 
 case object AVLLeaf extends AVLTree[Nothing] {
@@ -36,6 +38,15 @@ case object AVLLeaf extends AVLTree[Nothing] {
   def max(): AVLTree[Nothing] = this
 
   override def isBalanced: Boolean = true
+
+  override def iterator: AVLIterator[Nothing] = new AVLIterator[Nothing] {
+
+    override def hasElements: Boolean = false
+
+    override def hasNext: Boolean = false
+
+    override def next(): Nothing = throw new NoSuchMethodException()
+  }
 }
 
 final case class AVLNode[+V](left: AVLTree[V], value: V, right: AVLTree[V]) extends AVLTree[V] {
@@ -73,6 +84,36 @@ final case class AVLNode[+V](left: AVLTree[V], value: V, right: AVLTree[V]) exte
   }
 
   override def isBalanced: Boolean = math.abs(left.height - right.height) <= 1 && left.isBalanced && right.isBalanced
+
+  override def iterator: AVLIterator[V] = new AVLIterator[V] {
+    val leftIterator: AVLIterator[V] = left.iterator
+    val rightIterator: AVLIterator[V] = right.iterator
+
+    var gaveValue: Boolean = false
+    var gaveAll: Boolean = false
+
+    def hasElements: Boolean = gaveAll
+
+    override def hasNext: Boolean = leftIterator.hasNext || !gaveValue || rightIterator.hasNext
+
+    override def next(): V = if (leftIterator.hasNext) {
+      leftIterator.next()
+    } else {
+      if (!gaveValue) {
+        gaveValue = true
+        gaveAll = !rightIterator.hasNext
+        value
+      } else {
+        if (rightIterator.hasNext) {
+          val lastValue: V = rightIterator.next()
+          gaveAll = true
+          lastValue
+        } else {
+          throw new NoSuchElementException()
+        }
+      }
+    }
+  }
 }
 
 object AVLTree {
