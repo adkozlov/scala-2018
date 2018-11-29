@@ -1,6 +1,6 @@
 package AVLTree
 
-sealed abstract class AVLTree[+V]() {
+abstract class AVLTree[+V]() {
 
   def size: Int
 
@@ -8,13 +8,15 @@ sealed abstract class AVLTree[+V]() {
 
   def foreach(f: V => Unit): Unit
 
-  def map[W](f: V => W)(implicit ordering: Ordering[W]): AVLTree[W]
+  def map[W](f: V => W)(implicit ord: Ordering[W]): AVLTree[W]
 
-  def flatMap[W](f: V => AVLTree[W])(implicit ordering: Ordering[W]): AVLTree[W]
+  def flatMap[W](f: V => AVLTree[W])(implicit ord: Ordering[W]): AVLTree[W]
 
   def min(): AVLTree[V]
 
   def max(): AVLTree[V]
+
+  def isBalanced: Boolean
 }
 
 case object AVLLeaf extends AVLTree[Nothing] {
@@ -32,6 +34,8 @@ case object AVLLeaf extends AVLTree[Nothing] {
   def min(): AVLTree[Nothing] = this
 
   def max(): AVLTree[Nothing] = this
+
+  override def isBalanced: Boolean = true
 }
 
 final case class AVLNode[+V](left: AVLTree[V], value: V, right: AVLTree[V]) extends AVLTree[V] {
@@ -46,13 +50,13 @@ final case class AVLNode[+V](left: AVLTree[V], value: V, right: AVLTree[V]) exte
     right.foreach(f)
   }
 
-  override def map[W](f: V => W)(implicit ordering: Ordering[W]): AVLTree[W] = {
+  override def map[W](f: V => W)(implicit ord: Ordering[W]): AVLTree[W] = {
     var result: AVLTree[W] = AVLLeaf
     foreach((v: V) => result = AVLTree.add(f(v), result))
     result
   }
 
-  override def flatMap[W](f: V => AVLTree[W])(implicit ordering: Ordering[W]): AVLTree[W] = {
+  override def flatMap[W](f: V => AVLTree[W])(implicit ord: Ordering[W]): AVLTree[W] = {
     var result: AVLTree[W] = AVLLeaf
     foreach((v: V) => f(v).foreach(x => result = AVLTree.add(x, result)))
     result
@@ -67,6 +71,8 @@ final case class AVLNode[+V](left: AVLTree[V], value: V, right: AVLTree[V]) exte
     case AVLLeaf => this
     case _ => right.min()
   }
+
+  override def isBalanced: Boolean = math.abs(left.height - right.height) <= 1 && left.isBalanced && right.isBalanced
 }
 
 object AVLTree {
@@ -79,23 +85,18 @@ object AVLTree {
     result
   }
 
-  def add[V](e: V, tree: AVLTree[V])(implicit ordering: Ordering[V]): AVLTree[V] = tree match {
+  def add[V](e: V, tree: AVLTree[V])(implicit ord: Ordering[V]): AVLTree[V] = tree match {
     case AVLLeaf => AVLNode(AVLLeaf, e, AVLLeaf)
-    case AVLNode(l, v, r) => balance(ordering.compare(v, e) match {
+    case AVLNode(l, v, r) => balance(ord.compare(v, e) match {
       case -1 => AVLNode[V](l, v, add(e, r))
       case _ => AVLNode[V](add(e, l), v, r)
     })
   }
 
-  def isBalanced[V](t: AVLTree[V]): Boolean = t match {
-    case AVLLeaf => true
-    case AVLNode(l, _, r) => math.abs(l.height - r.height) <= 1 && isBalanced(l) && isBalanced(r)
-  }
-
   def diff[V](l: AVLTree[V], r: AVLTree[V]): Int = l.height - r.height
 
   def balance[V](tree: AVLTree[V]): AVLTree[V] = {
-    if (isBalanced(tree)) return tree
+    if (tree.isBalanced) return tree
 
     tree match {
       // small left rotation

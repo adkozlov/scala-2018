@@ -28,11 +28,11 @@ class AVLTreeTest extends FlatSpec with Matchers {
     val numbers = (1 to 5).toList
     for (i <- numbers) {
       tree = AVLTree.add(i, tree)
-      assert(AVLTree.isBalanced(tree))
+      assert(tree.isBalanced)
     }
 
     assert(tree.size == 5)
-    assert(AVLTree.isBalanced(tree))
+    assert(tree.isBalanced)
     val correctTree: AVLTree[Int] = AVLNode(
       AVLNode(AVLLeaf, 1, AVLLeaf),
       2,
@@ -51,11 +51,27 @@ class AVLTreeTest extends FlatSpec with Matchers {
     val numbers = Random.shuffle((1 to n).toList)
     for (i <- numbers) {
       tree = AVLTree.add(i, tree)
-      assert(AVLTree.isBalanced(tree))
+      assert(tree.isBalanced)
     }
 
     assert(tree.size == n)
-    assert(AVLTree.isBalanced(tree))
+    assert(tree.isBalanced)
+  }
+
+  "AVLTree" should "contain elements after adding" in {
+    var tree: AVLTree[Int] = AVLLeaf
+    val numbers = Random.shuffle((1 to n).toList)
+    for (i <- numbers) {
+      tree = AVLTree.add(i, tree)
+      assert(tree.isBalanced)
+    }
+
+    for (i <- numbers) {
+      assert(AVLTree.contains(i, tree))
+    }
+
+    assert(tree.size == n)
+    assert(tree.isBalanced)
   }
 
   "AVLTree" should "have correct size and be balanced after removing elements" in {
@@ -64,7 +80,7 @@ class AVLTreeTest extends FlatSpec with Matchers {
 
     for (i <- 1 to n) {
       tree = AVLTree.remove(i, tree)
-      assert(AVLTree.isBalanced(tree))
+      assert(tree.isBalanced)
     }
 
     assert(tree.size == 0)
@@ -118,7 +134,9 @@ class AVLTreeTest extends FlatSpec with Matchers {
           AVLNode(
             AVLLeaf,
             1,
-            AVLLeaf)),
+            AVLLeaf
+          )
+        ),
         1,
         AVLNode(
           AVLNode(
