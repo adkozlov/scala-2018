@@ -1,30 +1,59 @@
-package main.scala
+import grammar._
+import org.antlr.v4.runtime.CharStreams.fromString
+import org.antlr.v4.runtime.{CommonTokenStream, Recognizer}
+import visitors.{BooleanAlgebraEvaluator, RealFieldEvaluator}
 
-import arithm.{aLexer, aParser}
-import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
+import scala.io.StdIn.readLine
 
-import scala.io.StdIn
 
 object Main {
-  def main(args: Array[String]) {
-    while (read()) {}
+  def evalBooleanMath(expression: String): Boolean = {
+    val lexer = new BooleanAlgebraLexer(fromString(expression))
+    makeItToRaiseExceptionOnSyntaxErrors(lexer)
+    val parser = new BooleanAlgebraParser(new CommonTokenStream(lexer))
+    makeItToRaiseExceptionOnSyntaxErrors(parser)
+    parser.booleanExpr().accept(BooleanAlgebraEvaluator)
   }
 
-  private def read(): Boolean = {
-    val line = StdIn.readLine("> ")
-    println("KEK: " + line)
+  def evalRealMath(expression: String): Int = {
+    val lexer = new RealFieldLexer(fromString(expression))
+    makeItToRaiseExceptionOnSyntaxErrors(lexer)
+    val parser = new RealFieldParser(new CommonTokenStream(lexer))
+    makeItToRaiseExceptionOnSyntaxErrors(parser)
+    parser.realExpr().accept(RealFieldEvaluator)
+  }
+
+  private def makeItToRaiseExceptionOnSyntaxErrors(recognizer: Recognizer[_, _]): Unit = {
+    val errorListener = new ErrorListener()
+    recognizer.removeErrorListeners()
+    recognizer.addErrorListener(errorListener)
+  }
+
+  def repl(): Boolean = {
+    val line = readLine("> ")
     if (line == null) return false
 
     try {
-      println(eval(line))
+      println(evalBooleanMath(line))
+      return true
+    } catch {
+      // ignore errors, cause we have the next parser
+      case ex: RuntimeException => ()
+    }
+
+    try {
+      println(evalRealMath(line))
     } catch {
       case ex: ArithmeticException => println("Division by zero")
-      case ex: RuntimeException => println("Some exception occured")
+      // parse errors are displayed here
+      case ex: RuntimeException => println(ex.getMessage)
     }
 
     true
   }
 
-  def eval(str: String): Int =
-    new aParser(new CommonTokenStream(new aLexer(CharStreams.fromString(str)))).expr().res
+  def main(args: Array[String]) {
+    while (repl()) {}
+    println("ok!")
+  }
 }
