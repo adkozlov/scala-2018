@@ -48,7 +48,7 @@ trait Iterator[+A] {
   def map[B](f: A => B): Iterator[B] = new Iterator[B] {
     def hasNext: Boolean = Iterator.this.hasNext
 
-    def next() = f(Iterator.this.next())
+    def next(): B = f(Iterator.this.next())
   }
 
   def flatMap[B](f: A => Iterator[B]): Iterator[B] = new Iterator[B] {

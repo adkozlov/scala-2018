@@ -136,13 +136,13 @@ class TreeSet[A] private(val alpha: Double,
   }
 
   private def build[B](nodes: Array[B], l: Int, r: Int)(implicit ordering: Ordering[B]): Tree[B] = {
-    if (r - l == 0) {
+    if (r - l <= 0) {
       Empty
     } else if (r - l == 1) {
       Node(nodes(l), Empty, Empty)
     } else {
       val m = (l + r) / 2
-      Node(nodes(m), build(nodes, l, m), build(nodes, m, r))
+      Node(nodes(m), build(nodes, l, m), build(nodes, m + 1, r))
     }
   }
 
@@ -176,7 +176,7 @@ object TreeSet {
       private def leftmost(root: Tree[A]): Tree[A] = {
         root match {
           case Empty => Empty
-          case root@Node(_, left, right) =>
+          case root@Node(_, left, _) =>
             if (left == Empty) {
               root
             } else {
@@ -186,13 +186,13 @@ object TreeSet {
         }
       }
 
-      override def hasNext: Boolean = current != null
+      override def hasNext: Boolean = current != Empty
 
       override def next(): A = {
         current match {
-          case Empty => Iterator.empty.next()
+          case Empty => iterable.Iterator.empty.next()
           case Node(value, _, right) =>
-            current = if (right != Empty) leftmost(right) else stack.pop()
+            current = if (right != Empty) leftmost(right) else if (stack.isEmpty) Empty else stack.pop()
             value
         }
       }

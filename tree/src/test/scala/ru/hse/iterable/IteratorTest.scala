@@ -60,4 +60,10 @@ class IteratorTest extends FlatSpec with BeforeAndAfter with Matchers {
 
     assert(size == 5)
   }
+
+  "An Iterator" should "throw exception if next() is called on empty" in {
+    assertThrows[NoSuchElementException] {
+      for (_ <- Range(0, 11)) iterator.next()
+    }
+  }
 }
