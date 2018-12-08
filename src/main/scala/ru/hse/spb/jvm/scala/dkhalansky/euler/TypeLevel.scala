@@ -126,9 +126,15 @@ object TypeFramework {
     type __16 = O[O[O[O[I[E]]]]]
     type __17 = I[O[O[O[I[E]]]]]
     type __18 = O[I[O[O[I[E]]]]]
+    type __28 = O[O[I[I[I[E]]]]]
+    type __40 = O[O[O[I[O[I[E]]]]]]
+    type __53 = I[O[I[O[I[I[E]]]]]]
     type __64 = O[O[O[O[O[O[I[E]]]]]]]
+    type __100 = O[O[I[O[O[I[I[E]]]]]]]
     type __256 = O[O[O[O[O[O[O[O[I[E]]]]]]]]]
+    type __804 = O[O[I[O[O[I[O[O[I[I[E]]]]]]]]]]
     type __1024 = O[O[O[O[O[O[O[O[O[O[I[E]]]]]]]]]]]
+    type __2361 = I[O[O[I[I[I[O[O[I[O[O[I[E]]]]]]]]]]]]
 
     trait BinSuc[A <: Bin] { type Out <: Bin }
     object BinSuc {
