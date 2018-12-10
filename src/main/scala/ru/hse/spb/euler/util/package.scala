@@ -10,4 +10,9 @@ package object util {
     }
     current
   }
+
+  def upperFac(base: Int, n: Int): Long = n match {
+    case 0 => 1L
+    case _ => base * upperFac(base + 1, n - 1)
+  }
 }
