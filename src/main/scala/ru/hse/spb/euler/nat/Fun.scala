@@ -1,5 +1,5 @@
 package ru.hse.spb.euler.nat
 
-trait Fun {
-  type Apply[N <: Nat] <: Nat
+trait Fun[Up] {
+  type Apply[N <: Up] <: Up
 }

@@ -26,8 +26,8 @@ sealed trait Nat {
 
   /* Recursive methods and cycles */
   type Fib <: Nat
-  type Fold[F <: Fun, Acc <: Fun2, Init <: Nat] <: Nat
-  final type Repeat[F <: Fun, Init <: Nat] = Fold[Id, AccForRepeat[F], Init]
+  type Fold[F <: Fun[Nat], Acc <: Fun2[Up], Init <: Up, Up] <: Up
+  final type Repeat[F <: Fun[Up], Init <: Up, Up] = Fold[Id[Nat], AccForRepeat[F, Up], Init, Up]
 
   /* Auxiliary methods */
   protected type IsZero[CaseZero <: Nat, CaseNotZero <: Nat] <: Nat
@@ -58,7 +58,7 @@ class S extends Nat {
   type Decrease = S
 
   type Fib = S
-  type Fold[F <: Fun, Acc <: Fun2, Init <: Nat] = Init
+  type Fold[F <: Fun[Nat], Acc <: Fun2[Up], Init <: Up, Up] = Init
 
   type IsZero[CaseZero <: Nat, CaseNotZero <: Nat] = CaseZero
   type This = S
@@ -70,7 +70,8 @@ sealed trait Digit[T <: Nat] extends Nat {
 
   final type DivBy2 = T
 
-  final type Fold[F <: Fun, Acc <: Fun2, Init <: Nat] = Acc#Apply[Decrease#Fold[F, Acc, Init], F#Apply[This]]
+  final type Fold[F <: Fun[Nat], Acc <: Fun2[Up], Init <: Up, Up] =
+    Acc#Apply[Decrease#Fold[F, Acc, Init, Up], F#Apply[This]]
 
   final type IsZero[CaseZero <: Nat, CaseNotZero <: Nat] = CaseNotZero
 }
