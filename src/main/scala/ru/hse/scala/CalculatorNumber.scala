@@ -1,39 +1,39 @@
 package ru.hse.scala
 
 trait CalculatorNumber {
-  def add(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def add(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def sub(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def sub(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def div(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def div(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def mult(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def mult(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def mod(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def mod(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def or(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def or(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def and(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def and(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def eq(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def eq(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def neq(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def neq(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def greater(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def greater(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def less(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def less(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def ge(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def ge(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def le(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException
+  def le(right: CalculatorNumber): CalculatorNumber = throw new UnsupportedOperationException()
 
-  def toInt: Int = throw new UnsupportedOperationException
+  def toInt: Int = throw new UnsupportedOperationException()
 
-  def toDouble: Double = throw new UnsupportedOperationException
+  def toDouble: Double = throw new UnsupportedOperationException()
 
-  def toBoolean: Boolean = throw new UnsupportedOperationException
+  def toBoolean: Boolean = throw new UnsupportedOperationException()
 
-  def getValue: AnyVal = throw new UnsupportedOperationException
+  def getValue: AnyVal = throw new UnsupportedOperationException()
 
   def evaluate(op : String, right : CalculatorNumber) : CalculatorNumber = op match {
     case "+" => add(right)
