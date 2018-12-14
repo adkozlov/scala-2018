@@ -1,14 +1,9 @@
 package ru.hse.spb.euler
 
 import nat._
+import nat.funs._
 
 object SwappingCountersTypeLevel {
-
-  private type _1 = I[S]
-  private type _2 = O[I[S]]
-  private type _3 = I[I[S]]
-  private type _4 = O[O[I[S]]]
-  private type _5 = I[O[I[S]]]
 
   private type A = _3
   private type B = _4

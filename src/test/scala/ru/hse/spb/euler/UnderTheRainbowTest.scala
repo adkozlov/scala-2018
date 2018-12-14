@@ -1,16 +1,12 @@
 package ru.hse.spb.euler
 
 import org.scalatest.{FlatSpec, Matchers}
-import ru.hse.spb.euler.nat._
+import nat._
 
 /**
   * https://projecteuler.net/problem=493
   */
 class UnderTheRainbowTest extends FlatSpec with Matchers {
-
-  private type _7 = I[I[I[S]]]
-  private type _10 = O[I[O[I[S]]]]
-  private type _20 = O[O[I[O[I[S]]]]]
 
   private val answer: Double = 6.818741802019762
 

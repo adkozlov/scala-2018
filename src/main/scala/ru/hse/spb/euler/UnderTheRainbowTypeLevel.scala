@@ -1,11 +1,10 @@
 package ru.hse.spb.euler
 
-import ru.hse.spb.euler.nat._
-import ru.hse.spb.euler.rat.Rat
+import nat._
+import nat.funs._
+import rat.Rat
 
 object UnderTheRainbowTypeLevel {
-
-  type _1 = I[S]
 
   class Plus[M <: Nat] extends Fun[Nat] {
     type Apply[N <: Nat] = N#Plus[M]

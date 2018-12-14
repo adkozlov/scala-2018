@@ -9,7 +9,6 @@ import org.scalatest.{FlatSpec, Matchers}
   */
 class SpecialIsoscelesTrianglesTest extends FlatSpec with Matchers {
 
-  private type _12 = O[O[I[I[S]]]]
   private val answer: Long = 1118049290473932L
 
   "Type-level evaluate method" should "produce the correct answer" in {
