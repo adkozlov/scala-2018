@@ -21,11 +21,12 @@ class TestHList extends FlatSpec with Matchers {
   }
 
   "SplitAt" should "work correctly" in {
-    list1.SplitAt(Nat._0) should be((HNil, list1))
-    list1.SplitAt(Nat._1) should be((1 :: HNil, 2 :: "hello" :: 3.14 :: HNil))
-    list1.SplitAt(Nat._2) should be((1 :: 2 :: HNil, "hello" :: 3.14 :: HNil))
+    list1.SplitAt(Number._0) should be((HNil, list1))
+    list1.SplitAt(Number._1) should be((1 :: HNil, 2 :: "hello" :: 3.14 :: HNil))
+    list1.SplitAt(Number._2) should be((1 :: 2 :: HNil, "hello" :: 3.14 :: HNil))
 
     // Compilation error should occur
-    // list1.SplitAt(ru.hse.spb.hlist.Nat._5)
+    // list1.SplitAt(ru.hse.spb.hlist.Number._5)
+    // list1.SplitAt(ru.hse.spb.hlist.Number._M1)
   }
 }

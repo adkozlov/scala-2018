@@ -1,5 +1,7 @@
 package ru.hse.spb.hlist
 
+import ru.hse.spb.hlist.Number.Positive
+
 sealed trait HList
 
 object HList {
@@ -18,7 +20,7 @@ object HList {
                                         (implicit appendable: Appendable[L, A, Result]): Result =
       appendable(left, list)
 
-    def SplitAt[L <: HList, R <: HList, N <: Nat](n: N)(implicit splittable: Splittable[A, L, R, N]): (L, R) =
+    def SplitAt[L <: HList, R <: HList, N <: Positive](n: N)(implicit splittable: Splittable[A, L, R, N]): (L, R) =
       splittable(list, n)
   }
 
