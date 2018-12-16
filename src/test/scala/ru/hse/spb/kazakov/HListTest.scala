@@ -34,22 +34,22 @@ class HListTest extends FlatSpec with Matchers {
 
   it should "be able to zip with list of the lesser size" in {
     val list1 = 0.1 :: "qw" :: HNil
-    val list2 = 'r' ::  HNil
+    val list2 = 'r' :: HNil
     list1.zip(list2) shouldBe HCons((0.1, 'r'), HNil)
   }
 
   it should "be splittable at 0" in {
     val list = 0.1 :: "qw" :: 'c' :: HNil
-    list.splitAt(O) shouldBe (HNil, list)
+    list.splitAt(O) shouldBe(HNil, list)
   }
 
   it should "be splittable in the middle" in {
     val list = 0.1 :: "qw" :: 'c' :: HNil
-    list.splitAt(_2) shouldBe (0.1 :: "qw" :: HNil, 'c' :: HNil)
+    list.splitAt(_2) shouldBe(0.1 :: "qw" :: HNil, 'c' :: HNil)
   }
 
   it should "be splittable at last element" in {
     val list = 0.1 :: "qw" :: 'c' :: HNil
-    list.splitAt(_3) shouldBe (0.1 :: "qw" :: 'c' :: HNil, HNil)
+    list.splitAt(_3) shouldBe(0.1 :: "qw" :: 'c' :: HNil, HNil)
   }
 }

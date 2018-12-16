@@ -3,7 +3,9 @@ package ru.hse.spb.kazakov
 sealed trait HList
 
 object HList {
+
   case class HCons[+H, +T <: HList](head: H, tail: T) extends HList
+
   case object HNil extends HList
 
   implicit class HListExt[A <: HList](private val list: A) extends AnyVal {
@@ -21,5 +23,5 @@ object HList {
       splittable(index, list)
     }
   }
-}
 
+}

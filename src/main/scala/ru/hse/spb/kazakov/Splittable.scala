@@ -10,8 +10,8 @@ object Splittable {
 
   import HList._
 
-  implicit def zeroSplittable[A <: HList]: Splittable[O.type , A, HNil.type , A] =
-    (_ : O.type , list: A) => (HNil, list)
+  implicit def zeroSplittable[A <: HList]: Splittable[O.type, A, HNil.type, A] =
+    (_: O.type, list: A) => (HNil, list)
 
   implicit def splittable[N <: Nat, A <: HList, H, L <: HList, R <: HList]
   (implicit splittable: Splittable[N, A, L, R]): Splittable[S[N], HCons[H, A], HCons[H, L], R] =
@@ -20,5 +20,3 @@ object Splittable {
       (HCons(list.head, left), right)
     }
 }
-
-
