@@ -1,17 +1,10 @@
 package ru.hse.spb.jvm.scala.hlist
 
+import ru.hse.spb.jvm.scala.numbers.NonNegativeNumber
+
 sealed trait HList
 
 object HList {
-
-  def main(args: Array[String]): Unit = {
-    val list1 = 42 :: HNil
-    val list2 = (2.22 :: HNil) ::: "hello" :: 22 :: HNil
-    val zipped = list2.zip(list1)
-
-    val a = 2
-  }
-
   case class HCons[+H, +T <: HList](head: H, tail: T) extends HList
 
   implicit class HListExt[R <: HList](private val list: R) extends AnyVal {
@@ -25,8 +18,12 @@ object HList {
     def zip[L <: HList, Result <: HList](left: L)
                                         (implicit zippable: Zippable[L, R, Result]): Result =
       zippable(left, list)
+
+    def splitAt[ResultLeft <: HList, ResultRight <: HList, N <: NonNegativeNumber](n: N)
+                                                                                  (implicit splittableAt:
+                                                                                  SplittableAt[R, N, ResultLeft, ResultRight]):
+    (ResultLeft, ResultRight) = splittableAt(list, n)
   }
 
   case object HNil extends HList
-
 }
