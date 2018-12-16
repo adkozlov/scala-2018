@@ -11,15 +11,35 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface ExprGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link ExprGrammarParser#parse}.
+	 * Visit a parse tree produced by the {@code arithmetic}
+	 * labeled alternative in {@link ExprGrammarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParse(ExprGrammarParser.ParseContext ctx);
+	T visitArithmetic(ExprGrammarParser.ArithmeticContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ExprGrammarParser#expression}.
+	 * Visit a parse tree produced by the {@code boolean}
+	 * labeled alternative in {@link ExprGrammarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(ExprGrammarParser.ExpressionContext ctx);
+	T visitBoolean(ExprGrammarParser.BooleanContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExprGrammarParser#arithmeticExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArithmeticExpression(ExprGrammarParser.ArithmeticExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExprGrammarParser#booleanExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanExpression(ExprGrammarParser.BooleanExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExprGrammarParser#booleanAtom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanAtom(ExprGrammarParser.BooleanAtomContext ctx);
 }

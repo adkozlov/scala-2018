@@ -1,15 +1,27 @@
 grammar ExprGrammar;
 
-parse : expression EOF;
+expression : arithmeticExpression  #arithmetic
+    | booleanExpression            #boolean;
 
-expression : (NUMBER | BOOL_LITERAL | '(' inner = expression ')')
-    | left = expression operator = ('*' | '/' | '%') right = expression
-    | left = expression operator = ('+' | '-') right = expression
-    | left = expression operator = ('<' | '<=' | '>' | '>=') right = expression
-    | left = expression operator = ('==' | '!=') right = expression
-    | left = expression operator = '&&' right = expression
-    | left = expression operator = '||' right = expression;
+arithmeticExpression : NUMBER | '(' inner = arithmeticExpression ')'
+    | left = arithmeticExpression operator = (MUL | DIV | MOD) right = arithmeticExpression
+    | left = arithmeticExpression operator = (PLUS | MINUS) right = arithmeticExpression;
 
-NUMBER          : ('-')?[1-9][0-9]* | '0';
-BOOL_LITERAL    : 'true' | 'false';
-SPACE           : (' ' | '\r' | '\t' | '\n')+ -> skip;
+booleanExpression : booleanAtom
+    | left = booleanExpression operator = AND right = booleanExpression
+    | left = booleanExpression operator = OR right = booleanExpression;
+
+booleanAtom :
+    | literal = ('true' | 'false')
+    | '!' negated = booleanAtom
+    | '(' inner = booleanExpression ')';
+
+NUMBER : ('-')?[1-9][0-9]* | '0';
+MUL    : '*';
+DIV    : '/';
+MOD    : '%';
+PLUS   : '+';
+MINUS  : '-';
+AND    : '&&';
+OR     : '||';
+SPACE  : (' ' | '\r' | '\t' | '\n')+ -> skip;

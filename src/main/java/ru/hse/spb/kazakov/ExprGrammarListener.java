@@ -8,23 +8,57 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface ExprGrammarListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link ExprGrammarParser#parse}.
+	 * Enter a parse tree produced by the {@code arithmetic}
+	 * labeled alternative in {@link ExprGrammarParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterParse(ExprGrammarParser.ParseContext ctx);
+	void enterArithmetic(ExprGrammarParser.ArithmeticContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExprGrammarParser#parse}.
+	 * Exit a parse tree produced by the {@code arithmetic}
+	 * labeled alternative in {@link ExprGrammarParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitParse(ExprGrammarParser.ParseContext ctx);
+	void exitArithmetic(ExprGrammarParser.ArithmeticContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExprGrammarParser#expression}.
+	 * Enter a parse tree produced by the {@code boolean}
+	 * labeled alternative in {@link ExprGrammarParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(ExprGrammarParser.ExpressionContext ctx);
+	void enterBoolean(ExprGrammarParser.BooleanContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExprGrammarParser#expression}.
+	 * Exit a parse tree produced by the {@code boolean}
+	 * labeled alternative in {@link ExprGrammarParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(ExprGrammarParser.ExpressionContext ctx);
+	void exitBoolean(ExprGrammarParser.BooleanContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExprGrammarParser#arithmeticExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterArithmeticExpression(ExprGrammarParser.ArithmeticExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprGrammarParser#arithmeticExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitArithmeticExpression(ExprGrammarParser.ArithmeticExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExprGrammarParser#booleanExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanExpression(ExprGrammarParser.BooleanExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprGrammarParser#booleanExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanExpression(ExprGrammarParser.BooleanExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExprGrammarParser#booleanAtom}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanAtom(ExprGrammarParser.BooleanAtomContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprGrammarParser#booleanAtom}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanAtom(ExprGrammarParser.BooleanAtomContext ctx);
 }
