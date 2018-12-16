@@ -23,19 +23,20 @@ package ru.hse.spb.jvm.scala.dkhalansky.euler
 
    All that's left now is to find the closed form of the sum among rows, which
    is done mechanically.
-*/
+ */
 
 object Euler148 {
 
-  def z(n: Long, p: Long, a: Long) = n * (n+1) * p / 2 + (n+1) * a
+  def z(n: Long, p: Long, a: Long) = n * (n + 1) * p / 2 + (n + 1) * a
 
-  def f(n: Long, p: Long, a: Long): Long = if (n < 7) {
-    z(n, p, a)
-  } else {
-    val q = n / 7
-    val r = n % 7
-    f(q, p * 28, z(r, p, a))
-  }
+  def f(n: Long, p: Long, a: Long): Long =
+    if (n < 7) {
+      z(n, p, a)
+    } else {
+      val q = n / 7
+      val r = n % 7
+      f(q, p * 28, z(r, p, a))
+    }
 
   def ans(n: Long): Long = f(n, 1, 0)
 }
@@ -46,35 +47,54 @@ object Euler148T {
 
   trait Z[N <: Bin, P <: Bin, A <: Bin] { type Out <: Bin }
   object Z {
-    type Aux[N <: Bin, P <: Bin, A <: Bin, R <: Bin] = Z[N, P, A] { type Out = R }
-    implicit def c[N <: Bin, P <: Bin, A <: Bin, N1 <: Bin, NmN1 <: Bin, FP <: Bin, FV <: Bin, M2 <: Bin, X <: Bin](
-      implicit n1: BinSuc.Aux[N, N1],
-      nmn1: BinMult.Aux[N, N1, NmN1],
-      fp: BinMult.Aux[NmN1, P, FP],
-      d2: BinDiv.Aux[FP, __2, FV, E],
-      m2: BinMult.Aux[N1, A, M2],
-      c: BinAdd[M2, FV]): Aux[N, P, A, c.Out] = ???
+    type Aux[N <: Bin, P <: Bin, A <: Bin, R <: Bin] = Z[N, P, A] {
+      type Out = R
+    }
+    implicit def c[N <: Bin,
+                   P <: Bin,
+                   A <: Bin,
+                   N1 <: Bin,
+                   NmN1 <: Bin,
+                   FP <: Bin,
+                   FV <: Bin,
+                   M2 <: Bin,
+                   X <: Bin](implicit n1: BinSuc.Aux[N, N1],
+                             nmn1: BinMult.Aux[N, N1, NmN1],
+                             fp: BinMult.Aux[NmN1, P, FP],
+                             d2: BinDiv.Aux[FP, __2, FV, E],
+                             m2: BinMult.Aux[N1, A, M2],
+                             c: BinAdd[M2, FV]): Aux[N, P, A, c.Out] = ???
   }
 
   implicitly[Z.Aux[__2, __2, __4, __18]]
 
   trait F[N <: Bin, P <: Bin, A <: Bin] { type Out <: Bin }
   object F {
-    type Aux[N <: Bin, P <: Bin, A <: Bin, R <: Bin] = F[N, P, A] { type Out = R }
-    implicit def cL[N <: Bin, P <: Bin, A <: Bin](implicit c: BinLt[N, __7], q: Z[N, P, A]): Aux[N, P, A, q.Out] = ???
-    implicit def cG[N <: Bin, P <: Bin, A <: Bin, Q <: Bin, R <: Bin, V <: Bin, P28 <: Bin](
-      implicit c: BinLe[__7, N],
-      dm: BinDiv.Aux[N, __7, Q, R],
-      p28: BinMult.Aux[P, __28, P28],
-      q: Z.Aux[R, P, A, V],
-      p: F[Q, P28, V]): Aux[N, P, A, p.Out] = ???
+    type Aux[N <: Bin, P <: Bin, A <: Bin, R <: Bin] = F[N, P, A] {
+      type Out = R
+    }
+    implicit def cL[N <: Bin, P <: Bin, A <: Bin](
+        implicit c: BinLt[N, __7],
+        q: Z[N, P, A]): Aux[N, P, A, q.Out] = ???
+    implicit def cG[N <: Bin,
+                    P <: Bin,
+                    A <: Bin,
+                    Q <: Bin,
+                    R <: Bin,
+                    V <: Bin,
+                    P28 <: Bin](implicit c: BinLe[__7, N],
+                                dm: BinDiv.Aux[N, __7, Q, R],
+                                p28: BinMult.Aux[P, __28, P28],
+                                q: Z.Aux[R, P, A, V],
+                                p: F[Q, P28, V]): Aux[N, P, A, p.Out] = ???
   }
 
   implicitly[F.Aux[__7, __28, __10, __804]]
 
   trait Ans[N <: Bin] { type Out <: Bin }
   object Ans {
-    implicit def c[N <: Bin](implicit c: F[N, __1, __0]): Ans[N] { type Out = c.Out } = ???
+    implicit def c[N <: Bin](
+        implicit c: F[N, __1, __0]): Ans[N] { type Out = c.Out } = ???
   }
 
   implicitly[Ans[__4] { type Out = __10 }]
