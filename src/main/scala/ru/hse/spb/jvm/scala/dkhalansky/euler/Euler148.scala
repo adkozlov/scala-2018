@@ -1,4 +1,5 @@
 package ru.hse.spb.jvm.scala.dkhalansky.euler
+import shapeless.Lazy
 
 /* First, observe that a number `n!` is strictly divided by `7^k` where
 
@@ -82,11 +83,12 @@ object Euler148T {
                     Q <: Bin,
                     R <: Bin,
                     V <: Bin,
-                    P28 <: Bin](implicit c: BinLe[__7, N],
+                    P28 <: Bin,
+                    Z <: Bin](implicit c: BinLe[__7, N],
                                 dm: BinDiv.Aux[N, __7, Q, R],
                                 p28: BinMult.Aux[P, __28, P28],
                                 q: Z.Aux[R, P, A, V],
-                                p: F[Q, P28, V]): Aux[N, P, A, p.Out] = ???
+                                p: Lazy[Aux[Q, P28, V, Z]]): Aux[N, P, A, Z] = ???
   }
 
   implicitly[F.Aux[__7, __28, __10, __804]]
@@ -101,9 +103,9 @@ object Euler148T {
   implicitly[Ans[__5] { type Out = __15 }]
   implicitly[Ans[__10] { type Out = __40 }] // takes a long time
 
-  /* this computation is so long that the compiler thinks that we're in an
-     endless loop. If we perform the calculations separately, they give the
-     correct result. */
-  // implicitly[Ans[__53] { type Out = __804 }] // diverging implicit expansion
+  /* without a `Lazy`, this computation is so long that the compiler thinks
+     that we're in an endless loop. If we perform the calculations separately
+     or add the `Lazy` wrapper, they give the correct result. */
+  implicitly[Ans[__53] { type Out = __804 }] // diverging implicit expansion
 
 }
