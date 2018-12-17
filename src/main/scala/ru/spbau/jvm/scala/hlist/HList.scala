@@ -19,6 +19,10 @@ object HList {
     def zip[R <: HList, Result <: HList](right: R)
                                         (implicit zippable: Zippable[L, R, Result]): Result =
       zippable(list, right)
+
+    def splitBy[N <: Nat, L1 <: HList, R1 <: HList](index: N)
+                                                   (implicit splittable: Splittable[L, N, L1, R1]): (L1, R1) =
+      splittable(list, index)
   }
 
   def main(args: Array[String]): Unit = {
@@ -27,5 +31,11 @@ object HList {
     val hello: String = list.head
     val world: String = list.tail.tail.tail.head
     println(s"$hello $world")
+
+    val (left, right) = list splitBy S(S(S(Z)))
+    println(s"${left.head} ${right.head}")
+
+    // Does not compile
+// val (left1, right1) = list splitBy S(S(S(S(S(S(Z))))))
   }
 }

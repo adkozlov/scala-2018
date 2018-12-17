@@ -25,4 +25,16 @@ class HListTest extends AssertionsForJUnit {
     val expectedResult = ("hello", 0.45) :: (42, 1 :: 2 :: HNil) :: (false, "world") :: HNil
     assert((left zip right) == expectedResult)
   }
+
+  @Test
+  def `test split by zero index`(): Unit = {
+    val list = "hello" :: 42 :: false :: HNil
+    assert((list splitBy Z) == (HNil, list))
+  }
+
+  @Test
+  def `test split by positive index`(): Unit = {
+    val list = 0.45 :: (1 :: 2 :: HNil) :: "world" :: true :: HNil
+    assert((list splitBy S(S(Z))) == (0.45 :: (1 :: 2 :: HNil) :: HNil, "world" :: true :: HNil))
+  }
 }
