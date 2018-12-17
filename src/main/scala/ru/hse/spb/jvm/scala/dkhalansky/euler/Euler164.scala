@@ -33,4 +33,54 @@ object Euler164 {
 
 }
 
-object Euler164I {}
+object Euler164I {
+
+  import TypeLevelI._
+  import Bin._
+  import Bin.Ops._
+  import TList._
+  import TList.Ops._
+  import Bool._
+  import Maybe._
+
+  type _0to9 = range[_9]
+
+  type _99 = _9#mul[_10#suc]
+
+  type _0to99 = range[_99]
+
+  type mask = concat[TList[Bool], _0to9#map[TList[TList[Bool]],
+      ({type Z[X <: Bin] = _0to9#map[TList[Bool],
+          ({type Z1[M <: Bin] = concat[Bool, _0to9#map[TList[Bool],
+              ({type Z2[R <: Bin] = _0to9#map[Bool,
+                  ({type Z3[Y <: Bin] =
+                      eq[M, R]#and[X#add[M]#add[Y]#le[_9]]})#Z3
+              ]})#Z2
+          ]]})#Z1]})#Z]]
+
+/*
+  // Stack overflow after 10 minutes
+  implicitly[mask#head =:= Just[TList[Bool],
+      replicate[Bool, _10, T]#append[replicate[Bool, _10#mul[_9], F]]]]
+*/
+
+  type step[O <: TList[Bin]] = mask#zip[Bin, O]#
+    map[TList[Bin],
+    ({type Z[X <: Pair[TList[Bool], Bin]] =
+        X#fst#map[Bin, ({type Z1[A <: Bool] = A#select[Bin, X#snd, _0] })#Z1]
+    })#Z]#
+    foldr[TList[Bin],
+        ({type Z[X <: TList[Bin], P <: TList[Bin]] =
+            X#zip[Bin, P]#map[Bin,
+                ({type Z1[A <: Pair[Bin, Bin]] = A#fst#add[A#snd]})#Z1]})#Z,
+        replicate[Bin, _99#suc, _0]]
+
+  type withZeros[N <: Bin] = sum[range[N#pred]#foldr[TList[Bin],
+    ({type Z[_ <: Bin, A <: TList[Bin]] = step[A]})#Z,
+    replicate[Bin, _99#suc, _1]]]
+
+  // implicitly[withZeros[_0] =:= _99#suc]
+
+  type ans[N <: Bin] = withZeros[N#pred]#sub[withZeros[N#pred#pred]]
+
+}

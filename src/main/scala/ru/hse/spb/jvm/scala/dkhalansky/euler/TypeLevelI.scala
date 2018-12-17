@@ -3,6 +3,13 @@ import scala.language.higherKinds
 
 object TypeLevelI {
 
+  trait Pair[A, B] {
+    type fst = A
+    type snd = B
+  }
+
+  class CPair[A, B, X <: A, Y <: B] extends Pair[A, B] {}
+
   object Maybe {
 
     sealed trait Maybe[T] {
@@ -339,7 +346,13 @@ object TypeLevelI {
 
       type foldr[B, F[_ <: A, _ <: B] <: B, X <: B] <: B
 
+      type zip[B, X <: TList[B]] <: TList[Pair[A, B]]
+
+      type append[X <: TList[A]] <: TList[A]
+
       type isNil <: Bool
+
+      protected type zipToCons[B, Y <: B, X <: TList[B]] <: TList[Pair[B, A]]
 
     }
 
@@ -352,7 +365,13 @@ object TypeLevelI {
 
       type foldr[B, F[_ <: A, _ <: B] <: B, X <: B] = X
 
+      type zip[B, X <: TList[B]] = Nil[Pair[A, B]]
+
+      type append[X <: TList[A]] = X
+
       type isNil = T
+
+      protected type zipToCons[B, Y <: B, X <: TList[B]] = Nil[Pair[B, A]]
 
     }
 
@@ -365,7 +384,14 @@ object TypeLevelI {
 
       type foldr[B, F[_ <: A, _ <: B] <: B, X <: B] = F[Hd, Tl#foldr[B, F, X]]
 
+      type zip[B, X <: TList[B]] = X#zipToCons[A, Hd, Tl]
+
+      type append[X <: TList[A]] = Cons[A, Hd, Tl#append[X]]
+
       type isNil = F
+
+      protected type zipToCons[B, Y <: B, X <: TList[B]] =
+        Cons[Pair[B, A], CPair[B, A, Y, Hd], X#zip[A, Tl]]
 
     }
 
@@ -379,14 +405,51 @@ object TypeLevelI {
         B#natCata[TList[U],
                   ({ type Z[_ <: Bin, B <: TList[U]] = Cons[U, A, B] })#Z,
                   Nil[U]]
+      type range[B <: Bin] =
+        B#suc#natCata[TList[Bin],
+                      ({
+                        type Z[R <: Bin, O <: TList[Bin]] =
+                          Cons[Bin, B#suc#sub[R], O]
+                      })#Z,
+                      Nil[Bin]]
 
+      type concat[U, X <: TList[TList[U]]] =
+        X#foldr[TList[U],
+                ({ type Z[A <: TList[U], B <: TList[U]] = A#append[B] })#Z,
+                Nil[U]]
     }
+
+    implicitly[Cons[Bin, _0, Cons[Bin, _1, Nil[Bin]]]#zip[
+      Bool,
+      Cons[Bool, T, Cons[Bool, F, Cons[Bool, F, Nil[Bool]]]]] =:=
+      Cons[
+        Pair[Bin, Bool],
+        CPair[Bin, Bool, _0, T],
+        Cons[Pair[Bin, Bool], CPair[Bin, Bool, _1, F], Nil[Pair[Bin, Bool]]]]]
 
     implicitly[Ops.sum[Cons[Bin, _2, Cons[Bin, _1, Nil[Bin]]]] =:= _3]
     implicitly[Ops.sum[Ops.replicate[Bin, _0, _2]] =:= _0]
     implicitly[Ops.sum[Ops.replicate[Bin, _1, _2]] =:= _2]
     implicitly[Ops.sum[Ops.replicate[Bin, _2, _2]] =:= _4]
     implicitly[Ops.sum[Ops.replicate[Bin, _3, _2]] =:= _6]
+
+    implicitly[Ops.range[_3] =:= Cons[
+      Bin,
+      _0,
+      Cons[Bin, _1, Cons[Bin, _2, Cons[Bin, _3, Nil[Bin]]]]]]
+
+    implicitly[Cons[Bin, _0, Cons[Bin, _1, Nil[Bin]]]#append[Cons[
+      Bin,
+      _2,
+      Cons[Bin, _3, Nil[Bin]]]] =:= Ops.range[_3]]
+
+    implicitly[
+      Ops.concat[Bin,
+                 Cons[TList[Bin],
+                      Cons[Bin, _0, Cons[Bin, _1, Nil[Bin]]],
+                      Cons[TList[Bin],
+                           Cons[Bin, _2, Cons[Bin, _3, Nil[Bin]]],
+                           Nil[TList[Bin]]]]] =:= Ops.range[_3]]
 
   }
 
