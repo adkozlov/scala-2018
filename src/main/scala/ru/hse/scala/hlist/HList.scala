@@ -18,5 +18,8 @@ object HList {
 
     def zip[L <: HList, Result <: HList](left : L)(implicit zippable: Zippable[L, R, Result]): Result =
       zippable(left, list)
+
+    def splitAt[N <: Nat, LeftResult <: HList, RightResult <: HList](index: N)(implicit splittable: Splittable[N, R, LeftResult, RightResult]):
+    (LeftResult, RightResult) = splittable(list, index)
   }
 }
