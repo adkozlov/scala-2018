@@ -15,13 +15,8 @@ object HList {
     def :::[L <: HList, Result <: HList](left: L)
                                         (implicit appendable: Appendable[L, R, Result]): Result =
       appendable(left, list)
-  }
 
-  def main(args: Array[String]): Unit = {
-    val list = ("hello" :: 42 :: false :: HNil) ::: ("world" :: HNil)
-
-    val hello: String = list.head
-    val world: String = list.tail.tail.tail.head
-    println(s"$hello $world")
+    def zip[L <: HList, Result <: HList](left : L)(implicit zippable: Zippable[L, R, Result]): Result =
+      zippable(left, list)
   }
 }
