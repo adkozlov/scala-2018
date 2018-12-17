@@ -8,13 +8,17 @@ object HList {
 
   case object HNil extends HList
 
-  implicit class HListExt[R <: HList](private val list: R) extends AnyVal {
+  implicit class HListExt[L <: HList](private val list: L) extends AnyVal {
 
     def ::[H](head: H) = HCons(head, list)
 
-    def :::[L <: HList, Result <: HList](left: L)
-                                        (implicit appendable: Appendable[L, R, Result]): Result =
+    def :::[R <: HList, Result <: HList](left: R)
+                                        (implicit appendable: Appendable[R, L, Result]): Result =
       appendable(left, list)
+
+    def zip[R <: HList, Result <: HList](right: R)
+                                        (implicit zippable: Zippable[L, R, Result]): Result =
+      zippable(list, right)
   }
 
   def main(args: Array[String]): Unit = {
