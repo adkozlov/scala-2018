@@ -28,11 +28,11 @@ object HList {
   }
 
   def main(args: Array[String]): Unit = {
-    val list1 = true :: "hello" :: 42 :: HNil
-//    val list2 = 7 :: 44 :: true :: HNil
+    println((1 :: HNil) zip (2 :: HNil))
+    println((1 :: 3 :: HNil) zip (2 :: HNil))
+    println((1 :: HNil) zip (2 :: 4 :: HNil))
+    println((1 :: 3 :: HNil) zip (2 :: 4 :: HNil))
 
-//    println(list1 zip list2)
-    println(list1.split(Zero))
-    println(list1.split(Succ(Zero)))
+    println(HNil.split(Nat.Zero))
   }
 }

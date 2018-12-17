@@ -8,11 +8,11 @@ object Zippable {
 
   import HList._
 
-  implicit def NilConsZippable[Y <: HList]: Zippable[HNil.type, Y, HNil.type] =
+  implicit def NilSmtZippable[Y <: HList]: Zippable[HNil.type, Y, HNil.type] =
     (_: HNil.type, _: Y) => HNil
 
-  implicit def ConsNilZippable[X <: HList]: Zippable[X, HNil.type, HNil.type] =
-    (_: X, _: HNil.type ) => HNil
+  implicit def ConsNilZippable[X <: HList, H]: Zippable[HCons[H, X], HNil.type, HNil.type] =
+    (_: HCons[H, X], _: HNil.type ) => HNil
 
   implicit def zippable[X <: HList, Y <: HList, H1, H2, R <: HList]
     (implicit zippable: Zippable[X, Y, R]): Zippable[HCons[H1, X], HCons[H2, Y], HCons[(H1, H2), R]] =

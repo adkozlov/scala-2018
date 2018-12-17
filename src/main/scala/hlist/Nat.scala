@@ -17,3 +17,4 @@ object Nat {
   case object Zero extends Neg with Pos
 
 }
+
