@@ -122,7 +122,9 @@ object TypeFramework {
     trait BiCurry[F <: BiFunc, A] extends Func { type Out }
 
     object BiCurry {
-      implicit def qa[F <: BiFunc, A, B](implicit q: BiApply[F, A, B]): Apply.Aux[BiCurry[F, A], B, q.Out] = ???
+      implicit def qa[F <: BiFunc, A, B](
+          implicit q: BiApply[F, A, B]): Apply.Aux[BiCurry[F, A], B, q.Out] =
+        ???
     }
 
     object BiFunc {
@@ -157,9 +159,13 @@ object TypeFramework {
 
     trait ListMap[F <: Func, A <: TList] { type Out <: TList }
     object ListMap {
-      type Aux[F <: Func, A <: TList, C <: TList] = ListMap[F, A] { type Out = C }
+      type Aux[F <: Func, A <: TList, C <: TList] = ListMap[F, A] {
+        type Out = C
+      }
       implicit def cn[F <: Func]: Aux[F, Nil, Nil] = ???
-      implicit def cc[F <: Func, A, B, T <: TList, R <: TList](implicit p: Apply.Aux[F, A, B], c: Aux[F, T, R]): Aux[F, Cons[A, T], Cons[B, R]] = ???
+      implicit def cc[F <: Func, A, B, T <: TList, R <: TList](
+          implicit p: Apply.Aux[F, A, B],
+          c: Aux[F, T, R]): Aux[F, Cons[A, T], Cons[B, R]] = ???
     }
 
   }
@@ -351,7 +357,8 @@ object TypeFramework {
 
     trait BinEq[A <: Bin, B <: Bin]
     object BinEq {
-      implicit def c[A <: Bin, B <: Bin](implicit p1: BinLe[A, B], p2: BinLe[B, A]): BinEq[A, B] = ???
+      implicit def c[A <: Bin, B <: Bin](implicit p1: BinLe[A, B],
+                                         p2: BinLe[B, A]): BinEq[A, B] = ???
     }
 
     implicitly[BinEq[__5, __5]]
@@ -459,7 +466,8 @@ object TypeFramework {
           c: BinRange[P]): Aux[A, Cons[A, c.Out]] = ???
     }
 
-    implicitly[BinRange.Aux[__4, Cons[__4, Cons[__3, Cons[__2, Cons[__1, Nil]]]]]]
+    implicitly[
+      BinRange.Aux[__4, Cons[__4, Cons[__3, Cons[__2, Cons[__1, Nil]]]]]]
 
     trait BinIsSquare[A <: Bin] { type Out <: Bool }
     object BinIsSquare {
@@ -468,31 +476,59 @@ object TypeFramework {
 
       trait IsSquareHelper[N <: Bin, L <: Bin, H <: Bin] { type Out <: Bool }
       object IsSquareHelper {
-        type Aux[N <: Bin, L <: Bin, H <: Bin, R <: Bool] = IsSquareHelper[N, L, H] { type Out = R }
+        type Aux[N <: Bin, L <: Bin, H <: Bin, R <: Bool] =
+          IsSquareHelper[N, L, H] { type Out = R }
         trait Mid[A <: Bin, B <: Bin] { type Out <: Bin }
         object Mid {
           type Aux[A <: Bin, B <: Bin, C <: Bin] = Mid[A, B] { type Out = C }
-          implicit def c[A <: Bin, B <: Bin, Sum <: Bin](implicit v: BinAdd.Aux[A, B, Sum], p: BinHalve[Sum]): Mid[A, B] { type Out = p.Out } = ???
+          implicit def c[A <: Bin, B <: Bin, Sum <: Bin](
+              implicit v: BinAdd.Aux[A, B, Sum],
+              p: BinHalve[Sum]): Mid[A, B] { type Out = p.Out } = ???
         }
 
         implicitly[Mid.Aux[__1, __4, __2]]
         implicitly[Mid.Aux[__1, __5, __3]]
         implicitly[Mid.Aux[__0, __8, __4]]
 
-        implicit def searchEnd[N <: Bin, L <: Bin, H <: Bin](implicit b: BinLt[H, L]): Aux[N, L, H, False] = ???
+        implicit def searchEnd[N <: Bin, L <: Bin, H <: Bin](
+            implicit b: BinLt[H, L]): Aux[N, L, H, False] = ???
         implicit def itIs[N <: Bin, L <: Bin, H <: Bin, M <: Bin, MS <: Bin](
-          implicit b: BinLe[L, H], p: Mid.Aux[L, H, M], ms: BinMult.Aux[M, M, MS], be: BinEq[N, MS]): Aux[N, L, H, True] = ???
-        implicit def seeLt[N <: Bin, L <: Bin, H <: Bin, M <: Bin, MS <: Bin, MP <: Bin, R <: Bool](
-          implicit b: BinLe[L, H], p: Mid.Aux[L, H, M], ms: BinMult.Aux[M, M, MS], be: BinLt[N, MS],
-          mp: BinPred.Aux[M, MP], r: Lazy[Aux[N, L, MP, R]]): Aux[N, L, H, R] = ???
-        implicit def seeGt[N <: Bin, L <: Bin, H <: Bin, M <: Bin, MS <: Bin, MN <: Bin, R <: Bool](
-          implicit b: BinLe[L, H], p: Mid.Aux[L, H, M], ms: BinMult.Aux[M, M, MS], be: BinLt[MS, N],
-          mn: BinSuc.Aux[M, MN], r: Lazy[Aux[N, MN, H, R]]): Aux[N, L, H, R] = ???
+            implicit b: BinLe[L, H],
+            p: Mid.Aux[L, H, M],
+            ms: BinMult.Aux[M, M, MS],
+            be: BinEq[N, MS]): Aux[N, L, H, True] = ???
+        implicit def seeLt[N <: Bin,
+                           L <: Bin,
+                           H <: Bin,
+                           M <: Bin,
+                           MS <: Bin,
+                           MP <: Bin,
+                           R <: Bool](
+            implicit b: BinLe[L, H],
+            p: Mid.Aux[L, H, M],
+            ms: BinMult.Aux[M, M, MS],
+            be: BinLt[N, MS],
+            mp: BinPred.Aux[M, MP],
+            r: Lazy[Aux[N, L, MP, R]]): Aux[N, L, H, R] = ???
+        implicit def seeGt[N <: Bin,
+                           L <: Bin,
+                           H <: Bin,
+                           M <: Bin,
+                           MS <: Bin,
+                           MN <: Bin,
+                           R <: Bool](
+            implicit b: BinLe[L, H],
+            p: Mid.Aux[L, H, M],
+            ms: BinMult.Aux[M, M, MS],
+            be: BinLt[MS, N],
+            mn: BinSuc.Aux[M, MN],
+            r: Lazy[Aux[N, MN, H, R]]): Aux[N, L, H, R] = ???
       }
 
       implicitly[IsSquareHelper.Aux[__8, __0, __3, False]]
 
-      implicit def c[A <: Bin](implicit c: IsSquareHelper[A, __0, A]): Aux[A, c.Out] = ???
+      implicit def c[A <: Bin](
+          implicit c: IsSquareHelper[A, __0, A]): Aux[A, c.Out] = ???
     }
 
     implicitly[BinIsSquare.Aux[__0, True]]
@@ -510,10 +546,13 @@ object TypeFramework {
     object ListSum {
       type Aux[L <: TList, R <: Bin] = ListSum[L] { type Out = R }
       implicit def cn: Aux[Nil, __0] = ???
-      implicit def cc[H <: Bin, T <: TList, P <: Bin](implicit c: Aux[T, P], v: BinAdd[H, P]): Aux[Cons[H, T], v.Out] = ???
+      implicit def cc[H <: Bin, T <: TList, P <: Bin](
+          implicit c: Aux[T, P],
+          v: BinAdd[H, P]): Aux[Cons[H, T], v.Out] = ???
     }
 
-    implicitly[ListSum.Aux[Cons[__4, Cons[__3, Cons[__2, Cons[__1, Nil]]]], __10]]
+    implicitly[
+      ListSum.Aux[Cons[__4, Cons[__3, Cons[__2, Cons[__1, Nil]]]], __10]]
 
   }
 

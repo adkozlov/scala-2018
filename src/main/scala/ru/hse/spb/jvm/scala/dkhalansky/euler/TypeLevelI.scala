@@ -110,7 +110,8 @@ object TypeLevelI {
       type mod2 = E
       type halve = B
 
-      type natCata[U, F[_ <: Bin, _ <: U] <: U, A <: U] = F[O[B], pred#natCata[U, F, A]]
+      type natCata[U, F[_ <: Bin, _ <: U] <: U, A <: U] =
+        F[O[B], pred#natCata[U, F, A]]
 
       protected type addO[Y <: Bin] = O[B#add[Y]]
       protected type addI[Y <: Bin] = I[B#add[Y]]
@@ -132,7 +133,8 @@ object TypeLevelI {
       type mod2 = I[E]
       type halve = B
 
-      type natCata[U, F[_ <: Bin, _ <: U] <: U, A <: U] = F[I[B], pred#natCata[U, F, A]]
+      type natCata[U, F[_ <: Bin, _ <: U] <: U, A <: U] =
+        F[I[B], pred#natCata[U, F, A]]
 
       protected type addO[Y <: Bin] = I[B#add[Y]]
       protected type addI[Y <: Bin] = O[B#add[Y]#suc]
@@ -165,11 +167,22 @@ object TypeLevelI {
     import Maybe._
 
     object Ops {
-      type find[U, F[_ <: Bin] <: Maybe[U], N <: Bin] = N#suc#natCata[Maybe[U], ({type Z[A <: Bin, B <: Maybe[U]] = F[N#suc#sub[A]]#or[B]})#Z, Nothing[U]]
+      type find[U, F[_ <: Bin] <: Maybe[U], N <: Bin] =
+        N#suc#natCata[Maybe[U],
+                      ({
+                        type Z[A <: Bin, B <: Maybe[U]] = F[N#suc#sub[A]]#or[B]
+                      })#Z,
+                      Nothing[U]]
 
       type eq[A <: Bin, B <: Bin] = A#le[B]#and[B#le[A]]
 
-      type isSquare[N <: Bin] = N#isZero#or[N#halve#suc#natCata[Bool, ({type Z[X <: Bin, B <: Bool] = eq[N, X#mul[X]]#or[B]})#Z, F]]
+      type isSquare[N <: Bin] =
+        N#isZero#or[N#halve#suc#natCata[Bool,
+                                        ({
+                                          type Z[X <: Bin, B <: Bool] =
+                                            eq[N, X#mul[X]]#or[B]
+                                        })#Z,
+                                        F]]
     }
 
     implicitly[_3#add[_6] =:= _9]
@@ -262,25 +275,37 @@ object TypeLevelI {
     implicitly[_10#pred =:= _9]
     implicitly[_11#pred =:= _10]
 
-    implicitly[_0#suc  =:= _1]
-    implicitly[_1#suc  =:= _2]
-    implicitly[_2#suc  =:= _3]
-    implicitly[_3#suc  =:= _4]
-    implicitly[_4#suc  =:= _5]
-    implicitly[_5#suc  =:= _6]
-    implicitly[_6#suc  =:= _7]
-    implicitly[_7#suc  =:= _8]
-    implicitly[_8#suc  =:= _9]
-    implicitly[_9#suc  =:= _10]
+    implicitly[_0#suc =:= _1]
+    implicitly[_1#suc =:= _2]
+    implicitly[_2#suc =:= _3]
+    implicitly[_3#suc =:= _4]
+    implicitly[_4#suc =:= _5]
+    implicitly[_5#suc =:= _6]
+    implicitly[_6#suc =:= _7]
+    implicitly[_7#suc =:= _8]
+    implicitly[_8#suc =:= _9]
+    implicitly[_9#suc =:= _10]
     implicitly[_10#suc =:= _11]
     implicitly[_11#suc =:= _12]
 
-    implicitly[_4#natCata[Bin, ({type Z[A <: Bin, B <: Bin] = A#add[B]})#Z, _0] =:= _10]
+    implicitly[_4#natCata[Bin,
+                          ({ type Z[A <: Bin, B <: Bin] = A#add[B] })#Z,
+                          _0] =:= _10]
 
-    implicitly[_4#natCata[Bin, ({type Z[A <: Bin, B <: Bin] = A#add[B]})#Z, _0] =:= _10]
+    implicitly[_4#natCata[Bin,
+                          ({ type Z[A <: Bin, B <: Bin] = A#add[B] })#Z,
+                          _0] =:= _10]
 
-    implicitly[Ops.find[Bin, ({type Z[N <: Bin] = Just[Bin, N]})#Z, _10] =:= Just[Bin, _0]]
-    implicitly[Ops.find[Bin, ({type Z[N <: Bin] = N#le[_5]#not#select[Maybe[Bin], Just[Bin, N], Nothing[Bin]]})#Z, _10] =:= Just[Bin, _6]]
+    implicitly[
+      Ops.find[Bin, ({ type Z[N <: Bin] = Just[Bin, N] })#Z, _10] =:= Just[Bin,
+                                                                           _0]]
+    implicitly[
+      Ops.find[Bin,
+               ({
+                 type Z[N <: Bin] =
+                   N#le[_5]#not#select[Maybe[Bin], Just[Bin, N], Nothing[Bin]]
+               })#Z,
+               _10] =:= Just[Bin, _6]]
 
     implicitly[Ops.eq[_3, _3] =:= T]
     implicitly[Ops.eq[_4, _4] =:= T]
@@ -297,6 +322,71 @@ object TypeLevelI {
     implicitly[Ops.isSquare[_7] =:= F]
     implicitly[Ops.isSquare[_8] =:= F]
     implicitly[Ops.isSquare[_9] =:= T]
+
+  }
+
+  object TList {
+
+    import Maybe._
+    import Bool._
+
+    trait TList[A] {
+
+      type head <: Maybe[A]
+      type tail <: Maybe[TList[A]]
+
+      type map[B, F[_ <: A] <: B] <: TList[B]
+
+      type foldr[B, F[_ <: A, _ <: B] <: B, X <: B] <: B
+
+      type isNil <: Bool
+
+    }
+
+    class Nil[A] extends TList[A] {
+
+      type head = Nothing[A]
+      type tail = Nothing[TList[A]]
+
+      type map[B, F[_ <: A] <: B] = Nil[B]
+
+      type foldr[B, F[_ <: A, _ <: B] <: B, X <: B] = X
+
+      type isNil = T
+
+    }
+
+    class Cons[A, Hd <: A, Tl <: TList[A]] extends TList[A] {
+
+      type head = Just[A, Hd]
+      type tail = Just[TList[A], Tl]
+
+      type map[B, F[_ <: A] <: B] = Cons[B, F[Hd], Tl#map[B, F]]
+
+      type foldr[B, F[_ <: A, _ <: B] <: B, X <: B] = F[Hd, Tl#foldr[B, F, X]]
+
+      type isNil = F
+
+    }
+
+    import Bin._
+
+    object Ops {
+
+      type sum[L <: TList[Bin]] =
+        L#foldr[Bin, ({ type Z[A <: Bin, B <: Bin] = A#add[B] })#Z, _0]
+      type replicate[U, B <: Bin, A <: U] =
+        B#natCata[TList[U],
+                  ({ type Z[_ <: Bin, B <: TList[U]] = Cons[U, A, B] })#Z,
+                  Nil[U]]
+
+    }
+
+    implicitly[Ops.sum[Cons[Bin, _2, Cons[Bin, _1, Nil[Bin]]]] =:= _3]
+    implicitly[Ops.sum[Ops.replicate[Bin, _0, _2]] =:= _0]
+    implicitly[Ops.sum[Ops.replicate[Bin, _1, _2]] =:= _2]
+    implicitly[Ops.sum[Ops.replicate[Bin, _2, _2]] =:= _4]
+    implicitly[Ops.sum[Ops.replicate[Bin, _3, _2]] =:= _6]
 
   }
 

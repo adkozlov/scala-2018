@@ -74,17 +74,18 @@ object Euler142 {
   def ans(n: Int): Int = {
     for (a <- 1 to n) {
       val a1 = a * a
-      for (pc <- 0 to (a/2)) {
-        val c = 2*pc + (a%2)
+      for (pc <- 0 to (a / 2)) {
+        val c = 2 * pc + (a % 2)
         if (c != 0) {
           val c1 = c * c
-          if (isSquare(a1-c1)) {
-            for (pb <- 0 to (c/2)) {
-              val b = 2*pb + (a%2)
+          if (isSquare(a1 - c1)) {
+            for (pb <- 0 to (c / 2)) {
+              val b = 2 * pb + (a % 2)
               if (b != 0) {
                 val b1 = b * b
-                if (isSquare(c1-b1) && isSquare(a1+b1-c1) && a1+b1 < 2 * c1) {
-                  return c1 + (a1-b1)/2
+                if (isSquare(c1 - b1) && isSquare(a1 + b1 - c1) && a1 + b1 < 2 * c1) {
+                  println(a1, " ", b1, " ", c1)
+                  return c1 + (a1 - b1) / 2
                 }
               }
             }
@@ -100,19 +101,46 @@ object Euler142I {
 
   import TypeLevelI._
   import Bin._
+  import Bool._
   import Maybe._
   import Ops._
 
-  type Condition[A1 <: Bin, B1 <: Bin, C1 <: Bin] = A1#add[B1]#suc#le[O[C1]#norm]#and[isSquare[C1#sub[B1]]#and[isSquare[A1#add[B1]#sub[C1]]]]
-  type Returns[A1 <: Bin, B1 <: Bin, C1 <: Bin] = Condition[A1, B1, C1]#select[Maybe[Bin], Just[Bin, C1#add[A1#sub[B1]#halve]], Nothing[Bin]]
-  type BBody[A1 <: Bin, C1 <: Bin, B <: Bin] = B#isZero#select[Maybe[Bin], Nothing[Bin], Returns[A1, B#mul[B], C1]]
-  type BBodyBDef[A1 <: Bin, C <: Bin, C1 <: Bin, PB <: Bin] = BBody[A1, C1, O[PB]#norm#add[C#mod2]]
-  type BLoop[A1 <: Bin, C <: Bin, C1 <: Bin] = find[Bin, ({type Z[PB <: Bin] = BBodyBDef[A1, C, C1, PB] })#Z, C#halve]
-  type CBodyReturns[A1 <: Bin, C <: Bin, C1 <: Bin] = isSquare[A1#sub[C1]]#select[Maybe[Bin], BLoop[A1, C, C1], Nothing[Bin]]
-  type CBody[A1 <: Bin, C <: Bin] = C#isZero#select[Maybe[Bin], Nothing[Bin], CBodyReturns[A1, C, C#mul[C]]]
-  type CBodyCDef[A <: Bin, A1 <: Bin, PC <: Bin] = CBody[A1, O[PC]#norm#add[A#mod2]]
-  type CLoop[A <: Bin, A1 <: Bin] = find[Bin, ({type Z[PC <: Bin] = CBodyCDef[A, A1, PC] })#Z, A#halve]
+  type Condition[A1 <: Bin, B1 <: Bin, C1 <: Bin] =
+    A1#add[B1]#suc#le[O[C1]#norm]#and[isSquare[C1#sub[B1]]#and[isSquare[
+      A1#add[B1]#sub[C1]]]]
+  type Returns[A1 <: Bin, B1 <: Bin, C1 <: Bin] =
+    Condition[A1, B1, C1]#select[Maybe[Bin],
+                                 Just[Bin, C1#add[A1#sub[B1]#halve]],
+                                 Nothing[Bin]]
+  type BBody[A1 <: Bin, C1 <: Bin, B <: Bin] =
+    B#isZero#select[Maybe[Bin], Nothing[Bin], Returns[A1, B#mul[B], C1]]
+  type BBodyBDef[A1 <: Bin, C <: Bin, C1 <: Bin, PB <: Bin] =
+    BBody[A1, C1, O[PB]#norm#add[C#mod2]]
+  type BLoop[A1 <: Bin, C <: Bin, C1 <: Bin] =
+    find[Bin, ({ type Z[PB <: Bin] = BBodyBDef[A1, C, C1, PB] })#Z, C#halve]
+  type CBodyReturns[A1 <: Bin, C <: Bin, C1 <: Bin] =
+    isSquare[A1#sub[C1]]#select[Maybe[Bin], BLoop[A1, C, C1], Nothing[Bin]]
+  type CBody[A1 <: Bin, C <: Bin] =
+    C#isZero#select[Maybe[Bin], Nothing[Bin], CBodyReturns[A1, C, C#mul[C]]]
+  type CBodyCDef[A <: Bin, A1 <: Bin, PC <: Bin] =
+    CBody[A1, O[PC]#norm#add[A#mod2]]
+  type CLoop[A <: Bin, A1 <: Bin] =
+    find[Bin, ({ type Z[PC <: Bin] = CBodyCDef[A, A1, PC] })#Z, A#halve]
   type ABody[A <: Bin] = CLoop[A, A#mul[A]]
   type Ans[N <: Bin] = find[Bin, ABody, N]
+
+  // a1
+  type _855625 =
+    _8#mul[_10]#add[_5]#mul[_10]#add[_5]#mul[_10]#add[_6]#mul[_10]#add[_2]#mul[
+      _10]#add[_5]
+  // b1
+  type _13689 =
+    _1#mul[_10]#add[_3]#mul[_10]#add[_6]#mul[_10]#add[_8]#mul[_10]#add[_9]
+  // c1
+  type _585225 =
+    _5#mul[_10]#add[_8]#mul[_10]#add[_5]#mul[_10]#add[_2]#mul[_10]#add[_2]#mul[
+      _10]#add[_5]
+
+  // implicitly[isSquare[_585225#sub[_13689]] =:= T] // already takes a long time
 
 }

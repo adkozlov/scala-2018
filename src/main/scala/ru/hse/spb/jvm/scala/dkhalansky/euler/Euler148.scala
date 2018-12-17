@@ -85,10 +85,11 @@ object Euler148T {
                     V <: Bin,
                     P28 <: Bin,
                     Z <: Bin](implicit c: BinLe[__7, N],
-                                dm: BinDiv.Aux[N, __7, Q, R],
-                                p28: BinMult.Aux[P, __28, P28],
-                                q: Z.Aux[R, P, A, V],
-                                p: Lazy[Aux[Q, P28, V, Z]]): Aux[N, P, A, Z] = ???
+                              dm: BinDiv.Aux[N, __7, Q, R],
+                              p28: BinMult.Aux[P, __28, P28],
+                              q: Z.Aux[R, P, A, V],
+                              p: Lazy[Aux[Q, P28, V, Z]]): Aux[N, P, A, Z] =
+      ???
   }
 
   implicitly[F.Aux[__7, __28, __10, __804]]

@@ -66,8 +66,20 @@ object Euler504T {
 
   trait Condition[I <: Bin, J <: Bin, K <: Bin, M <: Bin] { type Out <: Bin }
   object Condition {
-    type Aux[I <: Bin, J <: Bin, K <: Bin, M <: Bin, R <: Bool] = Condition[I, J, K, M] { type Out = Bool }
-    implicit def c[I <: Bin, J <: Bin, K <: Bin, M <: Bin, FIJ <: Bin, FJK <: Bin, FKM <: Bin, FMI <: Bin, FIK <: Bin, FIM <: Bin, FII <: Bin, R <: Bool](
+    type Aux[I <: Bin, J <: Bin, K <: Bin, M <: Bin, R <: Bool] =
+      Condition[I, J, K, M] { type Out = Bool }
+    implicit def c[I <: Bin,
+                   J <: Bin,
+                   K <: Bin,
+                   M <: Bin,
+                   FIJ <: Bin,
+                   FJK <: Bin,
+                   FKM <: Bin,
+                   FMI <: Bin,
+                   FIK <: Bin,
+                   FIM <: Bin,
+                   FII <: Bin,
+                   R <: Bool](
         implicit fij: F.Aux[I, J, FIJ],
         fjk: F.Aux[J, K, FJK],
         fkm: F.Aux[K, M, FKM],
@@ -81,19 +93,27 @@ object Euler504T {
   trait Fn3[I <: Bin, J <: Bin, K <: Bin] extends Func
   object Fn3 {
     implicit def ct[I <: Bin, J <: Bin, K <: Bin, M <: Bin](
-      implicit v: Condition.Aux[I, J, K, M, True]): Apply.Aux[Fn3[I, J, K], M, __1] = ???
+        implicit v: Condition.Aux[I, J, K, M, True])
+      : Apply.Aux[Fn3[I, J, K], M, __1] = ???
     implicit def cf[I <: Bin, J <: Bin, K <: Bin, M <: Bin](
-      implicit v: Condition.Aux[I, J, K, M, False]): Apply.Aux[Fn3[I, J, K], M, __0] = ???
+        implicit v: Condition.Aux[I, J, K, M, False])
+      : Apply.Aux[Fn3[I, J, K], M, __0] = ???
   }
 
   implicitly[Apply.Aux[Fn3[__1, __1, __1], __1, __1]]
 
   trait Fn2[N <: Bin, I <: Bin, J <: Bin] extends Func
   object Fn2 {
-    implicit def c[N <: Bin, I <: Bin, J <: Bin, K <: Bin, L1 <: TList, L2 <: TList, R <: Bin](
-       implicit x: BinRange.Aux[N, L1],
-       v: ListMap.Aux[Fn3[I, J, K], L1, L2],
-       y: ListSum.Aux[L2, R]
+    implicit def c[N <: Bin,
+                   I <: Bin,
+                   J <: Bin,
+                   K <: Bin,
+                   L1 <: TList,
+                   L2 <: TList,
+                   R <: Bin](
+        implicit x: BinRange.Aux[N, L1],
+        v: ListMap.Aux[Fn3[I, J, K], L1, L2],
+        y: ListSum.Aux[L2, R]
     ): Apply.Aux[Fn2[N, I, J], K, R] = ???
 
     implicitly[BinRange.Aux[__1, Cons[__1, Nil]]]
@@ -107,19 +127,24 @@ object Euler504T {
 
   trait Fn1[N <: Bin, I <: Bin] extends Func
   object Fn1 {
-    implicit def c[N <: Bin, I <: Bin, J <: Bin, L1 <: TList, L2 <: TList, R <: Bin](
-       implicit x: BinRange.Aux[N, L1],
-       v: ListMap.Aux[Fn2[N, I, J], L1, L2],
-       y: ListSum.Aux[L2, R]
+    implicit def c[N <: Bin,
+                   I <: Bin,
+                   J <: Bin,
+                   L1 <: TList,
+                   L2 <: TList,
+                   R <: Bin](
+        implicit x: BinRange.Aux[N, L1],
+        v: ListMap.Aux[Fn2[N, I, J], L1, L2],
+        y: ListSum.Aux[L2, R]
     ): Apply.Aux[Fn1[N, I], J, R] = ???
   }
 
   trait Fn0[N <: Bin] extends Func
   object Fn0 {
     implicit def c[N <: Bin, I <: Bin, L1 <: TList, L2 <: TList, R <: Bin](
-       implicit x: BinRange.Aux[N, L1],
-       v: ListMap.Aux[Fn1[N, I], L1, L2],
-       y: ListSum.Aux[L2, R]
+        implicit x: BinRange.Aux[N, L1],
+        v: ListMap.Aux[Fn1[N, I], L1, L2],
+        y: ListSum.Aux[L2, R]
     ): Apply.Aux[Fn0[N], I, R] = ???
   }
 
