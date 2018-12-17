@@ -3,44 +3,9 @@ import scala.language.higherKinds
 
 object TypeLevelLam {
 
-  sealed trait Maybe[T] {
-    type or[O <: Maybe[T]] <: Maybe[T]
-    type map[X, P[_ <: T] <: X] <: Maybe[X]
-    type get[O <: T] <: T
-  }
-
-  class Nothing[T] extends Maybe[T] {
-    type or[O <: Maybe[T]] = O
-    type map[X, P[_ <: T] <: X] = Nothing[X]
-    type get[O <: T] = O
-  }
-
-  class Just[T, A <: T] extends Maybe[T] {
-    type or[_ <: Maybe[T]] = Just[T, A]
-    type map[X, P[_ <: T] <: X] = Just[X, P[A]]
-    type get[_ <: T] = A
-  }
-
-  sealed trait Bool {
-    type select[U, A <: U, B <: U] <: U
-    type and[O <: Bool] <: Bool
-    type or[O <: Bool] <: Bool
-    type not <: Bool
-  }
-
-  class T extends Bool {
-    type select[U, A <: U, B <: U] = A
-    type and[O <: Bool] = O
-    type or[_ <: Bool] = T
-    type not = F
-  }
-
-  class F extends Bool {
-    type select[U, A <: U, B <: U] = B
-    type and[_ <: Bool] = F
-    type or[O <: Bool] = O
-    type not = T
-  }
+  import TypeLevelI._
+  import Bool._
+  import Maybe._
 
   sealed trait Nat {
     type equals[N <: Nat] <: Bool
@@ -71,7 +36,7 @@ object TypeLevelLam {
     type pred = Y
 
     type plus[N <: Nat] = S[Y#plus[N]]
-    type mult[N <: Nat] = Y#mult[N]#plus[N]
+    type mult[N <: Nat] = N#plus[Y#mult[N]]
     type fold[U, F[_ <: U] <: U, A <: U] = Y#fold[U, F, F[A]]
   }
 
