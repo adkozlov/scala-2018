@@ -11,8 +11,8 @@ object Zippable {
   implicit def nilZippableLeft[R <: HList]: Zippable[HNil.type, R, HNil.type] =
     (_: HNil.type, right: R) => HNil
 
-  implicit def nilZippableRight[L <: HList]: Zippable[L, HNil.type, HNil.type] =
-    (left: L, _: HNil.type) => HNil
+  implicit def nilZippableRight[L <: HList, LeftHead]: Zippable[HCons[LeftHead, L], HNil.type, HNil.type] =
+    (left: HCons[LeftHead, L], _: HNil.type) => HNil
 
   implicit def zippable[L <: HList, R <: HList, LeftHead, RightHead, Result <: HList](implicit zippable: Zippable[L, R, Result]):
   Zippable[HCons[LeftHead, L], HCons[RightHead, R], HCons[(LeftHead, RightHead), Result]] =
