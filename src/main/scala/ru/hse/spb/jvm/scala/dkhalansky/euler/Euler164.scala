@@ -75,11 +75,11 @@ object Euler164I {
                 ({type Z1[A <: Pair[Bin, Bin]] = A#fst#add[A#snd]})#Z1]})#Z,
         replicate[Bin, _99#suc, _0]]
 
-  type withZeros[N <: Bin] = sum[range[N#pred]#foldr[TList[Bin],
+  type withZeros[N <: Bin] = sum[replicate[Bin, N#pred, _0]#foldr[TList[Bin],
     ({type Z[_ <: Bin, A <: TList[Bin]] = step[A]})#Z,
     replicate[Bin, _99#suc, _1]]]
 
-  // implicitly[withZeros[_0] =:= _99#suc]
+  implicitly[withZeros[_0] =:= _99#suc]
 
   type ans[N <: Bin] = withZeros[N#pred]#sub[withZeros[N#pred#pred]]
 
