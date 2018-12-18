@@ -15,8 +15,8 @@ object HList {
     def :::[L <: HList, Result <: HList](left: L)
                                         (implicit appendable: Appendable[L, R, Result]): Result = appendable(left, list)
 
-    def zip[O <: HList, Result <: HList](other: O)
-                                        (implicit zip: Zippable[R, O, Result]): Result = zip(list, other)
+    def zip[Other <: HList, Result <: HList](other: Other)
+                                        (implicit zip: Zippable[R, Other, Result]): Result = zip(list, other)
 
     def splitAt[I <: NaturalNumber, F <: HList, S <: HList](index: I)
                                        (implicit split: Splittable[I, R, F, S]): (F, S) = split(list, index)
