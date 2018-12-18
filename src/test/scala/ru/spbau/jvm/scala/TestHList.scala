@@ -21,8 +21,6 @@ class HListTest {
     val test2 = "a" :: "b" :: 3 :: HNil
     assertEquals((1, "a") :: (2, "b") :: ("c", 3) :: HNil, test1.zip(test2))
 
-    val test3 = "0" :: HNil
-    assertEquals((1, 0) :: HNil, test1.zip(test3))
   }
 
 
@@ -31,7 +29,7 @@ class HListTest {
     assertEquals((HNil, HNil), HNil.splitAt(zero))
 
     val test1 = 1 :: 2 :: "c" :: HNil
-    assertEquals((1 :: HNil, "two" :: 3 :: HNil), test1.splitAt(one))
-    assertEquals((1 :: "two" :: HNil, 3 :: HNil), test1.splitAt(two))
+    assertEquals((1 :: HNil, 2 :: "c" :: HNil), test1.splitAt(one))
+    assertEquals((1 :: 2 :: HNil, "c" :: HNil), test1.splitAt(two))
   }
 }

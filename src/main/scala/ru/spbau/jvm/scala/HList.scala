@@ -17,8 +17,8 @@ object HList {
       appendable(left, list)
 
     def zip[L <: HList, Result <: HList](left: L)
-                                        (implicit zipable: Zipable[L, R, Result]): Result =
-      zipable(left, list)
+                                        (implicit zipable: Zipable[R, L, Result]): Result =
+      zipable(list, left)
 
     def splitAt[N <: MyNumber, ResultL <: HList, ResultR <: HList](index: N)
                                         (implicit splitable: Splitable[R, N, ResultL, ResultR]): (ResultL, ResultR) =

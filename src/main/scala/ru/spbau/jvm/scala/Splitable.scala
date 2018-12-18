@@ -9,10 +9,10 @@ object Splitable {
   import HList._
   import MyNumber._
 
-  implicit def zeroSplitable[A <: HList]: Splitable[A, Z.type, HNil.type, A] =
-    (list: A, _: Z.type) => (HNil, list)
+  implicit def zeroSplitable[R <: HList]: Splitable[R, Z.type, HNil.type, R] =
+    (list: R, _: Z.type) => (HNil, list)
 
-  implicit def splitable[H, T <: HList, N <: Number, ResultL <: HList, ResultR <: HList](implicit splitable: Splitable[T, N, ResultL, ResultR]):
+  implicit def splitable[H, T <: HList, N <: MyNumber, ResultL <: HList, ResultR <: HList](implicit splitable: Splitable[T, N, ResultL, ResultR]):
   Splitable[HCons[H, T], S[N], HCons[H, ResultL], ResultR] = (list: HCons[H, T], number: S[N]) => {
     val (left, right) = splitable(list.tail, number.x)
     (HCons(list.head, left), right)

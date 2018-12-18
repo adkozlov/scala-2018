@@ -8,10 +8,10 @@ object Zipable {
 
   import HList._
 
-  implicit def nilZipableL: Zipable[HNil.type, HNil.type, HNil.type] =
-    (_: HNil.type, _: HNil.type) => HNil
+  implicit def nilZipableR[R <: HList]: Zipable[HNil.type, R, HNil.type] =
+    (_: HNil.type, _: R) => HNil
 
-  implicit def nilZipableR[L <: HList]: Zipable[L, HNil.type, HNil.type] =
+  implicit def nilZipableL[L <: HList]: Zipable[L, HNil.type, HNil.type] =
     (_: L, _: HNil.type) => HNil
 
   implicit def nilZippableLeftRight: Zipable[HNil.type, HNil.type, HNil.type] =
