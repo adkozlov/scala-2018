@@ -41,12 +41,4 @@ object Converter {
 
   implicit def doubleToOperator(i: Double): ConversionOperator = new ConversionOperator(i)
 
-  def main(args: Array[String]): Unit = {
-    println(2 apply km to m)
-    println(2(m) to m)
-    println(2(m) to km)
-    println(2(km) to km)
-    println(2(RUR) to EUR at 11 december 2018)
-  }
-
 }
