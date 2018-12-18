@@ -1,6 +1,6 @@
 import org.scalatest._
-import foo.Convertable.ConvertableExt
-import foo.to
+import ru.spbhse.scala.annikura.Convertable.ConvertableExt
+import ru.spbhse.scala.annikura.to
 
 class ConvertableTest extends FlatSpec with Matchers{
   "Metre" should "convert to metre" in {
@@ -57,5 +57,13 @@ class ConvertableTest extends FlatSpec with Matchers{
 
   "EUR" should "convert to USD at 10 january 2010" in {
     (5 EUR to USD 10 january 2010) should be (7.1365)
+  }
+
+  "RUR" should "convert to EUR at 10 june 2005" in {
+    (100 RUR to EUR 10 june 2005) should be (2.8731 +- 0.001)
+  }
+
+  "RUR" should "convert to EUR at 10 june 2005" in {
+    (100 RUR to EUR 10 june 2005) should be (2.8731 +- 0.001)
   }
 }

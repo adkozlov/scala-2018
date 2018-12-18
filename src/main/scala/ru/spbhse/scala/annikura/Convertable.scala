@@ -1,4 +1,4 @@
-package foo
+package ru.spbhse.scala.annikura
 
 sealed trait DistanceType
 
@@ -16,14 +16,30 @@ case object Eur extends Currency {
   override def toString: String = "EUR"
 }
 
+object Metre {
+  val inMetre:     Double = 1
+  val inKilometre: Double = 1000
+  val inInch:      Double = 0.0254
+  val inFoot:      Double = 0.3048
+  val inYard:      Double = 0.9144
+  val inMile:      Double = 1609.34
+
+  val toMetre:     Double = 1 / inMetre
+  val toKilometre: Double = 1 / inKilometre
+  val toInch:      Double = 1 / inInch
+  val toFoot:      Double = 1 / inFoot
+  val toYard:      Double = 1 / inYard
+  val toMile:      Double = 1 / inMile
+}
+
 object Convertable {
   implicit class ConvertableExt(private val value: Double) {
-    def  m(to: To): DistanceConverter = new DistanceConverter(value * 1)
-    def km(to: To): DistanceConverter = new DistanceConverter(value * 1000)
-    def in(to: To): DistanceConverter = new DistanceConverter(value * 0.0254)
-    def ft(to: To): DistanceConverter = new DistanceConverter(value * 0.3048)
-    def yd(to: To): DistanceConverter = new DistanceConverter(value * 0.9144)
-    def mi(to: To): DistanceConverter = new DistanceConverter(value * 1609.34)
+    def  m(to: To): DistanceConverter = new DistanceConverter(value * Metre.inMetre)
+    def km(to: To): DistanceConverter = new DistanceConverter(value * Metre.inKilometre)
+    def in(to: To): DistanceConverter = new DistanceConverter(value * Metre.inInch)
+    def ft(to: To): DistanceConverter = new DistanceConverter(value * Metre.inFoot)
+    def yd(to: To): DistanceConverter = new DistanceConverter(value * Metre.inYard)
+    def mi(to: To): DistanceConverter = new DistanceConverter(value * Metre.inMile)
 
     def USD(to: To): CurrencyGetter = new CurrencyGetter(value, Usd)
     def RUR(to: To): CurrencyGetter = new CurrencyGetter(value, Rur)
@@ -33,11 +49,11 @@ object Convertable {
 
 class DistanceConverter(private val meters: Double) {
   def  m: Double = meters
-  def km: Double = meters / 1000
-  def in: Double = meters / 0.0254
-  def ft: Double = meters / 0.3048
-  def yd: Double = meters / 0.9144
-  def mi: Double = meters / 1609.34
+  def km: Double = meters * Metre.toKilometre
+  def in: Double = meters * Metre.toInch
+  def ft: Double = meters * Metre.toFoot
+  def yd: Double = meters * Metre.toYard
+  def mi: Double = meters * Metre.toMile
 }
 
 class CurrencyGetter(private val amount: Double, private val currency: Currency) {
