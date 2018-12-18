@@ -3,7 +3,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class TestLengthConverter extends FlatSpec with Matchers {
 
-  "To and from meters" should "be converted corretly" in {
+  "To and from meters" should "be converted correctly" in {
     (1 m to m) should be(1)
     (100 m to km) should be(0.1)
     (1 ft to m) should be(0.30479 +- 0.00001)

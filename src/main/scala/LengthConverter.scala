@@ -37,5 +37,4 @@ object LengthConverter {
 
     def yd(o: to.type): RatioWithMeter = new RatioWithMeter(amount / M_TO_YD)
   }
-
 }
