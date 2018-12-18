@@ -46,27 +46,6 @@ object CurrencyConverter {
         class ConversionAtDay(val day: Int) {
           def january(year: Int): Double = convert(year, 1)
 
-          private def convert(year: Int, month: Int): Double = {
-            val date = LocalDateTime.of(year, month, day, 0, 0)
-            val formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd")
-            val exchangeRates = scala.io.Source.fromURL(
-              s"""$API_URL
-                 |?start_at=${date.minusDays(DAYS_TO_LOOK_BACK).format(formatter)}
-                 |&end_at=${date.format(formatter)}
-                 |&base=$BASE""".stripMargin.replaceAll("\n", "")
-            ).mkString
-            amount / getExchangeRate(from, exchangeRates) * getExchangeRate(to, exchangeRates)
-          }
-
-          private def getExchangeRate(currency: Currency, data: String): Double = {
-            val shortForCurrency = currency.API_SHORT_NAME
-            val currencyRegex = s"""(?<=$shortForCurrency":)(.*?)(?=,)""".r
-            currencyRegex findFirstIn data match {
-              case Some(v) => v.toDouble
-              case _ => throw new ConversionException(s"Can't find exchange rate for $shortForCurrency at given date")
-            }
-          }
-
           def february(year: Int): Double = convert(year, 2)
 
           def march(year: Int): Double = convert(year, 3)
@@ -89,7 +68,26 @@ object CurrencyConverter {
 
           def december(year: Int): Double = convert(year, 12)
 
+          private def convert(year: Int, month: Int): Double = {
+            val date = LocalDateTime.of(year, month, day, 0, 0)
+            val formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd")
+            val exchangeRates = scala.io.Source.fromURL(
+              s"""$API_URL
+                 |?start_at=${date.minusDays(DAYS_TO_LOOK_BACK).format(formatter)}
+                 |&end_at=${date.format(formatter)}
+                 |&base=$BASE""".stripMargin.replaceAll("\n", "")
+            ).mkString
+            amount / getExchangeRate(from, exchangeRates) * getExchangeRate(to, exchangeRates)
+          }
 
+          private def getExchangeRate(currency: Currency, data: String): Double = {
+            val shortForCurrency = currency.API_SHORT_NAME
+            val currencyRegex = s"""(?<=$shortForCurrency":)(.*?)(?=,)""".r
+            currencyRegex findFirstIn data match {
+              case Some(v) => v.toDouble
+              case _ => throw new ConversionException(s"Can't find exchange rate for $shortForCurrency at given date")
+            }
+          }
         }
 
       }
