@@ -1,5 +1,7 @@
-import CurrencyConverter._
+package ru.hse.spb.converters
+
 import org.scalatest.{FlatSpec, Matchers}
+import ru.hse.spb.converters.CurrencyConverter._
 
 class TestCurrencyConverter extends FlatSpec with Matchers {
 

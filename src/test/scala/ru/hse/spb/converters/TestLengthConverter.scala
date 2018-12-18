@@ -1,5 +1,7 @@
-import LengthConverter._
+package ru.hse.spb.converters
+
 import org.scalatest.{FlatSpec, Matchers}
+import ru.hse.spb.converters.LengthConverter._
 
 class TestLengthConverter extends FlatSpec with Matchers {
 
