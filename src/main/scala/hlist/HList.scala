@@ -27,12 +27,4 @@ object HList {
       splittable(list, n)
   }
 
-  def main(args: Array[String]): Unit = {
-    println((1 :: HNil) zip (2 :: HNil))
-    println((1 :: 3 :: HNil) zip (2 :: HNil))
-    println((1 :: HNil) zip (2 :: 4 :: HNil))
-    println((1 :: 3 :: HNil) zip (2 :: 4 :: HNil))
-
-    println(HNil.split(Nat.Zero))
-  }
 }

@@ -1,6 +1,5 @@
-package mit
+package hlist
 
-import hlist.Nat
 import hlist.Nat.{Succ, Zero}
 import org.scalatest.{FlatSpec, Matchers}
 
