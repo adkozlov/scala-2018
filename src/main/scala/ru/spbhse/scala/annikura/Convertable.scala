@@ -40,43 +40,50 @@ object Convertable {
     def yd(t: to.type): DistanceConverter = new DistanceConverter(value * Metre.inYard)
     def mi(t: to.type): DistanceConverter = new DistanceConverter(value * Metre.inMile)
 
+    class DistanceConverter(private val meters: Double) {
+      def  m: Double = meters
+      def km: Double = meters * Metre.toKilometre
+      def in: Double = meters * Metre.toInch
+      def ft: Double = meters * Metre.toFoot
+      def yd: Double = meters * Metre.toYard
+      def mi: Double = meters * Metre.toMile
+    }
+
     def USD(t: to.type): CurrencyGetter = new CurrencyGetter(value, Usd)
     def RUR(t: to.type): CurrencyGetter = new CurrencyGetter(value, Rur)
     def EUR(t: to.type): CurrencyGetter = new CurrencyGetter(value, Eur)
+
+
+    class CurrencyGetter(private val amount: Double, private val fromCurrency: Currency) {
+      def USD(day: Int):MonthGetter = getMonthGetter(Usd, day)
+      def RUR(day: Int):MonthGetter = getMonthGetter(Rur, day)
+      def EUR(day: Int):MonthGetter = getMonthGetter(Eur, day)
+
+      private def getMonthGetter(toCurrency: Currency, day: Int): MonthGetter = {
+        new MonthGetter(toCurrency, day)
+      }
+
+      class MonthGetter(private val toCurrency: Currency,
+                        private val day: Int) {
+        def   january(year: Int):  Double = callMoneyConverter(1, year)
+        def  february(year: Int):  Double = callMoneyConverter(2, year)
+        def     march(year: Int):  Double = callMoneyConverter(3, year)
+        def     april(year: Int):  Double = callMoneyConverter(4, year)
+        def       may(year: Int):  Double = callMoneyConverter(5, year)
+        def      june(year: Int):  Double = callMoneyConverter(6, year)
+        def      july(year: Int):  Double = callMoneyConverter(7, year)
+        def    august(year: Int):  Double = callMoneyConverter(8, year)
+        def september(year: Int):  Double = callMoneyConverter(9, year)
+        def   october(year: Int):  Double = callMoneyConverter(10, year)
+        def  november(year: Int):  Double = callMoneyConverter(11, year)
+        def  december(year: Int):  Double = callMoneyConverter(12, year)
+
+        private def callMoneyConverter(month: Int, year: Int): Double = {
+          MoneyConverter(amount, fromCurrency, toCurrency, day, month, year)
+        }
+      }
+    }
   }
-}
-
-class DistanceConverter(private val meters: Double) {
-  def  m: Double = meters
-  def km: Double = meters * Metre.toKilometre
-  def in: Double = meters * Metre.toInch
-  def ft: Double = meters * Metre.toFoot
-  def yd: Double = meters * Metre.toYard
-  def mi: Double = meters * Metre.toMile
-}
-
-class CurrencyGetter(private val amount: Double, private val currency: Currency) {
-  def USD(day: Int):MonthGetter = new MonthGetter(amount, currency, Usd, day)
-  def RUR(day: Int):MonthGetter = new MonthGetter(amount, currency, Rur, day)
-  def EUR(day: Int):MonthGetter = new MonthGetter(amount, currency, Eur, day)
-}
-
-class MonthGetter(private val amount: Double,
-                  private val fromCurrency: Currency,
-                  private val toCurrency: Currency,
-                  private val day: Int) {
-  def   january(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 1, year)
-  def  february(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 2, year)
-  def     march(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 3, year)
-  def     april(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 4, year)
-  def       may(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 5, year)
-  def      june(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 6, year)
-  def      july(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 7, year)
-  def    august(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 8, year)
-  def september(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 9, year)
-  def   october(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 10, year)
-  def  november(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 11, year)
-  def  december(year: Int):  Double = MoneyConverter(amount, fromCurrency, toCurrency, day, 12, year)
 }
 
 object MoneyConverter{
