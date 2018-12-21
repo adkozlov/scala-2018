@@ -1,5 +1,7 @@
 package ru.spbau.jvm.scala.task169
 
+import org.junit
+import org.junit.Assert._
 import ru.spbau.jvm.scala.task169.Solution.{_1, _10, _100, _2, _25, _3, _4, toInt}
 
 
@@ -14,14 +16,13 @@ class Test {
     solve(i / 2) + solve(i / 2 - 1)
   }
 
-  def main(args: Array[String]): Unit = {
-    assert(toInt[_1#F] == solve(1))
-    assert(toInt[_2#F] == solve(2))
-    assert(toInt[_3#F] == solve(3))
-    assert(toInt[_4#F] == solve(4))
-    assert(toInt[_10#F] == solve(10))
-    assert(toInt[_10#F] == 5)
-    assert(toInt[_25#F] == solve(25))
-    assert(toInt[_100#F] == solve(100))
+  @junit.Test
+  def test(): Unit = {
+    assertEquals(solve(1), toInt[_1#F])
+    assertEquals(solve(2), toInt[_2#F])
+    assertEquals(solve(3), toInt[_3#F])
+    assertEquals(solve(10), toInt[_10#F])
+    assertEquals(5, solve(10))
+   // assertEquals(solve(100), toInt[_100]) // можно раскомментировать, закомментировав тесты к другим задачам
   }
 }
