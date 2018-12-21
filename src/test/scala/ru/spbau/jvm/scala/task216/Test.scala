@@ -38,7 +38,7 @@ class Test {
     assertEquals(solve(8), toInt[Calculate[_8]])
     assertEquals(solve(9), toInt[Calculate[_9]])
     assertEquals(solve(10), toInt[Calculate[_10]])
-    assertEquals(solve(20), toInt[Calculate[_20]])
+    //assertEquals(solve(20), toInt[Calculate[_20]])
   }
 }
 
