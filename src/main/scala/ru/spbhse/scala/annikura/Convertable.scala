@@ -19,8 +19,8 @@ object Metre {
   val inMetre:     Double = 1
   val inKilometre: Double = 1000
   val inInch:      Double = 0.0254
-  val inFoot:      Double = 0.3048
-  val inYard:      Double = 0.9144
+  val inFoot:      Double = inInch * 12
+  val inYard:      Double = inFoot * 3
   val inMile:      Double = 1609.34
 
   val toMetre:     Double = 1 / inMetre
@@ -95,12 +95,14 @@ object MoneyConverter{
     val errorJson = "\\{\"error\":\"(.*)\"\\}".r
     result match {
       case validJson(rate) => amount * rate.toDouble
-      case errorJson(error) => throw new RuntimeException(error)
+      case errorJson(error) => throw ConverterException(error)
     }
   }
 
   private def genDate(day: Int, month: Int, year: Int): String = {
     s"$year-$month-$day"
   }
-
 }
+
+final case class ConverterException(private val message: String = "",
+                                    private val cause: Throwable = None.orNull) extends Exception(message, cause)
