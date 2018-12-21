@@ -33,16 +33,16 @@ object Metre {
 
 object Convertable {
   implicit class ConvertableExt(private val value: Double) {
-    def  m(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inMetre)
-    def km(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inKilometre)
-    def in(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inInch)
-    def ft(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inFoot)
-    def yd(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inYard)
-    def mi(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inMile)
+    def  m(t: to.type): DistanceConverter = new DistanceConverter(value * Metre.inMetre)
+    def km(t: to.type): DistanceConverter = new DistanceConverter(value * Metre.inKilometre)
+    def in(t: to.type): DistanceConverter = new DistanceConverter(value * Metre.inInch)
+    def ft(t: to.type): DistanceConverter = new DistanceConverter(value * Metre.inFoot)
+    def yd(t: to.type): DistanceConverter = new DistanceConverter(value * Metre.inYard)
+    def mi(t: to.type): DistanceConverter = new DistanceConverter(value * Metre.inMile)
 
-    def USD(to: to.type): CurrencyGetter = new CurrencyGetter(value, Usd)
-    def RUR(to: to.type): CurrencyGetter = new CurrencyGetter(value, Rur)
-    def EUR(to: to.type): CurrencyGetter = new CurrencyGetter(value, Eur)
+    def USD(t: to.type): CurrencyGetter = new CurrencyGetter(value, Usd)
+    def RUR(t: to.type): CurrencyGetter = new CurrencyGetter(value, Rur)
+    def EUR(t: to.type): CurrencyGetter = new CurrencyGetter(value, Eur)
   }
 }
 
@@ -83,7 +83,7 @@ object MoneyConverter{
   def apply(amount: Double, fromCurrency: Currency, toCurrency: Currency,
             day: Int, month: Int, year: Int): Double = {
     val url = s"https://api.exchangeratesapi.io/${genDate(day, month, year)}?base=$fromCurrency&symbols=$toCurrency"
-    val result = scala.io.Source.fromURL(url).mkString
+    val result = io.Source.fromURL(url).mkString
     val validJson = "\\{\"date\":\"\\d{4}-\\d{2}-\\d{2}\",\"rates\":\\{\"...\":(\\d+\\.?\\d*)\\},\"base\":\"...\"\\}".r
     val errorJson = "\\{\"error\":\"(.*)\"\\}".r
     result match {
