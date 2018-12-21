@@ -2,8 +2,7 @@ package ru.spbhse.scala.annikura
 
 sealed trait DistanceType
 
-sealed trait To
-case object to extends To
+case object to
 
 sealed trait Currency
 case object Usd extends Currency {
@@ -34,16 +33,16 @@ object Metre {
 
 object Convertable {
   implicit class ConvertableExt(private val value: Double) {
-    def  m(to: To): DistanceConverter = new DistanceConverter(value * Metre.inMetre)
-    def km(to: To): DistanceConverter = new DistanceConverter(value * Metre.inKilometre)
-    def in(to: To): DistanceConverter = new DistanceConverter(value * Metre.inInch)
-    def ft(to: To): DistanceConverter = new DistanceConverter(value * Metre.inFoot)
-    def yd(to: To): DistanceConverter = new DistanceConverter(value * Metre.inYard)
-    def mi(to: To): DistanceConverter = new DistanceConverter(value * Metre.inMile)
+    def  m(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inMetre)
+    def km(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inKilometre)
+    def in(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inInch)
+    def ft(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inFoot)
+    def yd(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inYard)
+    def mi(to: to.type): DistanceConverter = new DistanceConverter(value * Metre.inMile)
 
-    def USD(to: To): CurrencyGetter = new CurrencyGetter(value, Usd)
-    def RUR(to: To): CurrencyGetter = new CurrencyGetter(value, Rur)
-    def EUR(to: To): CurrencyGetter = new CurrencyGetter(value, Eur)
+    def USD(to: to.type): CurrencyGetter = new CurrencyGetter(value, Usd)
+    def RUR(to: to.type): CurrencyGetter = new CurrencyGetter(value, Rur)
+    def EUR(to: to.type): CurrencyGetter = new CurrencyGetter(value, Eur)
   }
 }
 
