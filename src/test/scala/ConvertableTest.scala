@@ -62,8 +62,4 @@ class ConvertableTest extends FlatSpec with Matchers{
   "RUR" should "convert to EUR at 10 june 2005" in {
     (100 RUR to EUR 10 june 2005) should be (2.8731 +- 0.001)
   }
-
-  "RUR" should "convert to EUR at 10 june 2005" in {
-    (100 RUR to EUR 10 june 2005) should be (2.8731 +- 0.001)
-  }
 }
