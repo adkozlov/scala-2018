@@ -17,7 +17,7 @@ class Test {
   }
 
   @junit.Test
-  def test(): Unit = {
+  def task169(): Unit = {
     assertEquals(solve(1), toInt[_1#F])
     assertEquals(solve(2), toInt[_2#F])
     assertEquals(solve(3), toInt[_3#F])

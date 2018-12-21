@@ -30,7 +30,7 @@ class Test {
   }
 
   @junit.Test
-  def test() : Unit = {
+  def task211() : Unit = {
     assertEquals(solve(1), toInt[Calculate[_1]])
     assertEquals(solve(2), toInt[Calculate[_2]])
     assertEquals(solve(3), toInt[Calculate[_3]])

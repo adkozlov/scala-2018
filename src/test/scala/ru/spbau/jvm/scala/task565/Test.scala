@@ -27,7 +27,7 @@ class Test {
   }
 
   @junit.Test
-  def test() : Unit = {
+  def task565() : Unit = {
     assertEquals(solve(20, 7), toInt[Calculate[_20, _7]])
   }
 
