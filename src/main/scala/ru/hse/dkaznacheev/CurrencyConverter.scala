@@ -13,18 +13,20 @@ case class CurrencyConverter(value: Int, fromCurrency: String, toCurrency: Strin
 
 object CurrencyConverter {
   private val URL = "https://free.currencyconverterapi.com/api/v6/convert"
+  private val formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd")
+  private val regex = s"""\\:[0-9]+(\\.[0-9]+)?""".r // matches :66.82
 
   def convertAt(converter: CurrencyConverter, date: Date): Double = {
     val localDate = LocalDateTime.of(date.year, date.month, date.day, 0, 0)
-    val formattedDate = localDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd"))
-    val url = s"$URL?compact=ultra&q=${converter.fromCurrency}_${converter.toCurrency}&date=$formattedDate"
-    val response = scala.io.Source.fromURL(url).mkString
-    val regex = s"""($formattedDate)\\":([^}]*)""".r
-    var result: Double = 0
-    for (regex(_, number) <- regex.findAllIn(response)) {
-      result = number.toDouble
-    }
-    if (result != 0) converter.value * result else throw new IllegalArgumentException
+    val formattedDate = localDate.format(formatter)
+    val request = s"$URL?compact=ultra&q=${converter.fromCurrency}_${converter.toCurrency}&date=$formattedDate"
+    println(request)
+    val response = io.Source.fromURL(request).mkString
+    regex
+      .findFirstIn(response)
+      .getOrElse(throw new CurrencyConverterAPIException)
+      .substring(1) // :66.82 -> 66.62
+      .toDouble
   }
 }
 

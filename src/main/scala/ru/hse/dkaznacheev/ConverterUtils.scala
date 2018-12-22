@@ -6,30 +6,35 @@ object ConverterUtils {
 
   object to extends ToType
 
-  implicit class IntExtension(val i: Int) {
-    def m (to: ToType) = MetricConverter(i, MetricRates.METER_RATE)
-    def km (to: ToType) = MetricConverter(i, MetricRates.KILOMETER_RATE)
-    def in (to: ToType) = MetricConverter(i, MetricRates.INCH_RATE)
-    def ft (to: ToType) = MetricConverter(i, MetricRates.FEET_RATE)
-    def mi (to: ToType) = MetricConverter(i, MetricRates.MILE_RATE)
-    def yd (to: ToType) = MetricConverter(i, MetricRates.YARD_RATE)
+  implicit class IntExtension(private val i: Int) {
+    
+    private def converterOf: Double => MetricConverter = MetricConverter(i, _)
+    private def partialCurrencyConverterOf: String => PartialCurrencyConverter = 
+      PartialCurrencyConverter(i, _)
+    
+    def m (infix: to.type)  = converterOf(MetricConverter.METER_RATE)
+    def km (infix: to.type) = converterOf(MetricConverter.KILOMETER_RATE)
+    def in (infix: to.type) = converterOf(MetricConverter.INCH_RATE)
+    def ft (infix: to.type) = converterOf(MetricConverter.FEET_RATE)
+    def mi (infix: to.type) = converterOf(MetricConverter.MILE_RATE)
+    def yd (infix: to.type) = converterOf(MetricConverter.YARD_RATE)
 
-    def RUB(to: ToType) = PartialCurrencyConverter(i, Currencies.RUB)
-    def USD(to: ToType) = PartialCurrencyConverter(i, Currencies.USD)
-    def EUR(to: ToType) = PartialCurrencyConverter(i, Currencies.EUR)
+    def RUB(infix: to.type) = partialCurrencyConverterOf(Currencies.RUB)
+    def USD(infix: to.type) = partialCurrencyConverterOf(Currencies.USD)
+    def EUR(infix: to.type) = partialCurrencyConverterOf(Currencies.EUR)
 
-    def january(year: Int)   = Date(i, 1, year)
-    def february(year: Int)  = Date(i, 2, year)
-    def march(year: Int)     = Date(i, 3, year)
-    def april(year: Int)     = Date(i, 4, year)
-    def may(year: Int)       = Date(i, 5, year)
-    def june(year: Int)      = Date(i, 6, year)
-    def july(year: Int)      = Date(i, 7, year)
-    def august(year: Int)    = Date(i, 8, year)
-    def september(year: Int) = Date(i, 9, year)
-    def october(year: Int)   = Date(i, 10, year)
-    def november(year: Int)  = Date(i, 11, year)
-    def december(year: Int)  = Date(i, 12, year)
+    def january: Int => Date   = Date(i, 1, _)
+    def february: Int => Date  = Date(i, 2, _)
+    def march: Int => Date     = Date(i, 3, _)
+    def april: Int => Date     = Date(i, 4, _)
+    def may: Int => Date       = Date(i, 5, _)
+    def june: Int => Date      = Date(i, 6, _)
+    def july: Int => Date      = Date(i, 7, _)
+    def august: Int => Date    = Date(i, 8, _)
+    def september: Int => Date = Date(i, 9, _)
+    def october: Int => Date   = Date(i, 10, _)
+    def november: Int => Date  = Date(i, 11, _)
+    def december: Int => Date  = Date(i, 12, _)
   }
 
   implicit class ConverterOps(private val converter: CurrencyConverter) extends AnyVal {
