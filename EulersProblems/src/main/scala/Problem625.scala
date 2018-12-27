@@ -1,19 +1,6 @@
-object Problem625Scala {
-  sealed trait Bool {
-  type If[T <: Up, F <: Up, Up] <: Up
-  type And[A <: Bool] <: Bool
-  type Or[A <: Bool] <: Bool
-}
-sealed trait True extends Bool {
-  type If[T <: Up, F <: Up, Up] = T
-  type And[A <: Bool] = A
-  type Or[A <: Bool] = True
-}
-sealed trait False extends Bool {
-  type If[T <: Up, F <: Up, Up] = F
-  type And[A <: Bool] = False
-  type Or[A <: Bool] = A
-}
+import CommonTypes.{Bool, False, True}
+
+object Problem625 {
 
 sealed trait Nat {
   type FoldR[Init <: Type, Type, F <: Fold[Nat, Type]] <: Type
@@ -55,17 +42,19 @@ sealed trait Succ[N <: Nat] extends Nat {
 trait Fold[-Elem, Value] {
   type Apply[N <: Elem, Acc <: Value] <: Value
 }
- def gcd(a: Int, b: Int): Int = {
-    if (a == b) a
-    else if (a > b) gcd(a-b, b) else gcd(a, b-a)
-  }
+  object Problem625Scala {
+    def gcd(a: Int, b: Int): Int = {
+      if (a == b) a
+      else if (a > b) gcd(a - b, b) else gcd(a, b - a)
+    }
 
-  def ans(N: Int) : Int = {
-    var ans: Int = 0
-    for (j <- 1 to N)
-      for (i <- 1 to j)
-        ans += gcd(j, i)
-    ans
+    def ans(N: Int): Int = {
+      var ans: Int = 0
+      for (j <- 1 to N)
+        for (i <- 1 to j)
+          ans += gcd(j, i)
+      ans
+    }
   }
 
   type _1 = Succ[_0]
@@ -81,25 +70,7 @@ trait Fold[-Elem, Value] {
 
 
   class NatRep[T <: Nat](val i: Int)
-  def toInt[T <: Nat](implicit rep: NatRep[T]) = rep.i
-
-  implicit val repO = new NatRep[_0](0)
-  implicit def repS[T <: Nat](implicit rep: NatRep[T]) = new NatRep[Succ[T]](rep.i + 1)
-
-  def TestProblem(): Unit = {
-    assert(Problem625Scala.ans(1) == toInt[_1#ProblemSolve])
-    assert(Problem625Scala.ans(2) == toInt[_2#ProblemSolve])
-    assert(Problem625Scala.ans(3) == toInt[_3#ProblemSolve])
-    assert(Problem625Scala.ans(4) == toInt[_4#ProblemSolve])
-    assert(Problem625Scala.ans(5) == toInt[_5#ProblemSolve])
-    assert(Problem625Scala.ans(6) == toInt[_6#ProblemSolve])
-    assert(Problem625Scala.ans(7) == toInt[_7#ProblemSolve])
-    assert(Problem625Scala.ans(8) == toInt[_8#ProblemSolve])
-    assert(Problem625Scala.ans(9) == toInt[_9#ProblemSolve])
-    assert(Problem625Scala.ans(10) == toInt[_10#ProblemSolve])
-  }
-
-  def main(args: Array[String]): Unit = {
-    TestProblem()
-  }
+  def toInt[T <: Nat](implicit rep: NatRep[T]): Int = rep.i
+  implicit val repO: NatRep[_0] = new NatRep[_0](0)
+  implicit def repS[T <: Nat](implicit rep: NatRep[T]): NatRep[Succ[T]] = new NatRep[Succ[T]](rep.i + 1)
 }
